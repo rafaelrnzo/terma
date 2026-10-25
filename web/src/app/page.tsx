@@ -3,6 +3,8 @@ import type { Metadata } from "next"
 import { ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Wordmark } from "@/components/wordmark"
+import { LandingHandoff } from "@/components/landing-handoff"
+import { LandingMotion } from "@/components/landing-motion"
 import { QualityBadge, StatusChip } from "@/components/status"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 
@@ -55,6 +57,7 @@ const questions = [
 
 export default function Home() {
   return <div className="intro-shell">
+    <LandingMotion />
     <a href="#main-content" className="skip-link">Lewati navigasi ke konten utama</a>
     <header className="intro-header">
       <Wordmark href="/" />
@@ -73,15 +76,7 @@ export default function Home() {
           <Button asChild size="lg" className="mt-8 h-auto min-h-12 whitespace-normal py-3"><Link href="/ringkasan">Masuk ke pekerjaan hari ini<ArrowRight className="shrink-0" aria-hidden /></Link></Button>
           <p className="mt-4 max-w-md text-sm leading-relaxed text-muted-foreground">Demo interaktif dengan data contoh. Coba sebagai HSE, lalu ganti peran menjadi mandor. Bukan untuk keputusan operasional.</p>
         </div>
-        <aside className="intro-handoff" aria-label="Contoh alur koordinasi">
-          <h2 className="font-heading text-2xl font-medium">Satu rencana,<br />sampai selesai di lapangan.</h2>
-          <p className="mt-3 text-sm text-muted-foreground">Contoh alur dalam simulasi</p>
-          <ol className="handoff-list">
-            <li><span className="handoff-node" aria-hidden>1</span><div><p className="font-medium">HSE menyiapkan rencana</p><p className="mt-1 text-sm text-muted-foreground">Tinjau data panas dan kebutuhan tiap pekerja.</p></div></li>
-            <li><span className="handoff-node" aria-hidden>2</span><div><p className="font-medium">Mandor melaksanakan</p><p className="mt-1 text-sm text-muted-foreground">Terima instruksi, lalu catat durasi kerja aktual.</p></div></li>
-            <li><span className="handoff-node" aria-hidden>3</span><div><p className="font-medium">HSE memverifikasi</p><p className="mt-1 text-sm text-muted-foreground">Periksa laporan sebelum menutup tindakan.</p></div></li>
-          </ol>
-        </aside>
+        <LandingHandoff />
       </section>
       <section id="peran" className="landing-section" aria-labelledby="roles-title">
         <div className="landing-section-heading">

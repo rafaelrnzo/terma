@@ -8,6 +8,12 @@ Latest request: expand the existing landing page to explain the whole applicatio
 
 ## Direction contract
 
+### Landing motion refinement
+
+User asks for a more appealing visual with animation, preserving the informational landing. Focal moment: a bounded HSE → mandor → HSE handoff showing which illustrative output passes between roles. Autoplay once for 4.2 seconds while visible, with pause/replay and manual stage selection; never change application data. Continuity: a reading-progress line and current in-page section identify position in the long landing. Feedback: directional arrow, control tint, and connector transitions respond to input. Budget: CSS and one small client component, no animation dependency, no infinite loops or pointer-tracking effects; the plan example receives one short entrance when encountered, not every section. All content is visible before scripts; reduced motion removes autoplay/spatial effects, retaining immediate selection and color feedback. Offscreen or hidden-document playback stops. This is animate/polish, not a replacement visual world.
+
+Implementation uses two small client components: handoff playback and progressive reading/entrance enhancement. Motion/polish inspection covered 390/1024/1440 rendered captures and all three handoff states. Automated checks at 320/390/768/1024/1440 passed autoplay completion, pause/replay, manual and keyboard selection, offscreen stop, preference changes, reduced-motion load, unchanged demo data, existing anchors/FAQ/entry destinations, and static content without JavaScript. The changed-target detector returned no findings. Global palette, fonts, tokens, and operational pages are unchanged.
+
 THESIS: Understand TERMA before entering, then see what needs doing today. Remove repeated explanation and competing controls rather than add more context panels.
 
 OWN-WORLD: Preserve Atmosphere type, mist ground, restrained green and existing components. Use the existing text wordmark without the thermometer emblem; icons only where they identify a control.

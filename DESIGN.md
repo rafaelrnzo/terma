@@ -276,6 +276,8 @@ Bacaan hilang tampil sebagai em dash serta celah pada grafik; segmen hanya mengh
 
 Navigasi memakai transisi warna/latar 160ms; pilihan skema memakai opacity/stroke 180ms ease-out. Reduced motion menonaktifkan keduanya serta animasi Dialog, Select, dan Accordion yang ditargetkan CSS.
 
+Pada landing saja, contoh serah-terima HSE–mandor–HSE menjadi fokus gerak: tiga tahap berjalan sekali selama 4,2 detik ketika terlihat, dapat dijeda/diulang atau dipilih langsung, dan berhenti saat keluar layar atau tab tersembunyi. Konektor memakai 550ms ease-out, pergantian dokumen 380ms, dan masuknya contoh profil 600ms sekali saat terlihat. Indikator baca serta garis navigasi menunjukkan posisi halaman; hover panah bergeser 3px. Reduced motion meniadakan autoplay dan perpindahan spasial sambil mempertahankan pilihan tahap dan umpan balik warna. Konten awal tetap terlihat tanpa JavaScript; seluruh gerak bersifat ilustratif, tidak mengubah data demo. Tidak ada dependensi animasi tambahan atau loop tanpa akhir.
+
 ## Do's and Don'ts
 
 ### Do:
