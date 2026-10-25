@@ -12,7 +12,7 @@ HSE meninjau dan menyetujui rencana, mandor menerima instruksi dan melaporkan ti
 
 ## Product Purpose
 
-Mengubah penugasan, kehadiran, riwayat adaptasi, dan WBGT/ISBB menjadi rencana kerja-istirahat yang dapat ditindaklanjuti dan diaudit. Bukan diagnosis atau prediksi kesehatan.
+Mengubah penugasan, kehadiran, riwayat adaptasi, dan WBGT/ISBB menjadi rencana kerja-istirahat yang dapat ditindaklanjuti dan diaudit. Pratinjau insight individu membantu HSE memprioritaskan tinjauan paparan; diagnosis dan prediksi peluang sakit belum tersedia.
 
 Penggunaan utama saat ini adalah simulasi pekerjaan HSE harian dengan seluruh data contoh tetap mock. Pengantar menjelaskan TERMA dan alur HSE–mandor–HSE sebelum pengguna masuk ke pekerjaan hari ini, melanjutkan tugas, dan membuka rincian pekerja bila diperlukan.
 
@@ -27,6 +27,7 @@ Penggunaan utama saat ini adalah simulasi pekerjaan HSE harian dengan seluruh da
 - Peta awal adalah skema simulasi yang berfungsi tanpa token. Mapbox opsional dimuat hanya setelah dipilih dan token publik tersedia; koordinatnya fiktif, bukan lokasi proyek. Kegagalan layanan kembali ke skema. Tidak ada permintaan geolokasi atau pelacakan pekerja.
 - Dalam demo, tombol WhatsApp membuka pratinjau lokal. Salin pesan tetap tersedia; tidak ada pengiriman eksternal otomatis. Gangguan penyimpanan ditampilkan, bukan dianggap berhasil.
 - Perubahan desain tidak boleh mengubah mesin aturan, izin peran, catatan, atau alur persetujuan.
+- Halaman `/insight` adalah mockup frontend AI Insight untuk MVP. Halaman ini menampilkan proyeksi perhatian per pekerja dari rencana aktif, kualitas bacaan, faktor pembentuk insight, saran HSE, dan simulasi perubahan zona tanpa menyimpan perubahan. Seluruh output AI berlabel simulasi; belum ada model AI klinis atau backend. Data hilang tetap tidak dapat dinilai dan tidak menghasilkan peluang sakit. Model prediktif individual memerlukan data outcome dan validasi lapangan sebelum diaktifkan.
 
 ## Brand Commitments
 

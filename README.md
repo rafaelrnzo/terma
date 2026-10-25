@@ -243,6 +243,8 @@ Data tersimpan di `localStorage` dengan kunci `terma-demo-v2`. Data lama `terma-
 
 Banner **Ruang demo** tampil di seluruh halaman, termasuk saat mencetak. Identitas pekerja ditandai `SINTETIS`, bacaan ditandai `REPLAY`, dan pesan yang disalin menyertakan peringatan simulasi. Tombol WhatsApp membuka pratinjau lokal, bukan mengirim pesan. Jangan campurkan data nyata ke ruang demo atau gunakan hasilnya sebagai keputusan operasional.
 
+Halaman **AI Insight individu** (`/insight`) adalah mockup frontend MVP yang menampilkan sinyal paparan per pekerja dari rencana aktif. Halaman ini menampilkan cakupan WBGT, menit paparan yang direncanakan, faktor pembentuk insight, interval tanpa alokasi, alasan aturan, saran tinjauan HSE, serta simulasi read-only jika zona kerja berubah. Seluruh output AI berlabel simulasi. Belum ada model AI yang dilatih, API AI, atau prediksi peluang sakit; data kosong tidak diberi label aman. Sebelum model prediktif individual digunakan, tim perlu data outcome yang sah, validasi HSE/klinis, autentikasi server, serta pengujian performa pada populasi dan kondisi lapangan yang dituju.
+
 Sumber seed: `web/src/lib/seed-data.ts`; pengisian melalui validasi, mesin aturan, dan alur reducer yang sama di `web/src/lib/store.tsx`. Uji regresi: `npm test` dari direktori `web/`.
 
 Uji browser: `node scripts/ui-smoke.cjs` dari `web/` dengan server port 3001 berjalan dan Playwright/Chromium tersedia. Jika memakai runtime yang sudah terpasang di luar proyek, berikan `PLAYWRIGHT_MODULE` dan `CHROMIUM_EXECUTABLE`. Skrip memakai konteks browser terisolasi, memeriksa tautan serta alur aksi, dan menyimpan tangkapan desktop/mobile di `.impeccable/review/workspace/`; `SKIP_CAPTURE=1` melewati penulisan gambar.

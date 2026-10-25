@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { ArrowRight } from "lucide-react"
+import { ArrowRight, HeartPulse } from "lucide-react"
 import { DemoSeed } from "@/components/demo-seed"
 import { HeatMonitor } from "@/components/heat-monitor"
 import { DashboardTour } from "@/components/dashboard-tour"
@@ -25,6 +25,7 @@ export default function TodayPage() {
     <div className="today-heading"><div><h1 className="font-heading text-3xl font-medium">Pekerjaan hari ini</h1><p className="mt-2 text-sm text-muted-foreground">{tanggalLabel(state.tanggal)} · {user.nama}{user.role === "MANDOR" ? " · Regu " + user.reguKode : " · Seluruh lokasi"}</p></div><DashboardTour /></div>
     {state.pekerja.length === 0 && <DemoSeed />}
     <DashboardSnapshot />
+    <Link href="/insight" className="group mb-6 flex flex-wrap items-center justify-between gap-4 rounded-lg border border-primary/25 bg-secondary/60 p-4 transition-colors hover:bg-secondary sm:px-5"><span className="flex items-start gap-3"><span className="flex size-10 shrink-0 items-center justify-center rounded-md bg-primary text-primary-foreground"><HeartPulse className="size-5" aria-hidden /></span><span><strong className="block text-sm">Insight kesehatan individu</strong><span className="mt-1 block text-xs leading-relaxed text-muted-foreground">Tinjau sinyal paparan per pekerja, celah bacaan, dan langkah HSE pada data simulasi.</span></span></span><span className="inline-flex items-center gap-2 text-sm font-semibold text-primary">Buka insight<ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden /></span></Link>
     <section className="today-priority" aria-labelledby="priority-title" data-tour="priority">
       <div><h2 id="priority-title" className="font-heading text-lg font-semibold">{next.label}</h2><p className="mt-1 text-sm font-medium">{next.progress}</p><p className="mt-1 max-w-prose text-sm text-muted-foreground">{STEP_OUTCOMES[next.href]}</p></div>
       <Button asChild size="lg"><Link href={next.href}>Lanjutkan pekerjaan<ArrowRight aria-hidden /></Link></Button>

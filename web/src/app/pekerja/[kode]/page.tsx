@@ -2,7 +2,7 @@
 
 import { use } from "react"
 import Link from "next/link"
-import { ArrowLeft, ArrowRight } from "lucide-react"
+import { ArrowLeft, ArrowRight, HeartPulse } from "lucide-react"
 import { PageHeader, WorkflowEmpty } from "@/components/app-shell"
 import { LifecycleBadge, OriginBadge } from "@/components/status"
 import { RencanaCard } from "@/components/rencana-card"
@@ -29,6 +29,7 @@ export default function PekerjaPage({ params }: { params: Promise<{ kode: string
   return <>
     <Button className="mb-5" variant="ghost" asChild><Link href="/impor"><ArrowLeft aria-hidden />Direktori pekerja</Link></Button>
     <PageHeader title={worker.nama} summary={`${worker.kode} · ${crew?.nama} · Bergabung ${tanggalLabel(worker.tanggalMulai)}`} />
+    <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-lg border bg-secondary/50 px-4 py-3"><p className="text-sm"><span className="font-semibold">Insight kesehatan individu</span><span className="ml-2 text-muted-foreground">Lihat sinyal paparan, kualitas data, dan saran tinjauan HSE.</span></p><Button asChild variant="outline"><Link href={`/insight?pekerja=${encodeURIComponent(worker.kode)}`}><HeartPulse aria-hidden />Buka insight<ArrowRight aria-hidden /></Link></Button></div>
     <div className="mb-6 grid gap-6 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
       <Card><CardHeader><CardTitle>Penugasan & penanggung jawab</CardTitle></CardHeader><CardContent><dl className="grid grid-cols-2 gap-x-5 gap-y-5 text-sm">
         <Field label="Tugas" value={TUGAS.find(t => t.kode === assignment?.tugasKode)?.nama ?? "Belum ada"} />

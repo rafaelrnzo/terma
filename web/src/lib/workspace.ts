@@ -10,6 +10,7 @@ export const SURFACES = [
   { href: "/paparan", label: "Adaptasi pekerja", detail: "Riwayat kehadiran dan konfirmasi HSE" },
   { href: "/pengukuran", label: "Pengukuran WBGT", detail: "Bacaan panas per zona dan jam" },
   { href: "/rencana", label: "Rencana kerja", detail: "Batas paparan, penugasan, dan persetujuan" },
+  { href: "/insight", label: "Insight kesehatan individu", detail: "Sinyal paparan per pekerja, kualitas bacaan, dan tinjauan HSE" },
   { href: "/instruksi", label: "Instruksi mandor", detail: "Pembagian dan penerimaan rencana per regu" },
   { href: "/tindakan", label: "Tindakan & verifikasi", detail: "Pelaksanaan, laporan mandor, dan pemeriksaan HSE" },
   { href: "/laporan", label: "Laporan & audit", detail: "Rekap shift dan jejak aktivitas" },
