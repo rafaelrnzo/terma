@@ -24,3 +24,6 @@ coverage/
 !/.impeccable/reference-redesign.md
 !/.impeccable/workspace-context.md
 !/.impeccable/usability-simplification.md
+!/.impeccable/surfaces/
+/.impeccable/surfaces/*
+!/.impeccable/surfaces/web-src-app-ringkasan-page-tsx.md

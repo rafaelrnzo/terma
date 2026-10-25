@@ -391,6 +391,11 @@
         "purpose": "Only the selected desktop/mobile navigation item."
       },
       {
+        "name": "dashboard-tour",
+        "value": "0 10px 32px rgb(38 58 50 / 18%)",
+        "purpose": "Separate the optional tour popover from the highlighted workspace."
+      },
+      {
         "name": "control-focus",
         "value": "0 0 0 3px var(--ring)",
         "purpose": "Keyboard focus on Button and Input; not ambient elevation."
@@ -409,8 +414,13 @@
       },
       {
         "name": "zone-selection",
-        "value": "opacity 180ms ease-out, stroke 180ms ease-out",
-        "purpose": "Selected zone outline."
+        "value": "border-color 160ms",
+        "purpose": "Zone scheme button hover border; selection and focus use distinct outlines."
+      },
+      {
+        "name": "dashboard-tour",
+        "value": "200ms",
+        "purpose": "Optional Driver.js highlight transition; disabled for reduced motion."
       },
       {
         "name": "button-press",
@@ -420,7 +430,7 @@
     ],
     "reducedMotion": {
       "query": "(prefers-reduced-motion: reduce)",
-      "behavior": "Disable navigation and zone transitions, targeted Dialog/Select/Accordion animations, and button press translation."
+      "behavior": "Disable navigation and zone transitions, targeted Dialog/Select/Accordion animations, button press translation, and Driver.js tour animation."
     },
     "breakpoints": [
       {
@@ -449,7 +459,7 @@
       {
         "name": "panel-blue",
         "value": "linear-gradient(145deg, #dae7ee, #edf2e9)",
-        "purpose": "Illustrative zone schematic."
+        "purpose": "Existing blue information panels; the dashboard zone scheme uses a muted solid canvas."
       },
       {
         "name": "panel-sand",
@@ -469,11 +479,36 @@
         "value": "var(--card)"
       }
     ],
+    "workspaceLayout": {
+      "maxWidth": "1800px",
+      "sidebar": "Sticky 224px sidebar from 1024px; focus-managed left drawer below 1024px.",
+      "contentPadding": "24px 28px 48px; 24px 16px 32px below 768px.",
+      "zoneMonitor": "Visible after the priority action: three zone choices, interval controls, flexible map and 268px readout with a 16px gap. Map/readout stack at 1024–1199px and below 768px; mobile zone choices scroll horizontally.",
+      "history": "Heat profile and hourly history are in an accordion below the visible map; the hourly source table is a nested disclosure."
+    },
+    "zoneMap": {
+      "default": "Token-free simulated scheme with keyboard-operable zone buttons, visible provenance, and the same selected zone/interval as the list and readout.",
+      "schemeHeight": "280px; 300px below 768px",
+      "mapboxHeight": "320px",
+      "optionalMapbox": "Lazy-loaded only after explicit selection when NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN is configured. Coordinates are fictional and no geolocation is requested.",
+      "failure": "Invalid token, unsupported WebGL, load error, or 12-second timeout restores the scheme and displays retry guidance."
+    },
+    "dashboardTour": {
+      "trigger": "Panduan dashboard; lazy Driver.js import on request, no automatic start.",
+      "steps": ["Peran simulasi", "Tanggal kerja", "Navigasi", "Zona kerja", "Interval dan sumber", "Pekerjaan berikutnya"],
+      "behavior": "Skippable and replayable; restores trigger focus when closed and respects reduced motion. Does not change application data.",
+      "maxWidth": "min(360px, calc(100vw - 24px))"
+    },
     "sourceFiles": [
       "web/src/app/globals.css",
       "web/src/app/layout.tsx",
       "web/src/components/app-shell.tsx",
       "web/src/components/zone-overview.tsx",
+      "web/src/components/heat-monitor.tsx",
+      "web/src/components/zone-map.tsx",
+      "web/src/components/zone-mapbox.tsx",
+      "web/src/components/dashboard-tour.tsx",
+      "web/src/app/ringkasan/page.tsx",
       "web/src/components/ui/button.tsx",
       "web/src/components/ui/input.tsx",
       "web/src/components/ui/card.tsx",
@@ -543,12 +578,27 @@
       "css": ".ds-field-label{display:block;margin-bottom:8px;font-family:var(--font-inter, Inter, sans-serif);font-size:14px;color:var(--foreground,#263a32)}.ds-input{box-sizing:border-box;height:44px;width:100%;min-width:0;padding:4px 10px;border:1px solid var(--input,#85958b);border-radius:var(--radius-sm,8px);background:transparent;color:var(--foreground,#263a32);font-family:var(--font-inter, Inter, sans-serif);font-size:16px;caret-color:var(--primary,#31694c);transition:border-color 150ms cubic-bezier(.4,0,.2,1)}.ds-input::placeholder{color:var(--muted-foreground,#586960)}.ds-input:focus-visible{outline:none;border-color:var(--ring,#31694c);box-shadow:0 0 0 3px var(--ring,#31694c)}.ds-input[aria-invalid=\"true\"]{border-color:var(--destructive,#9b2c2c)}.ds-input:disabled{opacity:.5;pointer-events:none;background:color-mix(in oklab,var(--input,#85958b) 50%,transparent)}@media(min-width:768px){.ds-input{font-size:14px}}"
     },
     {
-      "name": "Top Navigation",
+      "name": "Workspace Sidebar",
       "kind": "nav",
-      "refersTo": "navigation-active",
-      "description": "Five task groups from lib/navigation.ts; the active group uses a solid surface. Desktop tabs appear from 1280px; mobile shows text groups and their child routes in a focus-managed dialog.",
-      "html": "<nav class=\"ds-nav\" aria-label=\"Alur kerja\"><a class=\"ds-nav-item\" href=\"/ringkasan\" aria-current=\"page\">Hari ini</a><a class=\"ds-nav-item\" href=\"/impor\">Data lapangan</a><a class=\"ds-nav-item\" href=\"/rencana\">Rencana kerja</a><a class=\"ds-nav-item\" href=\"/tindakan\">Tindak lanjut</a><a class=\"ds-nav-item\" href=\"/laporan\">Laporan</a></nav>",
-      "css": ".ds-nav{display:flex;flex-wrap:wrap;gap:4px;font-family:var(--font-inter, Inter, sans-serif)}.ds-nav-item{box-sizing:border-box;display:flex;align-items:center;min-height:44px;padding:10px 16px;border-radius:12px;font-size:14px;color:var(--muted-foreground,#586960);text-decoration:none;transition:background-color 160ms,color 160ms}.ds-nav-item:hover{background:var(--muted,#eaf0ec);color:var(--foreground,#263a32)}.ds-nav-item[aria-current=\"page\"]{background:var(--card,#fcfdfc);color:var(--foreground,#263a32);box-shadow:0 3px 12px rgb(38 58 50 / 5%)}.ds-nav-item:focus-visible{outline:2px solid var(--ring,#31694c);outline-offset:3px}@media(max-width:639px){.ds-nav-item{min-height:48px}}@media(prefers-reduced-motion:reduce){.ds-nav-item{transition:none}}"
+      "refersTo": "workspace-sidebar",
+      "description": "Five task groups from lib/navigation.ts in a sticky 224px sidebar from 1024px. The active group exposes its child routes; smaller screens use a focus-managed drawer. This compact preview shows the shared sidebar surface and navigation states.",
+      "html": "<aside class=\"ds-sidebar\"><nav class=\"ds-nav\" aria-label=\"Alur kerja\"><a class=\"ds-nav-item\" href=\"/ringkasan\" aria-current=\"page\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" aria-hidden=\"true\"><rect x=\"3\" y=\"3\" width=\"7\" height=\"9\" rx=\"1\"/><rect x=\"14\" y=\"3\" width=\"7\" height=\"5\" rx=\"1\"/><rect x=\"14\" y=\"12\" width=\"7\" height=\"9\" rx=\"1\"/><rect x=\"3\" y=\"16\" width=\"7\" height=\"5\" rx=\"1\"/></svg>Dashboard</a><a class=\"ds-nav-item\" href=\"/impor\">Data lapangan</a><a class=\"ds-nav-item\" href=\"/rencana\">Rencana kerja</a><a class=\"ds-nav-item\" href=\"/tindakan\">Tindak lanjut</a><a class=\"ds-nav-item\" href=\"/laporan\">Laporan</a></nav></aside>",
+      "css": ".ds-sidebar{box-sizing:border-box;width:224px;max-width:100%;padding:24px 12px;background:var(--secondary,#e5ece7);border-right:1px solid var(--border,#dde5df)}.ds-nav{display:grid;gap:6px;font-family:var(--font-inter, Inter, sans-serif)}.ds-nav-item{box-sizing:border-box;display:flex;align-items:center;gap:12px;min-height:44px;padding:10px 16px;border-radius:12px;font-size:14px;color:var(--muted-foreground,#586960);text-decoration:none;transition:background-color 160ms,color 160ms}.ds-nav-item:hover{background:var(--muted,#eaf0ec);color:var(--foreground,#263a32)}.ds-nav-item[aria-current=\"page\"]{background:var(--card,#fcfdfc);color:var(--foreground,#263a32);box-shadow:0 3px 12px rgb(38 58 50 / 5%)}.ds-nav-item:focus-visible{outline:2px solid var(--ring,#31694c);outline-offset:3px}@media(max-width:639px){.ds-nav-item{min-height:48px}}@media(prefers-reduced-motion:reduce){.ds-nav-item{transition:none}}"
+    },
+    {
+      "name": "Zone Scheme",
+      "kind": "custom",
+      "description": "Visible token-free zone selection. The full application synchronizes map/list selection, reading and history while retaining interval; this preview shows an unmeasured illustrative area without inventing a reading.",
+      "html": "<section class=\"ds-zone-map\" aria-label=\"Peta zona kerja\"><header class=\"ds-map-heading\"><h2>Peta zona kerja</h2><p>Skema simulasi · bukan posisi lapangan nyata</p></header><div class=\"ds-zone-canvas\"><button type=\"button\" class=\"ds-scheme-zone\" aria-pressed=\"true\"><span>Bekisting A</span><strong>Belum diukur</strong><small>Zona terpilih</small></button></div><p class=\"ds-map-caption\">Warna membedakan zona, bukan tingkat risiko.</p></section>",
+      "css": ".ds-zone-map{overflow:hidden;border:1px solid var(--border,#dde5df);border-radius:16px;background:var(--card,#fcfdfc);color:var(--foreground,#263a32);font-family:var(--font-inter,Inter,sans-serif)}.ds-map-heading{padding:20px}.ds-map-heading h2{margin:0;font-family:var(--font-heading,Manrope),sans-serif;font-size:18px;font-weight:600}.ds-map-heading p,.ds-map-caption{font-size:12px;line-height:1.6;color:var(--muted-foreground,#586960)}.ds-map-heading p{margin:4px 0 0}.ds-zone-canvas{display:grid;place-items:center;min-height:180px;background:var(--muted,#eaf0ec)}.ds-scheme-zone{display:flex;flex-direction:column;justify-content:center;gap:7px;width:210px;max-width:80%;min-height:108px;padding:12px 6px;border:1px solid transparent;border-radius:12px;background:var(--zone-lime,#d9e9b4);color:var(--foreground,#263a32);font:14px var(--font-inter,Inter,sans-serif);cursor:pointer;transition:border-color 160ms}.ds-scheme-zone strong{font-size:16px;font-weight:600}.ds-scheme-zone small{font-size:11px}.ds-scheme-zone:hover{border-color:var(--input,#85958b)}.ds-scheme-zone[aria-pressed=true]{outline:2px solid var(--primary,#31694c);outline-offset:4px}.ds-scheme-zone:focus-visible{outline:3px solid var(--foreground,#263a32);outline-offset:5px}.ds-map-caption{margin:0;padding:14px 20px 18px}@media(prefers-reduced-motion:reduce){.ds-scheme-zone{transition:none}}"
+    },
+    {
+      "name": "Dashboard Tour Popover",
+      "kind": "custom",
+      "refersTo": "dashboard-tour",
+      "description": "Optional six-step Driver.js tour, requested from Panduan dashboard. Skippable, replayable, reduced-motion aware, and restores trigger focus. This standalone preview represents the popover styling without a tour runtime.",
+      "html": "<section class=\"ds-tour\" aria-labelledby=\"ds-tour-title\"><button type=\"button\" class=\"ds-tour-close\" aria-label=\"Lewati panduan\">Lewati</button><h2 id=\"ds-tour-title\">Pilih zona kerja</h2><p>Klik zona pada skema atau daftar. Bacaan WBGT dan grafik mengikuti pilihan. Posisi ilustratif, bukan pelacakan langsung; warna hanya identitas zona.</p><footer><span>4 dari 6</span><button type=\"button\">Kembali</button><button type=\"button\" class=\"ds-tour-next\">Lanjut</button></footer></section>",
+      "css": ".ds-tour{position:relative;max-width:min(360px,calc(100vw - 24px));min-width:0;padding:24px;border-radius:16px;background:var(--card,#fcfdfc);color:var(--foreground,#263a32);font-family:var(--font-inter,Inter,sans-serif);box-shadow:0 10px 32px rgb(38 58 50 / 18%)}.ds-tour h2{margin:0;padding-right:58px;font-family:var(--font-heading,Manrope),sans-serif;font-size:18px;line-height:1.4}.ds-tour p{margin:12px 0 0;color:var(--muted-foreground,#586960);font-size:14px;line-height:1.6}.ds-tour-close{position:absolute;top:12px;right:12px;width:60px;min-height:44px;border:0;background:transparent;color:var(--foreground,#263a32);font-size:12px;text-decoration:underline;text-underline-offset:4px;cursor:pointer}.ds-tour footer{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin-top:24px}.ds-tour footer span{color:var(--muted-foreground,#586960);font-size:12px;white-space:nowrap}.ds-tour footer button{min-height:44px;padding:8px 12px;border:1px solid var(--input,#85958b);border-radius:8px;background:var(--card,#fcfdfc);color:var(--foreground,#263a32);font-size:12px;cursor:pointer}.ds-tour footer button:hover,.ds-tour-close:hover{background:var(--muted,#eaf0ec)}.ds-tour footer .ds-tour-next{border-color:var(--primary,#31694c);background:var(--primary,#31694c);color:var(--primary-foreground,#fff)}.ds-tour footer .ds-tour-next:hover{background:var(--primary-hover,#245039)}.ds-tour button:focus-visible{outline:2px solid var(--ring,#31694c);outline-offset:3px}"
     },
     {
       "name": "Status, Quality, and Origin Badges",
@@ -569,13 +619,13 @@
   ],
   "narrative": {
     "northStar": "TERMA Atmosphere",
-    "overview": "Atmosphere adalah ruang kerja yang lapang untuk membaca paparan panas dan menentukan tindak lanjut. Permukaan kabut, panel putih lembut, judul Manrope yang ringan, dan bidang gradasi hijau–kuning mengikuti gabungan dua referensi yang disetujui pengguna. Navigasi atas mengelompokkan pekerjaan; konteks ringkas dan rincian yang dapat dibuka memberi ruang bagi tindakan utama. Identitas tampil sebagai wordmark teks terma. sambil menunggu logo tim.\n\nWarna zona membantu mengenali area, sedangkan status tindakan dan kualitas sumber tetap memiliki label tersendiri. Angka berasal dari data aplikasi pada tanggal, zona, interval, dan lingkup pengguna yang dipilih. Skema lokasi bersifat ilustratif; tampilannya tidak menyatakan posisi geografis atau pelacakan langsung. Bahasa antarmuka tetap Bahasa Indonesia.",
+    "overview": "Atmosphere adalah ruang kerja yang lapang untuk membaca paparan panas dan menentukan tindak lanjut. Permukaan kabut, panel putih lembut, judul Manrope yang ringan, dan bidang gradasi hijau–kuning mengikuti gabungan dua referensi yang disetujui pengguna. Sidebar operasional mengelompokkan pekerjaan; konteks ringkas, peta zona yang langsung terlihat, dan rincian yang dapat dibuka memberi ruang bagi tindakan utama. Identitas tampil sebagai wordmark teks terma. sambil menunggu logo tim.\n\nWarna zona membantu mengenali area, sedangkan status tindakan dan kualitas sumber tetap memiliki label tersendiri. Angka berasal dari data aplikasi pada tanggal, zona, interval, dan lingkup pengguna yang dipilih. Skema lokasi bersifat ilustratif; tampilannya tidak menyatakan posisi geografis atau pelacakan langsung. Bahasa antarmuka tetap Bahasa Indonesia.",
     "keyCharacteristics": [
       "Permukaan kabut dan panel solid yang terasa ringan.",
       "Manrope untuk judul dan angka utama, Inter untuk pekerjaan sehari-hari.",
       "Gradasi hijau, biru, dan pasir sebagai bidang data yang terarah.",
       "Status tindakan, kualitas sumber, dan asal data terbaca terpisah.",
-      "Lima kelompok navigasi atas, konteks ringkas, rincian bertahap, dan fokus keyboard yang terlihat."
+      "Lima kelompok navigasi sidebar, drawer pada layar kecil, konteks ringkas, rincian bertahap, dan fokus keyboard yang terlihat."
     ],
     "rules": [
       {
@@ -601,7 +651,7 @@
       "Don't gunakan warna zona atau gradasi sebagai klaim keamanan atau diagnosis kesehatan.",
       "Don't mengisi celah pengukuran dengan nol atau angka dari referensi visual.",
       "Don't mematahkan badge kualitas dan asal data; bungkus kelompok di sekelilingnya.",
-      "Don't menghidupkan kembali sidebar desktop atau token Heritage yang telah diganti.",
+      "Don't menghidupkan kembali token Heritage yang telah diganti atau mengganti identitas Atmosphere saat memperluas sidebar.",
       "Don't menyembunyikan batas harian, batas interval, alasan keputusan, atau kebutuhan tinjauan HSE demi tampilan."
     ]
   }

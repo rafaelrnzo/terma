@@ -20,11 +20,11 @@ export function HeatMonitor() {
   if (!selected) return <p>Belum ada zona dalam lingkup Anda.</p>
   return <div className="space-y-6">
     <ZoneOverview zones={zones} selected={selected} onZone={setZoneCode} hour={hour} onHour={setHour} />
-    <div className="rounded-xl bg-card p-4 sm:p-6">
+    <Accordion type="single" collapsible className="rounded-xl bg-card px-4 sm:px-6"><AccordionItem value="history" className="border-0"><AccordionTrigger className="py-5">Profil panas & riwayat bacaan · {selected.nama.split(" (")[0]}</AccordionTrigger><AccordionContent className="pb-6">
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3"><h3 className="font-heading text-lg font-medium">Profil panas · {selected.nama}</h3><QualityBadge kualitas={selected.kualitas} /></div>
       <p className="mb-3 text-xs text-muted-foreground md:hidden">Geser grafik untuk melihat semua jam, 08.00–15.00.</p>
       <div className="chart-scroll" tabIndex={0} role="region" aria-label="Grafik WBGT per jam, dapat digulir"><ExposureChart zone={selected} hour={hour} /></div>
       <Accordion type="single" collapsible className="mt-3 border-t"><AccordionItem value="bacaan"><AccordionTrigger>Lihat nilai & sumber per jam</AccordionTrigger><AccordionContent><Table><TableHeader><TableRow><TableHead>Jam</TableHead><TableHead>ISBB</TableHead><TableHead>Kualitas</TableHead></TableRow></TableHeader><TableBody>{selected.series.map(p => <TableRow key={p.hour}><TableCell>{jam(p.hour)}</TableCell><TableCell>{p.reading ? p.reading.isbb.toFixed(1).replace(".", ",") + " °C" : "—"}</TableCell><TableCell><QualityBadge kualitas={p.kualitas} /></TableCell></TableRow>)}</TableBody></Table></AccordionContent></AccordionItem></Accordion>
-    </div>
+    </AccordionContent></AccordionItem></Accordion>
   </div>
 }

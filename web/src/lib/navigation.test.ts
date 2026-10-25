@@ -6,7 +6,7 @@ describe("task-based navigation", () => {
   it("separates the introduction from five operational groups", () => {
     expect(NAV_GROUPS).toHaveLength(5)
     expect(navigationGroup("/")).toBeUndefined()
-    expect(navigationGroup("/ringkasan")?.label).toBe("Hari ini")
+    expect(navigationGroup("/ringkasan")?.label).toBe("Dashboard")
     expect(SURFACES.some(s => s.href === "/")).toBe(true)
     expect(SURFACES.some(s => s.href === "/ringkasan")).toBe(true)
   })

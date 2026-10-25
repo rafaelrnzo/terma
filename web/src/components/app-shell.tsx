@@ -4,7 +4,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useEffect, useState, type ReactNode } from "react"
 import { toast } from "sonner"
-import { ArrowRight, Menu } from "lucide-react"
+import { ArrowRight, Menu, LayoutDashboard, ClipboardList, CalendarCheck, ListChecks, FileText, BookOpen, ArrowUpRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -26,12 +26,13 @@ function Navigation({ mobile, onNavigate }: { mobile?: boolean; onNavigate?: () 
   const path = usePathname()
   const group = navigationGroup(path)
   return (
-    <nav aria-label="Alur kerja" className={mobile ? "grid gap-1 overflow-y-auto p-4" : "hidden items-center gap-1 xl:flex"}>
-      {NAV_GROUPS.map((item) => {
+    <nav aria-label="Alur kerja" className={mobile ? "workspace-navigation overflow-y-auto p-4" : "workspace-navigation"}>
+      {NAV_GROUPS.map((item, index) => {
         const active = group === item
-        return <div key={item.href}><Link href={item.href} onClick={onNavigate} aria-current={active ? "page" : undefined} className={cn("nav-item", active && "nav-item-active", mobile && "px-4")}>
-          {item.label}
-        </Link>{mobile && item.routes.length > 1 && <div className="ml-4 border-l pl-2">{item.routes.map(route => <Link key={route.href} href={route.href} onClick={onNavigate} className="nav-item" aria-current={path === route.href ? "page" : undefined}>{route.label}</Link>)}</div>}</div>
+        const Icon = [LayoutDashboard, ClipboardList, CalendarCheck, ListChecks, FileText][index]
+        return <div key={item.href}><Link href={item.href} onClick={onNavigate} aria-current={path === item.href ? "page" : undefined} className={cn("nav-item gap-3", active && "nav-item-active")}>
+          <Icon className="size-4 shrink-0" aria-hidden />{item.label}
+        </Link>{(mobile || active) && item.routes.length > 1 && <div className="sidebar-subroutes">{item.routes.map(route => <Link key={route.href} href={route.href} onClick={onNavigate} className="nav-item" aria-current={path === route.href ? "page" : undefined}>{route.label}</Link>)}</div>}</div>
       })}
     </nav>
   )
@@ -40,7 +41,7 @@ function Navigation({ mobile, onNavigate }: { mobile?: boolean; onNavigate?: () 
 function UserSelect({ mobile = false }: { mobile?: boolean }) {
   const { user, dispatch } = useApp()
   const id = mobile ? "pengguna-mobile" : "pengguna"
-  return <div className={mobile ? "min-w-0 sm:hidden" : "hidden sm:block"}>
+  return <div data-tour={mobile ? "role-mobile" : "role"} className={mobile ? "min-w-0 sm:hidden" : "hidden sm:block"}>
     <label htmlFor={id} className="sr-only">Pengguna</label>
     <Select value={user?.id} onValueChange={(v) => dispatch({ type: "LOGIN", userId: v })}>
       <SelectTrigger id={id} className={mobile ? "w-full bg-card" : "w-48 border-transparent bg-card"}><SelectValue /></SelectTrigger>
@@ -69,25 +70,32 @@ export function AppShell({ children }: { children: ReactNode }) {
   return (
     <div className="app-frame">
       <a href="#konten-utama" className="skip-link no-print">Lewati navigasi ke konten utama</a>
+      <aside className="app-sidebar no-print" aria-label="Navigasi ruang kerja" data-tour="navigation">
+        <div className="sidebar-brand"><Wordmark /><p>Ruang kerja HSE</p></div>
+        <Navigation />
+        <div className="sidebar-support"><Link href="/panduan" className="nav-item gap-3" aria-current={path === "/panduan" ? "page" : undefined}><BookOpen className="size-4" aria-hidden />Panduan penggunaan</Link><Link href="/" className="nav-item gap-3"><ArrowUpRight className="size-4" aria-hidden />Tentang TERMA</Link><p>Mode simulasi<br /><span>Data contoh, bukan pemantauan langsung.</span></p></div>
+      </aside>
+      <div className="app-workspace">
       <header className="app-header no-print">
         <div className="flex min-w-0 items-center justify-between gap-4">
-          <Wordmark />
+          <div className="lg:hidden"><Wordmark /></div>
+          <p className="hidden text-sm font-medium lg:block">{LOKASI}</p>
           <div className="flex min-w-0 items-center gap-2">
             <WorkspaceTools />
             <UserSelect />
             <Dialog open={menuOpen} onOpenChange={setMenuOpen}>
-              <DialogTrigger asChild><Button variant="secondary" size="icon" aria-label="Buka navigasi" className="xl:hidden"><Menu /></Button></DialogTrigger>
+              <DialogTrigger asChild><Button variant="secondary" size="icon" aria-label="Buka navigasi" className="lg:hidden" data-tour="navigation-mobile"><Menu /></Button></DialogTrigger>
               <DialogContent className="left-0 top-0 flex h-dvh max-h-dvh w-[calc(100%-2rem)] max-w-80 translate-x-0 translate-y-0 flex-col gap-0 rounded-none border-0 p-0 sm:max-w-80 data-open:zoom-in-100 data-closed:zoom-out-100">
                 <DialogHeader className="shrink-0 border-b p-6 pr-16"><DialogTitle>TERMA</DialogTitle><DialogDescription>Ruang kerja paparan panas</DialogDescription></DialogHeader>
                 <Navigation mobile onNavigate={() => setMenuOpen(false)} />
+                <Link href="/panduan" onClick={() => setMenuOpen(false)} className="mx-4 nav-item">Panduan penggunaan</Link>
                 {step && <div className="mt-auto border-t p-6"><p className="text-sm font-medium">{step.label}</p><p className="mt-2 text-xs leading-relaxed text-muted-foreground">{step.progress}</p></div>}
               </DialogContent>
             </Dialog>
           </div>
         </div>
-        <div className="mt-4"><Navigation /></div>
         <div className="context-bar">
-          <p className="hidden text-sm text-muted-foreground sm:block">{LOKASI}</p>
+          <p className="hidden text-sm text-muted-foreground sm:block">{group?.label ?? "Ruang kerja"} <span aria-hidden> / </span> {LABEL_PERAN[user?.role ?? "HSE"]}</p>
           <UserSelect mobile />
           <div className="flex min-w-0 items-center gap-3">
             <label htmlFor="tanggal" className="hidden text-xs text-muted-foreground sm:block">Tanggal rencana</label>
@@ -97,12 +105,13 @@ export function AppShell({ children }: { children: ReactNode }) {
       </header>
       <main id="konten-utama" tabIndex={-1} className="app-main outline-none">
         {state.demo && <p className="mb-5 text-xs leading-relaxed text-muted-foreground" role="note">Data simulasi · bukan untuk keputusan operasional. <Link className="underline underline-offset-4" href="/panduan">Tentang demo</Link></p>}
-        {group && group.routes.length > 1 && <nav aria-label={group.label} className="no-print mb-6 flex flex-wrap gap-2 border-b pb-3">{group.routes.map(route => <Link key={route.href} href={route.href} aria-current={path === route.href ? "page" : undefined} className={cn("nav-item", path === route.href && "nav-item-active")}>{route.label}</Link>)}</nav>}
+        {group && group.routes.length > 1 && <nav aria-label={group.label} className="no-print mb-6 flex flex-wrap gap-2 border-b pb-3 lg:hidden">{group.routes.map(route => <Link key={route.href} href={route.href} aria-current={path === route.href ? "page" : undefined} className={cn("nav-item", path === route.href && "nav-item-active")}>{route.label}</Link>)}</nav>}
         {storageError && <div role="alert" className="mb-6 rounded-md border border-destructive p-4 text-sm"><p>{storageError}</p><Button className="mt-3" variant="outline" onClick={retryStorage}>Coba simpan lagi</Button></div>}
         {state.demo && state.tanggal !== state.demo.tanggal && <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-md bg-secondary p-4 text-sm"><p>Contoh data tersedia pada {state.demo.tanggal}. Tanggal ini dapat belum memiliki bacaan atau rencana.</p><Button variant="outline" disabled={!izin("ATUR_TANGGAL")} onClick={() => dispatch({ type: "SET_TANGGAL", tanggal: state.demo!.tanggal })}>Kembali ke tanggal demo</Button></div>}
         {children}
       </main>
       <footer className="no-print app-footer"><Link className="underline underline-offset-4" href="/">Tentang TERMA</Link><Link className="underline underline-offset-4" href="/panduan">Panduan & batas penggunaan</Link><span>Aturan {ATURAN_FIXTURE.versi}{ATURAN_FIXTURE.isFixture && " · belum disahkan HSE"}</span></footer>
+      </div>
       <Toaster position="bottom-right" />
     </div>
   )

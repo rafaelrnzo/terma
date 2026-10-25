@@ -23,7 +23,8 @@ Penggunaan utama saat ini adalah simulasi pekerjaan HSE harian dengan seluruh da
 - Status tindakan dan kualitas sumber harus terpisah. Batas harian dan interval harus eksplisit; data hilang/kedaluwarsa memicu tinjauan HSE.
 - Aturan NAB masih fixture, belum disahkan. Tidak ada pengiriman pesan otomatis.
 - Ruang kerja demo terisi otomatis pada kunjungan pertama: 8 pekerja fiktif dan alur simulasi pada tanggal awal. Penyimpanan `terma-demo-v2` terpisah dari data lama `terma-v1`; data lama tidak dibaca atau ditimpa.
-- Pencarian global, direktori/profil pekerja, prioritas dan daftar pekerjaan harian, serta panduan peran menghubungkan alur. Lima kelompok navigasi menaungi tujuh langkah operasional; pemantauan zona dapat dibuka dari pekerjaan harian. Tanggal lain dapat kosong dan menyediakan jalan kembali ke tanggal demo.
+- Pencarian global, direktori/profil pekerja, prioritas dan daftar pekerjaan harian, serta panduan peran menghubungkan alur. Lima kelompok navigasi sidebar menaungi tujuh langkah operasional, dengan drawer pada layar kecil. Dashboard `/ringkasan` langsung menampilkan pilihan zona, interval, peta, dan bacaan; riwayat tersedia melalui accordion. Panduan dashboard enam langkah bersifat opsional, dapat dilewati dan diulang. Tanggal lain dapat kosong dan menyediakan jalan kembali ke tanggal demo.
+- Peta awal adalah skema simulasi yang berfungsi tanpa token. Mapbox opsional dimuat hanya setelah dipilih dan token publik tersedia; koordinatnya fiktif, bukan lokasi proyek. Kegagalan layanan kembali ke skema. Tidak ada permintaan geolokasi atau pelacakan pekerja.
 - Dalam demo, tombol WhatsApp membuka pratinjau lokal. Salin pesan tetap tersedia; tidak ada pengiriman eksternal otomatis. Gangguan penyimpanan ditampilkan, bukan dianggap berhasil.
 - Perubahan desain tidak boleh mengubah mesin aturan, izin peran, catatan, atau alur persetujuan.
 
@@ -31,11 +32,11 @@ Penggunaan utama saat ini adalah simulasi pekerjaan HSE harian dengan seluruh da
 
 Nama TERMA dipertahankan. Pengguna pada 25 Oktober 2026 menyetujui penggantian identitas Heritage dengan gabungan dua referensi yang dilampirkan: layout pemantauan zona dan navigasi atas dari dashboard warehouse, serta panel lapang, tipografi ringan, dan gradasi hijau–kuning lembut dari dashboard Neka. Isi medis dan angka referensi bukan data produk dan tidak boleh disalin sebagai fakta.
 
-Penyederhanaan berikutnya mempertahankan palet dan font Atmosphere, dengan wordmark teks sementara menunggu logo dari tim. Pengantar produk, alur HSE–mandor–HSE, dan prioritas kerja harian menjadi urutan pengalaman yang disetujui.
+Penyederhanaan berikutnya mempertahankan palet dan font Atmosphere, dengan wordmark teks sementara menunggu logo dari tim. Pengantar produk, alur HSE–mandor–HSE, dan prioritas kerja harian menjadi urutan pengalaman yang disetujui. Persetujuan perluasan dashboard pada 25 Oktober 2026 mengganti navigasi atas ruang kerja dengan sidebar dan membuka pemantauan zona langsung; landing dipertahankan.
 
 ## Evidence on Hand
 
-README.md, web/src/lib/types.ts, config.ts, store.tsx, rules.ts dan seed-data.ts adalah bukti domain/implementasi. Belum ada denah proyek nyata: visualisasi lokasi harus berlabel skema, bukan posisi geografis atau pelacakan langsung.
+README.md, web/src/lib/types.ts, config.ts, store.tsx, rules.ts dan seed-data.ts adalah bukti domain/implementasi. Belum ada denah proyek nyata: visualisasi lokasi harus berlabel skema simulasi atau koordinat contoh, bukan posisi lapangan nyata atau pelacakan langsung.
 
 ## Product Principles
 

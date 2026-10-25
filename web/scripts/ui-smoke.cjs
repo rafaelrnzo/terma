@@ -115,8 +115,7 @@ const key = 'terma-demo-v2';
     await page.waitForURL(base + '/ringkasan');
     // All remaining action families: zone/hour selection, forms, plan edits/approval, print, filters.
     await page.setViewportSize({ width: 1280, height: 900 });
-    await page.getByRole('button', { name: 'Lihat kondisi panas per zona', exact: true }).click();
-    await page.getByRole('button', { name: /Zona Gudang/ }).click();
+    await page.locator('.zone-choice').filter({ hasText: 'Zona Gudang' }).click();
     await page.getByRole('button', { name: '12.00', exact: true }).click();
     assert.equal(await page.getByRole('button', { name: '12.00', exact: true }).getAttribute('aria-pressed'), 'true');
     for (const width of [320, 768, 1024, 1280]) {
