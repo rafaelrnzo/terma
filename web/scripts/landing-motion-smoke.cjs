@@ -15,6 +15,7 @@ const out = path.resolve(__dirname, '../../.impeccable/review/landing-motion');
     const errors = [];
     page.on('pageerror', e => errors.push(e.message));
     await page.goto(base);
+    await page.locator('.handoff-demo').scrollIntoViewIfNeeded();
     await page.getByRole('button', { name: 'Jeda animasi' }).waitFor();
     const original = await page.evaluate(() => localStorage.getItem('terma-demo-v2'));
     await page.waitForFunction(() => document.querySelectorAll('.handoff-step')[2].getAttribute('aria-pressed') === 'true');

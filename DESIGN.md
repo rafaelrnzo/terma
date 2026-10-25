@@ -2,29 +2,35 @@
 name: TERMA Atmosphere
 description: Ruang kerja paparan panas dengan permukaan kabut, sidebar operasional, dan data yang dapat ditelusuri.
 colors:
-  background: "#f1f4f2"
-  foreground: "#263a32"
-  card: "#fcfdfc"
+  background: "#e8eeeb"
+  foreground: "#172f25"
+  card: "#ffffff"
   popover: "#ffffff"
-  primary: "#31694c"
-  primary-hover: "#245039"
+  primary: "#175c3b"
+  primary-hover: "#10472d"
   primary-foreground: "#ffffff"
-  secondary: "#e5ece7"
-  muted: "#eaf0ec"
-  muted-foreground: "#586960"
-  panel-muted: "#46574d"
-  accent: "#e3eddf"
+  secondary: "#d8e5dc"
+  muted: "#e2ebe5"
+  muted-foreground: "#435b50"
+  panel-muted: "#344c3f"
+  accent: "#d1e4d6"
   destructive: "#9b2c2c"
-  border: "#dde5df"
-  input: "#85958b"
+  border: "#b9cbc0"
+  input: "#667e70"
   status-tersedia: "#296342"
   status-adaptasi: "#815815"
   status-tinjau: "#475569"
   status-batasi: "#9b2c2c"
-  zone-blue: "#a7c8df"
-  zone-sage: "#b3d2bf"
-  zone-lime: "#d9e9b4"
+  zone-blue: "#86b9d9"
+  zone-sage: "#96c5aa"
+  zone-lime: "#d1e58c"
   heritage-moss: "#53685e"
+  sidebar-background: "#173b2b"
+  sidebar-foreground: "#f4f9f5"
+  sidebar-muted: "#c0d2c6"
+  sidebar-hover: "#254d38"
+  sidebar-active: "#d8edb0"
+  sidebar-border: "#446650"
 typography:
   display:
     fontFamily: "Manrope, Inter, sans-serif"
@@ -129,13 +135,13 @@ components:
     rounded: "{rounded.xl}"
     padding: "24px"
   navigation-active:
-    backgroundColor: "{colors.card}"
-    textColor: "{colors.foreground}"
+    backgroundColor: "{colors.primary}"
+    textColor: "{colors.primary-foreground}"
     rounded: "{rounded.md}"
     padding: "10px 16px"
   workspace-sidebar:
-    backgroundColor: "{colors.secondary}"
-    textColor: "{colors.foreground}"
+    backgroundColor: "{colors.sidebar-background}"
+    textColor: "{colors.sidebar-foreground}"
     padding: "24px 12px"
     width: "224px"
     height: "100dvh"
@@ -182,7 +188,7 @@ Perluasan dashboard yang disetujui pada 25 Oktober 2026 mengganti navigasi atas 
 
 ## Colors
 
-Palet menggabungkan hijau hutan yang tenang, permukaan kabut, serta area data biru, sage, dan lime yang pucat.
+Palet menggabungkan hijau hutan yang tegas, kanvas kabut yang lebih pekat, panel putih, serta area data biru, sage, dan lime. Penyempurnaan kontras mempertahankan identitas Atmosphere dan seluruh makna status; sidebar gelap menjadi jangkar navigasi, bukan perubahan tema seluruh aplikasi.
 
 ### Primary
 
@@ -200,6 +206,7 @@ Palet menggabungkan hijau hutan yang tenang, permukaan kabut, serta area data bi
 - **Kabut** (`background`), **putih panel** (`card`), dan **putih popover** (`popover`): lapisan latar, isi, dan kontrol mengambang.
 - **Tinta hutan** (`foreground`) dan **tinta sekunder** (`muted-foreground`): teks utama dan pendamping. `panel-muted` adalah override lokal untuk teks pendamping pada bidang hijau.
 - `secondary`, `muted`, dan `accent` membentuk latar kontrol dan keadaan hover. `border` adalah pemisah halus; `input` adalah garis kontrol yang lebih jelas.
+- `sidebar-background` dan `sidebar-foreground` membentuk navigasi hijau tua dengan teks terang. `sidebar-muted` tetap terbaca untuk tautan pendamping; `sidebar-hover` memberi umpan balik, `sidebar-active` menyorot kelompok aktif dengan tinta utama, dan `sidebar-border` memisahkan kelompok. Fokus pada sidebar memakai warna aktif terang, bukan ring hijau gelap milik kanvas utama.
 - `heritage-moss` adalah nama kompatibilitas yang masih dipakai untuk titik REPLAY. Nama lama pada kode tidak mengembalikan identitas Heritage. `heritage-ink`, warna teks card/popover/secondary/accent, dan `ring` mengikuti nilai tinta atau primary yang sudah dicatat.
 
 **The Separate Signals Rule.** Status tindakan, kualitas sumber, dan asal data harus tetap menjadi label terpisah; warna zona atau gradasi tidak menyatakan pekerja aman.
@@ -225,11 +232,15 @@ Manrope memberi judul dan angka utama bentuk yang terbuka tanpa kehilangan keteg
 
 ## Layout
 
+Kanvas dashboard dan seluruh halaman ruang kerja memakai putih (`card`) melalui override `background` pada body yang berisi `.app-frame` atau `.app-loading`. Override berlaku juga selama pemuatan awal dan pada area di luar lebar maksimum; landing tetap memakai latar sage. Sidebar, warna status, dan panel aksen tidak berubah.
+
 Kerangka aplikasi terpusat dengan lebar maksimum 1800px. Mulai 1024px, sidebar sticky selebar 224px dan setinggi viewport mendampingi ruang kerja fleksibel; sidebar dapat bergulir sendiri. Header dan konten memakai gutter 28px; konten memiliki padding atas 24px dan bawah 48px. Di bawah 768px, gutter menjadi 16px dengan padding konten atas 24px dan bawah 32px. Jarak mengikuti skala Tailwind 4px.
 
 Navigasi sidebar ditampilkan mulai 1024px. Di bawahnya, tombol menu membuka Dialog sisi kiri yang mengelola fokus. Kontrol pengguna dan tanggal tetap berada di header; di bawah 640px konteks memakai dua kolom. Desktop dan mobile memakai lima kelompok tugas dengan ikon pendamping dan label teks; kelompok aktif desktop menampilkan rute turunannya, sedangkan drawer menampilkan seluruh rute turunan. Header halaman operasional merangkum tujuan dalam satu kalimat, panduan panjang tersedia melalui “Cara kerja”, dan kemajuan serta peran penanggung jawab tampil pada satu baris ringkas.
 
-Pengantar `/` berdiri di luar shell operasional dengan lebar maksimum 1360px dan gutter 48px. Tujuan produk dan aksi masuk berdampingan dengan contoh alur HSE–mandor–HSE; di bawah 768px komposisi menjadi satu kolom dengan gutter 20px. Tautan masuk di header, hero, dan penutup menuju `/ringkasan`. Label simulasi dan batas penggunaan tetap terlihat.
+Pengantar `/` berdiri di luar shell operasional dengan lebar maksimum 1360px dan gutter 48px. Tujuan produk dan aksi masuk berdampingan dengan ilustrasi 3D proyek konstruksi; hero menjadi satu kolom di bawah 1024px, dengan gutter 20px di bawah 768px. Ilustrasi menggunakan aset lokal melalui Next Image dengan ukuran intrinsik dan sumber responsif. Tiga penanda bernomor serta pilihan berlabel menjelaskan area kerja, koordinasi regu, dan area istirahat; setiap pilihan membuka konteks fitur, bukan data pemantauan. Label ilustrasi selalu terlihat. Contoh alur HSE–mandor–HSE berada di bagian peran bersama uraian tanggung jawab tim. Tautan masuk di header, hero, dan penutup menuju `/ringkasan`. Label simulasi dan batas penggunaan tetap terlihat.
+
+Visual landing mempertahankan palet Atmosphere, tanpa menambahkan token warna atau ikon baru. Penanda memakai bidang solid putih/hijau untuk kontras di atas gambar, target sentuh 44px, fokus keyboard, dan `aria-pressed`; pilihan berlabel menjadi alternatif ketika gambar gagal dimuat. Detail pilihan diumumkan melalui live region dan tidak mengubah data demo. Asal aset serta prompt lengkap disimpan di `web/public/images/ASSETS.md`.
 
 Pada `/ringkasan`, pekerjaan berikutnya berada pada bidang hijau ringkas di atas pemantauan zona yang langsung terlihat. Pilihan zona memakai tiga kolom, diikuti pemilih interval, lalu peta fleksibel dan panel bacaan 268px dengan jarak 16px. Pada 1024–1199px peta dan bacaan bertumpuk; isi bacaan memakai dua kolom. Di bawah 768px pilihan zona bergulir horizontal, lalu interval, peta, dan bacaan tersusun vertikal. Profil panas dan riwayat bacaan berada dalam accordion di bawah peta; tabel nilai dan sumber per jam dapat dibuka di dalamnya. Daftar pekerjaan serta lingkup shift mengikuti pemantauan, memakai kolom fleksibel / 300px, menjadi fleksibel / 260px di bawah 1024px, lalu satu kolom di bawah 768px. Komposisi ini milik pengantar dan pekerjaan harian, bukan kewajiban setiap halaman operasional.
 
@@ -237,9 +248,9 @@ Tabel lebar bergulir di kontainernya dengan petunjuk geser. Tabel versi rencana 
 
 ## Elevation & Depth
 
-Kedalaman terutama berasal dari perbedaan tonal, gradasi lembut, ruang kosong, dan garis tipis. Kartu memakai border pada 60% warna `border` tanpa bayangan. Navigasi aktif memperoleh satu bayangan ambient kecil (`0 3px 12px rgb(38 58 50 / 5%)`); fokus kontrol memakai ring yang jelas. Popover panduan memakai bayangan `0 10px 32px rgb(38 58 50 / 18%)` untuk terpisah dari halaman yang sedang disorot. Panel bergradasi adalah permukaan solid, tanpa kebutuhan backdrop blur.
+Kedalaman terutama berasal dari perbedaan tonal, gradasi lembut, ruang kosong, dan garis tipis. Kartu memakai border pada 60% warna `border` tanpa bayangan. Navigasi aktif dibedakan oleh bidang warna solid dan bobot semibold, tanpa bayangan; fokus kontrol memakai ring yang jelas. Popover panduan memakai bayangan `0 10px 32px rgb(38 58 50 / 18%)` untuk terpisah dari halaman yang sedang disorot. Panel bergradasi adalah permukaan solid, tanpa kebutuhan backdrop blur.
 
-**The Quiet Depth Rule.** Pertahankan kedalaman melalui tonalitas; bayangan navigasi aktif dan ring fokus memiliki fungsi keadaan yang jelas.
+**The Quiet Depth Rule.** Pertahankan kedalaman melalui tonalitas; bidang pilihan dan ring fokus memiliki fungsi keadaan yang jelas.
 
 ## Shapes
 
@@ -273,7 +284,7 @@ Input default transparan dengan garis input, tinggi 44px, padding horizontal 10p
 
 ### Navigation
 
-Sidebar desktop memakai permukaan secondary solid, teks Inter, ikon pendamping, sudut medium pada tautan, dan warna teks sekunder. Hover menambah muted; kelompok aktif memakai card, tinta utama, dan bayangan ambient. Gunakan `aria-current="page"` pada rute yang tepat; turunan aktif memakai primary, bobot semibold, dan latar muted. Sumber pengelompokan adalah `web/src/lib/navigation.ts`: Dashboard (`/ringkasan`), Data lapangan (`/impor`, `/paparan`, `/pengukuran`), Rencana kerja (`/rencana`), Tindak lanjut (`/instruksi`, `/tindakan`, masuk melalui `/tindakan`), dan Laporan (`/laporan`). Profil pekerja dan regu berada dalam kelompok Data lapangan. Dialog mobile menampilkan kelompok beserta rute turunannya dan menutup setelah navigasi; subnavigasi kelompok juga tersedia di konten pada layar di bawah 1024px. Skip link muncul saat fokus.
+Sidebar desktop memakai hijau tua solid, teks Inter terang, ikon pendamping, dan sudut medium pada tautan. Hover memakai sidebar-hover; kelompok aktif memakai bidang lime terang, tinta utama, dan bobot semibold. Gunakan `aria-current="page"` pada rute yang tepat; turunan aktif memakai teks lime pada bidang hover. Drawer dan subnavigasi pada permukaan terang memakai primary dengan teks putih untuk pilihan aktif. Sumber pengelompokan adalah `web/src/lib/navigation.ts`: Dashboard (`/ringkasan`), Data lapangan (`/impor`, `/paparan`, `/pengukuran`), Rencana kerja (`/rencana`), Tindak lanjut (`/instruksi`, `/tindakan`, masuk melalui `/tindakan`), dan Laporan (`/laporan`). Profil pekerja dan regu berada dalam kelompok Data lapangan. Dialog mobile menampilkan kelompok beserta rute turunannya dan menutup setelah navigasi; subnavigasi kelompok juga tersedia di konten pada layar di bawah 1024px. Skip link muncul saat fokus.
 
 Wordmark `terma.` memakai Manrope semibold dengan titik primary; pada pengantar tautannya menuju `/`, pada ruang kerja menuju `/ringkasan`. Logo baru menunggu aset tim. Utilitas header menyediakan pencarian halaman/pekerja dan tautan Panduan; sidebar menambahkan Panduan penggunaan, Tentang TERMA, dan catatan simulasi. Antrean pekerjaan berada pada Dashboard.
 

@@ -64,7 +64,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   }, [state.notice])
   // The introduction is readable without entering the operational workspace or waiting for storage.
   if (path === "/") return <>{children}</>
-  if (!ready) return <p role="status" className="p-8 text-muted-foreground">Memuat ruang kerja TERMA…</p>
+  if (!ready) return <p role="status" className="app-loading p-8 text-muted-foreground">Memuat ruang kerja TERMA…</p>
   const step = user ? workflow(state, user).find((s) => path.startsWith(s.href)) ?? nextWorkflowStep(state, user) : undefined
   const group = navigationGroup(path)
   return (

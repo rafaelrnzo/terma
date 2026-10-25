@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Wordmark } from "@/components/wordmark"
 import { LandingHandoff } from "@/components/landing-handoff"
 import { LandingMotion } from "@/components/landing-motion"
+import { LandingSite } from "@/components/landing-site"
 import { QualityBadge, StatusChip } from "@/components/status"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 
@@ -76,19 +77,22 @@ export default function Home() {
           <Button asChild size="lg" className="mt-8 h-auto min-h-12 whitespace-normal py-3"><Link href="/ringkasan">Masuk ke pekerjaan hari ini<ArrowRight className="shrink-0" aria-hidden /></Link></Button>
           <p className="mt-4 max-w-md text-sm leading-relaxed text-muted-foreground">Demo interaktif dengan data contoh. Coba sebagai HSE, lalu ganti peran menjadi mandor. Bukan untuk keputusan operasional.</p>
         </div>
-        <LandingHandoff />
+        <LandingSite />
       </section>
       <section id="peran" className="landing-section" aria-labelledby="roles-title">
         <div className="landing-section-heading">
           <h2 id="roles-title">Tiga peran.<br />Tanggung jawab yang jelas.</h2>
           <p>Untuk tim di satu lokasi proyek konstruksi. HSE dan petugas data melihat lingkup lokasi; mandor berfokus pada regunya sendiri.</p>
         </div>
-        <div className="landing-roles">{roles.map(role => <article key={role.name}><h3>{role.name}</h3><p className="mt-2 font-medium">{role.purpose}</p><p className="mt-3 text-sm leading-relaxed text-muted-foreground">{role.tasks}</p><p className="mt-5 border-t pt-4 text-sm leading-relaxed"><span className="text-muted-foreground">Hasil kerja: </span>{role.output}</p></article>)}</div>
+        <div className="landing-team">
+          <LandingHandoff />
+          <div className="landing-roles">{roles.map(role => <article key={role.name}><h3>{role.name}</h3><p className="mt-2 font-medium">{role.purpose}</p><p className="mt-3 text-sm leading-relaxed text-muted-foreground">{role.tasks}</p><p className="mt-3 text-sm leading-relaxed"><span className="text-muted-foreground">Hasil kerja: </span>{role.output}</p></article>)}</div>
+        </div>
       </section>
       <section id="cara-kerja" className="landing-section" aria-labelledby="how-title">
         <div className="landing-section-heading">
           <h2 id="how-title">Dari data lapangan<br />sampai laporan shift.</h2>
-          <p>Tujuh tahap yang saling terhubung. Halaman “Hari ini” menunjukkan pekerjaan berikutnya; setiap fitur juga bisa dibuka langsung di bawah ini.</p>
+          <p>Tujuh tahap yang saling terhubung. Dashboard menunjukkan pekerjaan hari ini; setiap fitur juga bisa dibuka langsung di bawah ini.</p>
         </div>
         <div className="landing-stages">{stages.map(stage => <div key={stage.title} className="landing-stage">
           <div><h3>{stage.title}</h3><p className="mt-3 max-w-sm text-sm leading-relaxed text-muted-foreground">{stage.description}</p></div>
