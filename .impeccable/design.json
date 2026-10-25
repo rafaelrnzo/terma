@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-25T15:13:10.672427+00:00",
+  "generatedAt": "2026-10-25T15:31:51Z",
   "title": "Design System: TERMA Atmosphere",
   "extensions": {
     "colorMeta": {
@@ -481,6 +481,14 @@
       "mono": {
         "displayName": "Mono",
         "purpose": "ID dan jejak audit."
+      },
+      "landing-hero": {
+        "displayName": "Landing Hero",
+        "purpose": "Baris pertama hero landing dalam Open Sans."
+      },
+      "brand-display": {
+        "displayName": "Brand Display",
+        "purpose": "Baris kedua hero dan judul ajakan akhir landing dalam Roboto Slab."
       }
     },
     "shadows": [
@@ -562,7 +570,7 @@
       "refersTo": "button-primary",
       "description": "Varian Button bersama; target minimum 44px.",
       "html": "<button class=\"ds-button-primary\">Lanjutkan</button>",
-      "css": ".ds-button-primary{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:8px 16px;border:1px solid transparent;border-radius:var(--radius-sm,6px);font-weight:500;font-family:var(--font-jakarta,\"Plus Jakarta Sans\"),sans-serif;font-size:14px;line-height:20px;cursor:pointer;transition:background-color 150ms,color 150ms,border-color 150ms,box-shadow 150ms,translate 150ms;background:var(--primary,#285ea8);color:var(--primary-foreground,#ffffff);border-color:transparent;}.ds-button-primary:hover{background:var(--primary-hover,#1f4b86);}.ds-button-primary:focus-visible{outline:3px solid var(--primary,#285ea8);outline-offset:3px;}.ds-button-primary:active{translate:0 1px;}.ds-button-primary:disabled{opacity:.5;pointer-events:none;}@media(prefers-reduced-motion:reduce){.ds-button-primary:active{translate:none;}}"
+      "css": ".ds-button-primary{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:8px 16px;border:1px solid transparent;border-radius:var(--radius-sm,6px);font-weight:500;font-family:var(--font-open-sans,\"Open Sans\"),sans-serif;font-size:14px;line-height:20px;cursor:pointer;transition:background-color 150ms,color 150ms,border-color 150ms,box-shadow 150ms,translate 150ms;background:var(--primary,#285ea8);color:var(--primary-foreground,#ffffff);border-color:transparent;}.ds-button-primary:hover{background:var(--primary-hover,#1f4b86);}.ds-button-primary:focus-visible{outline:3px solid var(--primary,#285ea8);outline-offset:3px;}.ds-button-primary:active{translate:0 1px;}.ds-button-primary:disabled{opacity:.5;pointer-events:none;}@media(prefers-reduced-motion:reduce){.ds-button-primary:active{translate:none;}}"
     },
     {
       "name": "Button outline",
@@ -570,7 +578,7 @@
       "refersTo": "button-outline",
       "description": "Varian Button bersama; target minimum 44px.",
       "html": "<button class=\"ds-button-outline\">Lanjutkan</button>",
-      "css": ".ds-button-outline{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:8px 16px;border:1px solid transparent;border-radius:var(--radius-sm,6px);font-weight:500;font-family:var(--font-jakarta,\"Plus Jakarta Sans\"),sans-serif;font-size:14px;line-height:20px;cursor:pointer;transition:background-color 150ms,color 150ms,border-color 150ms,box-shadow 150ms,translate 150ms;background:var(--card,#ffffff);color:var(--foreground,#24282e);border-color:var(--border,#e2e5e9);}.ds-button-outline:hover{background:var(--muted,#f5f6f8);}.ds-button-outline:focus-visible{outline:3px solid var(--primary,#285ea8);outline-offset:3px;}.ds-button-outline:active{translate:0 1px;}.ds-button-outline:disabled{opacity:.5;pointer-events:none;}@media(prefers-reduced-motion:reduce){.ds-button-outline:active{translate:none;}}"
+      "css": ".ds-button-outline{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:8px 16px;border:1px solid transparent;border-radius:var(--radius-sm,6px);font-weight:500;font-family:var(--font-open-sans,\"Open Sans\"),sans-serif;font-size:14px;line-height:20px;cursor:pointer;transition:background-color 150ms,color 150ms,border-color 150ms,box-shadow 150ms,translate 150ms;background:var(--card,#ffffff);color:var(--foreground,#24282e);border-color:var(--border,#e2e5e9);}.ds-button-outline:hover{background:var(--muted,#f5f6f8);}.ds-button-outline:focus-visible{outline:3px solid var(--primary,#285ea8);outline-offset:3px;}.ds-button-outline:active{translate:0 1px;}.ds-button-outline:disabled{opacity:.5;pointer-events:none;}@media(prefers-reduced-motion:reduce){.ds-button-outline:active{translate:none;}}"
     },
     {
       "name": "Button secondary",
@@ -578,7 +586,7 @@
       "refersTo": "button-secondary",
       "description": "Varian Button bersama; target minimum 44px.",
       "html": "<button class=\"ds-button-secondary\">Lanjutkan</button>",
-      "css": ".ds-button-secondary{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:8px 16px;border:1px solid transparent;border-radius:var(--radius-sm,6px);font-weight:500;font-family:var(--font-jakarta,\"Plus Jakarta Sans\"),sans-serif;font-size:14px;line-height:20px;cursor:pointer;transition:background-color 150ms,color 150ms,border-color 150ms,box-shadow 150ms,translate 150ms;background:var(--secondary,#eef2f7);color:var(--foreground,#24282e);border-color:transparent;}.ds-button-secondary:hover{background:color-mix(in oklch,var(--secondary,#eef2f7),var(--foreground,#24282e) 5%);}.ds-button-secondary:focus-visible{outline:3px solid var(--primary,#285ea8);outline-offset:3px;}.ds-button-secondary:active{translate:0 1px;}.ds-button-secondary:disabled{opacity:.5;pointer-events:none;}@media(prefers-reduced-motion:reduce){.ds-button-secondary:active{translate:none;}}"
+      "css": ".ds-button-secondary{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:8px 16px;border:1px solid transparent;border-radius:var(--radius-sm,6px);font-weight:500;font-family:var(--font-open-sans,\"Open Sans\"),sans-serif;font-size:14px;line-height:20px;cursor:pointer;transition:background-color 150ms,color 150ms,border-color 150ms,box-shadow 150ms,translate 150ms;background:var(--secondary,#eef2f7);color:var(--foreground,#24282e);border-color:transparent;}.ds-button-secondary:hover{background:color-mix(in oklch,var(--secondary,#eef2f7),var(--foreground,#24282e) 5%);}.ds-button-secondary:focus-visible{outline:3px solid var(--primary,#285ea8);outline-offset:3px;}.ds-button-secondary:active{translate:0 1px;}.ds-button-secondary:disabled{opacity:.5;pointer-events:none;}@media(prefers-reduced-motion:reduce){.ds-button-secondary:active{translate:none;}}"
     },
     {
       "name": "Button ghost",
@@ -586,7 +594,7 @@
       "refersTo": "button-ghost",
       "description": "Varian Button bersama; target minimum 44px.",
       "html": "<button class=\"ds-button-ghost\">Lanjutkan</button>",
-      "css": ".ds-button-ghost{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:8px 16px;border:1px solid transparent;border-radius:var(--radius-sm,6px);font-weight:500;font-family:var(--font-jakarta,\"Plus Jakarta Sans\"),sans-serif;font-size:14px;line-height:20px;cursor:pointer;transition:background-color 150ms,color 150ms,border-color 150ms,box-shadow 150ms,translate 150ms;background:transparent;color:var(--foreground,#24282e);border-color:transparent;}.ds-button-ghost:hover{background:var(--muted,#f5f6f8);}.ds-button-ghost:focus-visible{outline:3px solid var(--primary,#285ea8);outline-offset:3px;}.ds-button-ghost:active{translate:0 1px;}.ds-button-ghost:disabled{opacity:.5;pointer-events:none;}@media(prefers-reduced-motion:reduce){.ds-button-ghost:active{translate:none;}}"
+      "css": ".ds-button-ghost{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:8px 16px;border:1px solid transparent;border-radius:var(--radius-sm,6px);font-weight:500;font-family:var(--font-open-sans,\"Open Sans\"),sans-serif;font-size:14px;line-height:20px;cursor:pointer;transition:background-color 150ms,color 150ms,border-color 150ms,box-shadow 150ms,translate 150ms;background:transparent;color:var(--foreground,#24282e);border-color:transparent;}.ds-button-ghost:hover{background:var(--muted,#f5f6f8);}.ds-button-ghost:focus-visible{outline:3px solid var(--primary,#285ea8);outline-offset:3px;}.ds-button-ghost:active{translate:0 1px;}.ds-button-ghost:disabled{opacity:.5;pointer-events:none;}@media(prefers-reduced-motion:reduce){.ds-button-ghost:active{translate:none;}}"
     },
     {
       "name": "Button destructive",
@@ -594,7 +602,7 @@
       "refersTo": "button-destructive",
       "description": "Varian Button bersama; target minimum 44px.",
       "html": "<button class=\"ds-button-destructive\">Lanjutkan</button>",
-      "css": ".ds-button-destructive{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:8px 16px;border:1px solid transparent;border-radius:var(--radius-sm,6px);font-weight:500;font-family:var(--font-jakarta,\"Plus Jakarta Sans\"),sans-serif;font-size:14px;line-height:20px;cursor:pointer;transition:background-color 150ms,color 150ms,border-color 150ms,box-shadow 150ms,translate 150ms;background:color-mix(in oklab,var(--destructive,#9b2c2c) 10%,transparent);color:var(--destructive,#9b2c2c);border-color:transparent;}.ds-button-destructive:hover{background:color-mix(in oklab,var(--destructive,#9b2c2c) 20%,transparent);}.ds-button-destructive:focus-visible{outline:3px solid var(--destructive,#9b2c2c);outline-offset:3px;}.ds-button-destructive:active{translate:0 1px;}.ds-button-destructive:disabled{opacity:.5;pointer-events:none;}@media(prefers-reduced-motion:reduce){.ds-button-destructive:active{translate:none;}}"
+      "css": ".ds-button-destructive{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:8px 16px;border:1px solid transparent;border-radius:var(--radius-sm,6px);font-weight:500;font-family:var(--font-open-sans,\"Open Sans\"),sans-serif;font-size:14px;line-height:20px;cursor:pointer;transition:background-color 150ms,color 150ms,border-color 150ms,box-shadow 150ms,translate 150ms;background:color-mix(in oklab,var(--destructive,#9b2c2c) 10%,transparent);color:var(--destructive,#9b2c2c);border-color:transparent;}.ds-button-destructive:hover{background:color-mix(in oklab,var(--destructive,#9b2c2c) 20%,transparent);}.ds-button-destructive:focus-visible{outline:3px solid var(--destructive,#9b2c2c);outline-offset:3px;}.ds-button-destructive:active{translate:0 1px;}.ds-button-destructive:disabled{opacity:.5;pointer-events:none;}@media(prefers-reduced-motion:reduce){.ds-button-destructive:active{translate:none;}}"
     },
     {
       "name": "Button link",
@@ -602,7 +610,7 @@
       "refersTo": "button-link",
       "description": "Varian Button bersama; target minimum 44px.",
       "html": "<button class=\"ds-button-link\">Lanjutkan</button>",
-      "css": ".ds-button-link{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:8px 16px;border:1px solid transparent;border-radius:var(--radius-sm,6px);font-weight:500;font-family:var(--font-jakarta,\"Plus Jakarta Sans\"),sans-serif;font-size:14px;line-height:20px;cursor:pointer;transition:background-color 150ms,color 150ms,border-color 150ms,box-shadow 150ms,translate 150ms;background:transparent;color:var(--primary,#285ea8);border-color:transparent;}.ds-button-link:hover{background:transparent;text-decoration:underline;text-underline-offset:4px;}.ds-button-link:focus-visible{outline:3px solid var(--primary,#285ea8);outline-offset:3px;}.ds-button-link:active{translate:0 1px;}.ds-button-link:disabled{opacity:.5;pointer-events:none;}@media(prefers-reduced-motion:reduce){.ds-button-link:active{translate:none;}}"
+      "css": ".ds-button-link{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:8px 16px;border:1px solid transparent;border-radius:var(--radius-sm,6px);font-weight:500;font-family:var(--font-open-sans,\"Open Sans\"),sans-serif;font-size:14px;line-height:20px;cursor:pointer;transition:background-color 150ms,color 150ms,border-color 150ms,box-shadow 150ms,translate 150ms;background:transparent;color:var(--primary,#285ea8);border-color:transparent;}.ds-button-link:hover{background:transparent;text-decoration:underline;text-underline-offset:4px;}.ds-button-link:focus-visible{outline:3px solid var(--primary,#285ea8);outline-offset:3px;}.ds-button-link:active{translate:0 1px;}.ds-button-link:disabled{opacity:.5;pointer-events:none;}@media(prefers-reduced-motion:reduce){.ds-button-link:active{translate:none;}}"
     },
     {
       "name": "Input",
@@ -610,7 +618,7 @@
       "refersTo": "input",
       "description": "Field berlabel pada permukaan putih.",
       "html": "<label class=\"ds-field\">Nama pekerja<input class=\"ds-input\" placeholder=\"Masukkan nama\" /></label>",
-      "css": ".ds-field{display:grid;gap:8px;font-family:var(--font-jakarta,\"Plus Jakarta Sans\"),sans-serif;font-size:14px;line-height:20px;color:var(--foreground,#24282e);}.ds-input{font-family:var(--font-jakarta,\"Plus Jakarta Sans\"),sans-serif;font-size:14px;line-height:20px;height:44px;min-width:0;padding:4px 12px;border:1px solid var(--input,#929ba8);border-radius:var(--radius-sm,6px);background:var(--card,#ffffff);color:var(--foreground,#24282e);font-size:16px;transition:color 150ms,background-color 150ms,border-color 150ms;}.ds-input::placeholder{color:var(--muted-foreground,#626b78);}.ds-input:focus-visible{border-color:var(--primary,#285ea8);outline:3px solid var(--primary,#285ea8);outline-offset:3px;}.ds-input:disabled{opacity:.5;pointer-events:none;}.ds-input[aria-invalid=\"true\"]{border-color:var(--destructive,#9b2c2c);}@media(min-width:768px){.ds-input{font-size:14px;}}"
+      "css": ".ds-field{display:grid;gap:8px;font-family:var(--font-open-sans,\"Open Sans\"),sans-serif;font-size:14px;line-height:20px;color:var(--foreground,#24282e);}.ds-input{font-family:var(--font-open-sans,\"Open Sans\"),sans-serif;font-size:14px;line-height:20px;height:44px;min-width:0;padding:4px 12px;border:1px solid var(--input,#929ba8);border-radius:var(--radius-sm,6px);background:var(--card,#ffffff);color:var(--foreground,#24282e);font-size:16px;transition:color 150ms,background-color 150ms,border-color 150ms;}.ds-input::placeholder{color:var(--muted-foreground,#626b78);}.ds-input:focus-visible{border-color:var(--primary,#285ea8);outline:3px solid var(--primary,#285ea8);outline-offset:3px;}.ds-input:disabled{opacity:.5;pointer-events:none;}.ds-input[aria-invalid=\"true\"]{border-color:var(--destructive,#9b2c2c);}@media(min-width:768px){.ds-input{font-size:14px;}}"
     },
     {
       "name": "Sidebar navigation",
@@ -618,7 +626,7 @@
       "refersTo": "navigation-active",
       "description": "Sidebar pucat dengan pilihan biru lembut.",
       "html": "<nav class=\"ds-nav\" aria-label=\"Alur kerja\"><a class=\"ds-nav-item ds-nav-active\" href=\"#ringkasan\" aria-current=\"page\">Dashboard</a><a class=\"ds-nav-item\" href=\"#data\">Data lapangan</a></nav>",
-      "css": ".ds-nav{display:grid;gap:4px;background:var(--sidebar-background,#fcfcfd);padding:12px;}.ds-nav-item{font-family:var(--font-jakarta,\"Plus Jakarta Sans\"),sans-serif;font-size:14px;line-height:20px;display:flex;align-items:center;min-height:44px;padding:10px 12px;border-radius:6px;font-size:13px;color:var(--sidebar-muted,#626b78);text-decoration:none;transition:background-color 160ms,color 160ms;}.ds-nav-item:hover{background:var(--sidebar-hover,#f0f2f5);color:var(--sidebar-foreground,#24282e);}.ds-nav-active,.ds-nav-active:hover{background:var(--sidebar-active,#eaf0f8);color:var(--foreground,#24282e);font-weight:600;}.ds-nav-item:focus-visible{outline:2px solid var(--primary,#285ea8);outline-offset:3px;}@media(max-width:639px){.ds-nav-item{min-height:48px;}}@media(prefers-reduced-motion:reduce){.ds-nav-item{transition:none;}}"
+      "css": ".ds-nav{display:grid;gap:4px;background:var(--sidebar-background,#fcfcfd);padding:12px;}.ds-nav-item{font-family:var(--font-open-sans,\"Open Sans\"),sans-serif;font-size:14px;line-height:20px;display:flex;align-items:center;min-height:44px;padding:10px 12px;border-radius:6px;font-size:13px;color:var(--sidebar-muted,#626b78);text-decoration:none;transition:background-color 160ms,color 160ms;}.ds-nav-item:hover{background:var(--sidebar-hover,#f0f2f5);color:var(--sidebar-foreground,#24282e);}.ds-nav-active,.ds-nav-active:hover{background:var(--sidebar-active,#eaf0f8);color:var(--foreground,#24282e);font-weight:600;}.ds-nav-item:focus-visible{outline:2px solid var(--primary,#285ea8);outline-offset:3px;}@media(max-width:639px){.ds-nav-item{min-height:48px;}}@media(prefers-reduced-motion:reduce){.ds-nav-item{transition:none;}}"
     },
     {
       "name": "Quality badge",
@@ -626,7 +634,7 @@
       "refersTo": "quality-badge",
       "description": "Kualitas sumber terpisah dari status tindakan.",
       "html": "<span class=\"ds-quality\" aria-label=\"Kualitas data: REPLAY\"><span class=\"ds-quality-dot\" aria-hidden=\"true\"></span>REPLAY</span>",
-      "css": ".ds-quality{font-family:var(--font-jakarta,\"Plus Jakarta Sans\"),sans-serif;font-size:14px;line-height:20px;display:inline-flex;align-items:center;gap:4px;min-height:24px;padding:2px 8px;border:1px solid var(--border,#e2e5e9);border-radius:var(--radius-sm,6px);background:var(--card,#ffffff);color:var(--muted-foreground,#626b78);font-size:12px;line-height:16px;font-weight:500;white-space:nowrap;}.ds-quality-dot{width:6px;height:6px;border-radius:50%;background:var(--heritage-moss,#596779);}"
+      "css": ".ds-quality{font-family:var(--font-open-sans,\"Open Sans\"),sans-serif;font-size:14px;line-height:20px;display:inline-flex;align-items:center;gap:4px;min-height:24px;padding:2px 8px;border:1px solid var(--border,#e2e5e9);border-radius:var(--radius-sm,6px);background:var(--card,#ffffff);color:var(--muted-foreground,#626b78);font-size:12px;line-height:16px;font-weight:500;white-space:nowrap;}.ds-quality-dot{width:6px;height:6px;border-radius:50%;background:var(--heritage-moss,#596779);}"
     },
     {
       "name": "Card",
@@ -634,15 +642,30 @@
       "refersTo": "card",
       "description": "Wadah putih bergaris tanpa bayangan.",
       "html": "<section class=\"ds-card\"><header class=\"ds-card-header\"><h2 class=\"ds-card-title\">Riwayat pengukuran</h2><p class=\"ds-card-description\">Bacaan dan kualitas sumber per interval</p></header><div class=\"ds-card-content\">Belum ada bacaan WBGT untuk tanggal yang dipilih.</div></section>",
-      "css": ".ds-card{font-family:var(--font-jakarta,\"Plus Jakarta Sans\"),sans-serif;font-size:14px;line-height:20px;display:flex;min-width:0;flex-direction:column;gap:24px;overflow:hidden;padding:24px 0;border:1px solid var(--border,#e2e5e9);border-radius:var(--radius-xl,12px);background:var(--card,#ffffff);color:var(--foreground,#24282e);}.ds-card-header{display:grid;gap:4px;padding:0 24px;}.ds-card-title{margin:0;font-size:18px;line-height:1.375;font-weight:600;text-wrap:balance;}.ds-card-description{margin:0;color:var(--muted-foreground,#626b78);}.ds-card-content{padding:0 24px;color:var(--muted-foreground,#626b78);overflow-wrap:anywhere;}"
+      "css": ".ds-card{font-family:var(--font-open-sans,\"Open Sans\"),sans-serif;font-size:14px;line-height:20px;display:flex;min-width:0;flex-direction:column;gap:24px;overflow:hidden;padding:24px 0;border:1px solid var(--border,#e2e5e9);border-radius:var(--radius-xl,12px);background:var(--card,#ffffff);color:var(--foreground,#24282e);}.ds-card-header{display:grid;gap:4px;padding:0 24px;}.ds-card-title{margin:0;font-size:18px;line-height:1.375;font-weight:600;text-wrap:balance;}.ds-card-description{margin:0;color:var(--muted-foreground,#626b78);}.ds-card-content{padding:0 24px;color:var(--muted-foreground,#626b78);overflow-wrap:anywhere;}"
+    },
+    {
+      "name": "Landing hero action",
+      "kind": "button",
+      "refersTo": "landing-hero-button",
+      "description": "CTA putih di hero biru menuju ruang kerja demo; peringatan simulasi berada tepat di bawahnya.",
+      "html": "<a class=\"ds-hero-action\" href=\"/ringkasan\">Masuk ke ruang kerja →</a>",
+      "css": ".ds-hero-action{display:inline-flex;align-items:center;justify-content:center;min-height:50px;padding:12px 25px;border-radius:999px;background:#fff;color:#174e9b;font-family:var(--font-open-sans,\"Open Sans\"),sans-serif;font-size:14px;font-weight:700;text-decoration:none;}.ds-hero-action:hover{background:#eef5ff;color:#174e9b;}.ds-hero-action:focus-visible{outline:2px solid #fff;outline-offset:3px;box-shadow:0 0 0 3px #1450a6;}"
+    },
+    {
+      "name": "Landing hero panel",
+      "kind": "custom",
+      "description": "Inset blue entry panel with a centered promise, direct demo action, and simulation caveat; Roboto Slab only on the second line.",
+      "html": "<section class=\"ds-hero\"><div class=\"ds-hero-copy\"><h1>Kerja di tengah panas.<br><span>Rencana tetap jelas.</span></h1><p class=\"ds-hero-description\">TERMA menyatukan data pekerja, bacaan panas, dan tindak lanjut menjadi rencana kerja-istirahat yang dapat ditinjau HSE dan dijalankan mandor.</p><a class=\"ds-hero-action\" href=\"/ringkasan\">Masuk ke ruang kerja →</a><p class=\"ds-hero-note\">Coba dengan data simulasi. Bukan untuk keputusan operasional.</p></div></section>",
+      "css": ".ds-hero{position:relative;isolation:isolate;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:720px;overflow:hidden;border-radius:16px;padding:92px 32px 116px;background:radial-gradient(ellipse 52% 42% at 50% 108%,#75a9ec 0%,transparent 100%),linear-gradient(135deg,#1450a6 0%,#1a68c0 55%,#2577d0 100%);color:#fff;text-align:center;}.ds-hero::before{position:absolute;z-index:-1;inset:28% 0 0;content:\"\";background-image:radial-gradient(rgb(255 255 255 / 23%) .7px,transparent .7px);background-size:13px 13px;mask-image:linear-gradient(transparent,black 70%);pointer-events:none;}.ds-hero::after{position:absolute;z-index:-1;left:50%;bottom:-310px;width:840px;height:470px;border:1px solid rgb(255 255 255 / 30%);border-radius:50%;content:\"\";transform:translateX(-50%);pointer-events:none;}.ds-hero-copy{display:flex;flex-direction:column;align-items:center;width:100%;max-width:1000px;}.ds-hero h1{font-family:var(--font-open-sans,\"Open Sans\"),sans-serif;font-size:clamp(42px,4.5vw,68px);font-weight:700;line-height:1.11;letter-spacing:-.038em;}.ds-hero h1 span{font-family:var(--font-roboto-slab,\"Roboto Slab\"),serif;font-weight:600;letter-spacing:-.035em;}.ds-hero-description{max-width:59ch;margin:30px auto 0;color:#edf5ff;font-size:17px;line-height:1.65;}.ds-hero-action{display:inline-flex;align-items:center;justify-content:center;min-height:50px;margin-top:34px;padding:12px 25px;border-radius:999px;background:#fff;color:#174e9b;font-family:var(--font-open-sans,\"Open Sans\"),sans-serif;font-size:14px;font-weight:700;text-decoration:none;}.ds-hero-action:hover{background:#eef5ff;color:#174e9b;}.ds-hero-action:focus-visible{outline:2px solid #fff;outline-offset:3px;box-shadow:0 0 0 3px #1450a6;}.ds-hero-note{margin-top:16px;color:#e4f0ff;font-size:12px;line-height:1.5;}@media(max-width:767px){.ds-hero{min-height:595px;border-radius:12px;padding:68px 21px 110px;}.ds-hero::after{bottom:-420px;}.ds-hero h1{font-size:clamp(36px,8.5vw,50px);letter-spacing:-.035em;}.ds-hero-description{margin-top:25px;font-size:15px;line-height:1.6;}.ds-hero-action{margin-top:30px;}}"
     }
   ],
   "narrative": {
     "northStar": "TERMA Atmosphere",
-    "overview": "Atmosphere adalah ruang kerja yang tenang untuk membaca paparan panas dan menentukan tindak lanjut. Penyempurnaan yang disetujui pada 25 Oktober 2026 mengikuti layout referensi PlanetScale: kanvas putih, sidebar netral pucat, garis tipis, sudut ringkas, dan Plus Jakarta Sans. Biru tetap menjadi aksen tindakan dan pilihan sesuai arahan pengguna, “Tetap biru, fokus layout PlanetScale”. Wordmark teks terma. dipertahankan sambil menunggu logo tim.\n\nWarna zona membantu mengenali area; status tindakan, kualitas sumber, dan asal data tetap terpisah. Bahasa antarmuka tetap Bahasa Indonesia. Skema isometrik memberi umpan balik pilihan tanpa menyatakan lokasi nyata atau pelacakan pekerja. Komposisi serta aset landing tetap dipertahankan, dengan font dan token bersama mengikuti sistem ini.",
+    "overview": "Atmosphere adalah ruang kerja yang tenang untuk membaca paparan panas dan menentukan tindak lanjut. Ruang kerja mempertahankan kanvas putih, sidebar netral pucat, garis tipis, sudut ringkas, dan aksen biru. Open Sans menjadi suara utama seluruh antarmuka; Roboto Slab muncul hanya pada dua penekanan besar di landing. Wordmark teks terma. dipertahankan sambil menunggu logo tim.\n\nWarna zona membantu mengenali area; status tindakan, kualitas sumber, dan asal data tetap terpisah. Bahasa antarmuka tetap Bahasa Indonesia. Skema isometrik memberi umpan balik pilihan tanpa menyatakan lokasi nyata atau pelacakan pekerja. Landing memakai header putih dan hero biru dominan yang langsung mengarah ke ruang kerja demo, disusul ilustrasi lokasi interaktif, peran, alur, contoh, batas demo, dan FAQ. Susunan ini mengikuti hierarki referensi Cloudflare tanpa meminjam klaim atau kontennya.",
     "keyCharacteristics": [
       "Kanvas putih, sidebar pucat, panel solid, dan pemisah abu netral.",
-      "Plus Jakarta Sans untuk judul, isi, label, angka, dan grafik.",
+      "Open Sans untuk UI dan sebagian besar judul; Roboto Slab hanya pada dua penekanan judul landing.",
       "Biru untuk tindakan dan pilihan; warna zona tidak menyatakan risiko.",
       "Kontrol ringkas, fokus keyboard terlihat, dan rincian bertahap.",
       "Isometri bergerak mengikuti pilihan; reduced motion menghapus transisinya."
@@ -654,8 +677,8 @@
         "section": "colors"
       },
       {
-        "name": "The Shared Type Rule",
-        "body": "Gunakan Plus Jakarta Sans pada seluruh antarmuka; monospace tetap terbatas pada identitas dan jejak yang perlu dibandingkan tepat.",
+        "name": "The Two-Font Rule",
+        "body": "Gunakan Open Sans untuk UI, data, dan sebagian besar judul; Roboto Slab hanya pada baris kedua hero dan judul ajakan akhir landing. Monospace tetap terbatas pada identitas dan jejak yang perlu dibandingkan tepat.",
         "section": "typography"
       },
       {
@@ -665,7 +688,7 @@
       }
     ],
     "dos": [
-      "Do gunakan token bersama, Plus Jakarta Sans, dan komponen yang ada pada layar berikutnya.",
+      "Do gunakan token bersama, Open Sans, dan komponen yang ada pada layar berikutnya; batasi Roboto Slab pada dua penekanan landing yang sudah terbangun.",
       "Do pertahankan aksen biru, permukaan solid netral, dan garis pemisah yang tenang.",
       "Do tampilkan status tindakan, kualitas sumber, dan asal data secara terpisah.",
       "Do pertahankan label simulasi, replay, data hilang, dan fixture dalam keputusan serta hasil cetak.",
@@ -676,7 +699,7 @@
       "Don't gunakan warna zona atau gerak isometri sebagai klaim keamanan atau lokasi nyata.",
       "Don't mengisi celah pengukuran dengan nol atau angka dari referensi visual.",
       "Don't mematahkan badge kualitas dan asal data; bungkus kelompok di sekelilingnya.",
-      "Don't mengembalikan font lama, sidebar navy, atau gradasi sebagai sistem ruang kerja terkini.",
+      "Don't mengembalikan font lama atau sidebar navy; tempatkan gradasi hanya pada bidang hero landing, bukan panel kerja.",
       "Don't menyembunyikan batas harian, batas interval, alasan keputusan, atau tinjauan HSE demi tampilan."
     ]
   }

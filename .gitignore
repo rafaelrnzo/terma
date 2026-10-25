@@ -27,3 +27,4 @@ coverage/
 !/.impeccable/surfaces/
 /.impeccable/surfaces/*
 !/.impeccable/surfaces/web-src-app-ringkasan-page-tsx.md
+!/.impeccable/surfaces/web-src-app-page-tsx.md

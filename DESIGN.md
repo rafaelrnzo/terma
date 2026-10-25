@@ -36,37 +36,49 @@ colors:
   panel-soft: "#f6f7f9"
 typography:
   display:
-    fontFamily: "Plus Jakarta Sans, sans-serif"
+    fontFamily: "Open Sans, sans-serif"
     fontSize: "48px"
     fontWeight: 400
     lineHeight: 1
     letterSpacing: "-0.035em"
   headline:
-    fontFamily: "Plus Jakarta Sans, sans-serif"
+    fontFamily: "Open Sans, sans-serif"
     fontSize: "28px"
     fontWeight: 600
     lineHeight: 1.2
     letterSpacing: "-0.03em"
   title:
-    fontFamily: "Plus Jakarta Sans, sans-serif"
+    fontFamily: "Open Sans, sans-serif"
     fontSize: "18px"
     fontWeight: 600
     lineHeight: 1.375
   body:
-    fontFamily: "Plus Jakarta Sans, sans-serif"
+    fontFamily: "Open Sans, sans-serif"
     fontSize: "16px"
     fontWeight: 400
     lineHeight: 1.625
   body-compact:
-    fontFamily: "Plus Jakarta Sans, sans-serif"
+    fontFamily: "Open Sans, sans-serif"
     fontSize: "14px"
     fontWeight: 400
     lineHeight: "20px"
   label:
-    fontFamily: "Plus Jakarta Sans, sans-serif"
+    fontFamily: "Open Sans, sans-serif"
     fontSize: "12px"
     fontWeight: 500
     lineHeight: "16px"
+  landing-hero:
+    fontFamily: "Open Sans, sans-serif"
+    fontSize: "clamp(42px, 4.5vw, 68px)"
+    fontWeight: 700
+    lineHeight: 1.11
+    letterSpacing: "-0.038em"
+  brand-display:
+    fontFamily: "Roboto Slab, serif"
+    fontSize: "clamp(42px, 4.5vw, 68px)"
+    fontWeight: 600
+    lineHeight: 1.11
+    letterSpacing: "-0.035em"
   mono:
     fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace"
     fontSize: "12px"
@@ -77,6 +89,7 @@ rounded:
   md: "8px"
   lg: "10px"
   xl: "12px"
+  pill: "999px"
 spacing:
   "1": "4px"
   "2": "8px"
@@ -121,6 +134,11 @@ components:
     padding: "8px 16px"
   button-primary-hover:
     backgroundColor: "{colors.primary-hover}"
+  landing-hero-button:
+    backgroundColor: "{colors.card}"
+    textColor: "#174e9b"
+    rounded: "{rounded.pill}"
+    padding: "12px 25px"
   input:
     backgroundColor: "{colors.card}"
     textColor: "{colors.foreground}"
@@ -156,19 +174,19 @@ components:
 
 **Creative North Star: "TERMA Atmosphere"**
 
-Atmosphere adalah ruang kerja yang tenang untuk membaca paparan panas dan menentukan tindak lanjut. Penyempurnaan yang disetujui pada 25 Oktober 2026 mengikuti layout referensi PlanetScale: kanvas putih, sidebar netral pucat, garis tipis, sudut ringkas, dan Plus Jakarta Sans. Biru tetap menjadi aksen tindakan dan pilihan sesuai arahan pengguna, “Tetap biru, fokus layout PlanetScale”. Wordmark teks terma. dipertahankan sambil menunggu logo tim.
+Atmosphere adalah ruang kerja yang tenang untuk membaca paparan panas dan menentukan tindak lanjut. Ruang kerja mempertahankan kanvas putih, sidebar netral pucat, garis tipis, sudut ringkas, dan aksen biru. Open Sans menjadi suara utama seluruh antarmuka; Roboto Slab muncul hanya pada dua penekanan besar di landing. Wordmark teks terma. dipertahankan sambil menunggu logo tim.
 
-Warna zona membantu mengenali area; status tindakan, kualitas sumber, dan asal data tetap terpisah. Bahasa antarmuka tetap Bahasa Indonesia. Skema isometrik memberi umpan balik pilihan tanpa menyatakan lokasi nyata atau pelacakan pekerja. Komposisi serta aset landing tetap dipertahankan, dengan font dan token bersama mengikuti sistem ini.
+Warna zona membantu mengenali area; status tindakan, kualitas sumber, dan asal data tetap terpisah. Bahasa antarmuka tetap Bahasa Indonesia. Skema isometrik memberi umpan balik pilihan tanpa menyatakan lokasi nyata atau pelacakan pekerja. Landing kini memakai header putih dan hero biru dominan yang langsung mengarah ke ruang kerja demo, disusul ilustrasi lokasi interaktif, peran, alur, contoh, batas demo, dan FAQ. Susunan ini mengikuti hierarki referensi Cloudflare tanpa meminjam klaim atau kontennya.
 
 **Key Characteristics:**
 
 - Kanvas putih, sidebar pucat, panel solid, dan pemisah abu netral.
-- Plus Jakarta Sans untuk judul, isi, label, angka, dan grafik.
+- Open Sans untuk judul operasional, isi, label, angka, grafik, dan sebagian besar judul landing; Roboto Slab hanya untuk dua aksen judul landing.
 - Biru untuk tindakan dan pilihan; warna zona tidak menyatakan risiko.
 - Kontrol ringkas, fokus keyboard terlihat, dan rincian bertahap.
 - Isometri bergerak mengikuti pilihan; reduced motion menghapus transisinya.
 
-Frontmatter adalah ringkasan normatif dari `web/src/app/globals.css`, `layout.tsx`, dan komponen yang telah dibangun. Ekstensi serta contoh mandiri ada di `.impeccable/design.json`; kontrak komposisi Dashboard ada di `.impeccable/surfaces/web-src-app-ringkasan-page-tsx.md`. Bagian terkini ini menggantikan arahan font, sidebar gelap, dan gradasi dari iterasi sebelumnya.
+Frontmatter adalah ringkasan normatif dari `web/src/app/globals.css`, `layout.tsx`, dan komponen yang telah dibangun. Ekstensi serta contoh mandiri ada di `.impeccable/design.json`; kontrak komposisi Dashboard dan landing ada di `.impeccable/surfaces/`. Gradasi biru adalah perlakuan khusus hero landing; ruang kerja tetap memakai permukaan solid.
 
 ## Colors
 
@@ -197,23 +215,23 @@ Palet menggabungkan putih dan abu netral yang ringan dengan aksen biru tindakan 
 
 ## Typography
 
-**Display Font:** Plus Jakarta Sans dengan sans-serif sebagai fallback.
-**Body Font:** Plus Jakarta Sans dengan sans-serif sebagai fallback.
-**Label/Mono Font:** Plus Jakarta Sans untuk label; monospace sistem untuk ID dan jejak audit.
+**Display Font:** Open Sans untuk angka operasional dan baris pertama hero; Roboto Slab dengan serif fallback untuk baris kedua hero dan judul ajakan akhir landing.
+**Body Font:** Open Sans dengan sans-serif fallback.
+**Label/Mono Font:** Open Sans untuk label; monospace sistem untuk ID dan jejak audit.
 
-Font dimuat melalui `next/font/google` dan digunakan bersama pada landing, ruang kerja, grafik, dan panduan. Hierarki bergantung pada ukuran, bobot, dan jarak, bukan pergantian keluarga font.
+Open Sans dan Roboto Slab dimuat melalui `next/font/google` sebagai `--font-open-sans` dan `--font-roboto-slab`. Token `font-sans` dan `font-heading` memakai Open Sans, sementara `font-display` menunjuk Roboto Slab. Hierarki operasional tetap berasal dari ukuran dan bobot Open Sans.
 
 ### Hierarchy
 
 - **Display:** angka WBGT tabular; satuan (24px) lebih kecil dan pesan kosong memakai (24px), bukan angka nol.
-- **Headline:** judul operasional; Dashboard memakai (26px, 600). Hero landing mempertahankan ukuran fluid `clamp(36px, 4vw, 54px)` dengan bobot (500).
+- **Headline:** judul operasional; Dashboard memakai (26px, 600). Hero landing memakai Open Sans (`clamp(42px, 4.5vw, 68px)`, 700), menjadi `clamp(36px, 8.5vw, 50px)` pada mobile. Hanya baris keduanya beralih ke Roboto Slab (600).
 - **Title:** judul kartu; varian kecil memakai (16px).
 - **Body:** pengantar dan petunjuk; uraian panjang dibatasi sekitar 65ch.
 - **Body compact:** formulir, tabel, navigasi, dan isi kartu. Sidebar memakai (13px).
 - **Label:** metadata, badge, dan grafik. Grafik menjaga ukuran teks (12px) saat lebarnya berubah; catatan sekunder tertentu memakai (11px).
 - **Mono:** identitas catatan, nomor baris impor, dan waktu audit.
 
-**The Shared Type Rule.** Gunakan Plus Jakarta Sans pada seluruh antarmuka; monospace tetap terbatas pada identitas dan jejak yang perlu dibandingkan tepat.
+**The Two-Font Rule.** Gunakan Open Sans untuk UI, data, dan sebagian besar judul; Roboto Slab hanya pada baris kedua hero dan judul ajakan akhir landing. Monospace tetap terbatas pada identitas dan jejak yang perlu dibandingkan tepat.
 
 ## Layout
 
@@ -223,19 +241,19 @@ Di bawah (1024px), navigasi memakai drawer Dialog yang mengelola fokus; submenu 
 
 Dashboard menempatkan tugas berikutnya pada strip putih bergaris, disusul tiga pilihan zona, interval tersegmentasi, peta, dan bacaan putih selebar (280px), dengan gap (16px). Pada (1024–1199px), peta dan bacaan bertumpuk, dengan isi bacaan dua kolom. Di bawah (768px), pilihan zona bergulir horizontal dan sisanya bertumpuk. Riwayat grafik terbuka secara default dalam accordion yang dapat ditutup; tabel nilai/sumber per jam tersedia di accordion dalamnya. Daftar pekerjaan dan lingkup shift memakai kolom fleksibel / (300px), menjadi fleksibel / (260px) di bawah (1024px), lalu satu kolom di bawah (768px).
 
-Landing berdiri di luar shell operasional, dengan lebar maksimum (1360px) dan gutter (48px), menjadi (20px) di bawah (768px). Hero menjadi satu kolom di bawah (1024px). Ilustrasi konstruksi, penanda bernomor, pilihan berlabel, alur HSE–mandor–HSE, dan tautan masuk ke `/ringkasan` mempertahankan komposisinya. Asal aset ada di `web/public/images/ASSETS.md`.
+Landing berdiri di luar shell operasional. Header putih dibatasi (1440px); hero biru inset hampir selebar viewport (maksimum 1800px) memusatkan judul, uraian singkat, CTA putih, dan peringatan simulasi. Bidang hero memakai gradasi biru, titik halus, dan elips dekoratif di belakang konten. Isi setelahnya dibatasi (1240px) dengan gutter (32px), menjadi (20px) di bawah (768px). Ilustrasi konstruksi selebar maksimum (900px) dan tiga pilihan lokasi terhubung langsung ke rincian lokasi; setelahnya ada peran dan serah-terima dua kolom, tiga kartu tahap, contoh rencana, batas demo, FAQ, dan ajakan akhir. Pada (1023px) ke bawah, peran serta tahap bertumpuk; pada (767px) ke bawah, header dan hero memadat, pilihan ilustrasi tetap tiga kolom dengan label terbaca, dan seksi menjadi satu kolom. Asal aset ada di `web/public/images/ASSETS.md`.
 
 Tabel lebar bergulir di kontainernya dengan petunjuk geser; minimum tabel versi (1000px) dan audit (760px) dilepas saat cetak. Grafik memiliki lebar minimum (540px), area gulir yang dapat difokuskan, dan label tetap terbaca. Kelompok provenance boleh membungkus antar item; badge kualitas dan asal data tetap utuh.
 
 ## Elevation & Depth
 
-Kedalaman ruang kerja terutama berasal dari bidang solid, ruang kosong, dan border penuh. Card tidak memakai bayangan; pilihan sidebar memakai tint dan bobot. Bayangan halus tetap ada pada tab aktif, pin ilustrasi landing, dokumen serah-terima, dan popover panduan. Nilai lengkap berada pada sidecar. Isometri memakai bentuk SVG dan perubahan posisi sebagai umpan balik pilihan.
+Kedalaman ruang kerja terutama berasal dari bidang solid, ruang kosong, dan border penuh. Card tidak memakai bayangan; pilihan sidebar memakai tint dan bobot. Hero landing memakai gradasi dan pola titik sebagai bidang merek, sementara bagian produk dan alur memakai panel putih bergaris. Bayangan halus tetap ada pada tab aktif, pin ilustrasi landing, dokumen serah-terima, dan popover panduan. Nilai lengkap berada pada sidecar. Isometri memakai bentuk SVG dan perubahan posisi sebagai umpan balik pilihan.
 
 **The Quiet Depth Rule.** Pisahkan permukaan kerja dengan tonalitas dan garis; gunakan gerak dan bayangan pada komponen yang memiliki fungsi keadaan atau lapisan yang jelas.
 
 ## Shapes
 
-Skala sudut utama berada di `rounded`: kecil untuk tombol, field, badge, dan tautan navigasi; medium untuk pilihan zona, interval, peta, strip tugas, dan bacaan; besar untuk wadah tab; ekstra besar untuk Card. Landing dan popover panduan mempertahankan sudut lokal (16px); lingkaran tetap dipakai untuk penanda bernomor dan titik sumber.
+Skala sudut utama berada di `rounded`: kecil untuk tombol, field, badge, dan tautan navigasi; medium untuk pilihan zona, interval, peta, strip tugas, dan bacaan; besar untuk wadah tab; ekstra besar untuk Card. Hero landing memakai (16px) di desktop dan (12px) di mobile; CTA hero dan tombol header berbentuk pil (999px). Panel produk, peran, dan alur memakai (10–12px). Popover panduan mempertahankan sudut lokal (16px); lingkaran tetap dipakai untuk penanda bernomor dan titik sumber.
 
 Tombol dan field utama memiliki target (44px); navigasi menjadi (48px) di bawah (640px). Badge merupakan label, bukan tombol. Bentuk ilustratif tidak boleh memotong informasi operasional.
 
@@ -244,6 +262,8 @@ Tombol dan field utama memiliki target (44px); navigasi menjadi (48px) di bawah 
 ### Buttons
 
 Button menyediakan primary, outline, secondary, ghost, destructive, dan link. Primary menggelap saat hover; outline memakai garis `border` dan permukaan card; outline/ghost memakai muted saat hover; destructive memakai tint merah. Padding default ada di frontmatter, tinggi minimum (44px), dan transisi keadaan (150ms).
+
+CTA hero landing memakai dasar putih, teks biru `#174e9b`, sudut pil, tinggi minimum (50px), dan padding (12px 25px). Hover memakai putih kebiruan `#eef5ff`; teks peringatan simulasi tetap dekat dengan CTA.
 
 Fokus memakai ring (3px); invalid memakai destructive. Disabled memakai opacity (50%) dan mematikan pointer. Aksi turun (1px) saat ditekan kecuali pemicu popup; reduced motion meniadakan gerak tekan.
 
@@ -277,13 +297,13 @@ Mapbox dimuat hanya ketika token publik tersedia dan pengguna memilihnya. Koordi
 
 Baris pekerjaan menghubungkan label, kemajuan, kelengkapan, dan langkah berikutnya. Rincian rencana mempertahankan batas harian/interval, alasan, sumber, dan persetujuan. Panduan dashboard enam langkah dimuat saat diminta, dapat dilewati/diulang, mengembalikan fokus ke pemicu, dan tidak mengubah data. Popover memakai card, padding (24px), lebar maksimum (360px) yang dibatasi viewport, judul (18px), dan isi (14px).
 
-Landing mempertahankan contoh serah-terima yang dapat dijeda/diulang atau dipilih langsung. Gerak berhenti di luar layar atau tab tersembunyi; reduced motion meniadakan autoplay dan perpindahan spasial. Pilihan ilustrasi tetap memiliki alternatif label dan fallback gambar. Seluruh gerak ilustratif tidak mengubah data demo.
+Landing menempatkan ilustrasi lokasi interaktif setelah hero; tiga lokasi dapat dipilih dan pembacaan rinci berubah sesuai pilihan. Contoh serah-terima dapat dijeda/diulang atau dipilih langsung. Gerak berhenti di luar layar atau tab tersembunyi; reduced motion meniadakan autoplay dan perpindahan spasial. Pilihan ilustrasi tetap memiliki alternatif label dan fallback gambar. Seluruh gerak ilustratif tidak mengubah data demo.
 
 ## Do's and Don'ts
 
 ### Do:
 
-- Do gunakan token bersama, Plus Jakarta Sans, dan komponen yang ada pada layar berikutnya.
+- Do gunakan token bersama, Open Sans, dan komponen yang ada pada layar berikutnya; batasi Roboto Slab pada dua penekanan landing yang sudah terbangun.
 - Do pertahankan aksen biru, permukaan solid netral, dan garis pemisah yang tenang.
 - Do tampilkan status tindakan, kualitas sumber, dan asal data secara terpisah.
 - Do pertahankan label simulasi, replay, data hilang, dan fixture dalam keputusan serta hasil cetak.
@@ -295,5 +315,5 @@ Landing mempertahankan contoh serah-terima yang dapat dijeda/diulang atau dipili
 - Don't gunakan warna zona atau gerak isometri sebagai klaim keamanan atau lokasi nyata.
 - Don't mengisi celah pengukuran dengan nol atau angka dari referensi visual.
 - Don't mematahkan badge kualitas dan asal data; bungkus kelompok di sekelilingnya.
-- Don't mengembalikan font lama, sidebar navy, atau gradasi sebagai sistem ruang kerja terkini.
+- Don't mengembalikan font lama atau sidebar navy; tempatkan gradasi hanya pada bidang hero landing, bukan panel kerja.
 - Don't menyembunyikan batas harian, batas interval, alasan keputusan, atau tinjauan HSE demi tampilan.

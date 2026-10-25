@@ -67,26 +67,30 @@ export default function Home() {
         <a href="#cara-kerja">Cara kerja</a>
         <a href="#pertanyaan">FAQ</a>
       </nav>
-      <Button asChild variant="outline"><Link href="/ringkasan">Buka ruang kerja<ArrowRight aria-hidden /></Link></Button>
+      <Button asChild variant="outline" className="intro-header-action"><Link href="/ringkasan">Buka ruang kerja<ArrowRight aria-hidden /></Link></Button>
     </header>
     <main id="main-content" tabIndex={-1} className="outline-none">
       <section className="intro-hero" aria-labelledby="intro-title">
         <div className="intro-copy">
-          <h1 id="intro-title">Panas di lapangan.<br /><span className="text-primary">Rencana yang jelas.</span></h1>
-          <p className="intro-description">TERMA membantu petugas HSE dan mandor mengatur paparan panas pekerja, mulai dari meninjau kondisi lapangan, menyusun rencana kerja-istirahat, hingga memeriksa pelaksanaannya.</p>
-          <Button asChild size="lg" className="mt-8 h-auto min-h-12 whitespace-normal py-3"><Link href="/ringkasan">Masuk ke pekerjaan hari ini<ArrowRight className="shrink-0" aria-hidden /></Link></Button>
-          <p className="mt-4 max-w-md text-sm leading-relaxed text-muted-foreground">Demo interaktif dengan data contoh. Coba sebagai HSE, lalu ganti peran menjadi mandor. Bukan untuk keputusan operasional.</p>
+          <h1 id="intro-title">Kerja di tengah panas.<br /><span>Rencana tetap jelas.</span></h1>
+          <p className="intro-description">TERMA menyatukan data pekerja, bacaan panas, dan tindak lanjut menjadi rencana kerja-istirahat yang dapat ditinjau HSE dan dijalankan mandor.</p>
+          <Button asChild size="lg" className="intro-hero-action"><Link href="/ringkasan">Masuk ke ruang kerja<ArrowRight className="shrink-0" aria-hidden /></Link></Button>
+          <p className="intro-hero-note">Coba dengan data simulasi. Bukan untuk keputusan operasional.</p>
         </div>
+        <div className="intro-hero-track" aria-hidden="true"><span>Data lapangan</span><i /><span>Rencana HSE</span><i /><span>Pelaksanaan regu</span></div>
+      </section>
+      <section className="landing-product" aria-labelledby="product-title">
+        <div className="landing-product-heading"><h2 id="product-title">Satu lokasi, tiga hal yang saling terhubung.</h2><p>Kenali area kerja, alur regu, dan ruang istirahat sebelum membuka rencana. Ilustrasi ini memakai lokasi contoh, tanpa pelacakan pekerja.</p></div>
         <LandingSite />
       </section>
       <section id="peran" className="landing-section" aria-labelledby="roles-title">
         <div className="landing-section-heading">
-          <h2 id="roles-title">Tiga peran.<br />Tanggung jawab yang jelas.</h2>
-          <p>Untuk tim di satu lokasi proyek konstruksi. HSE dan petugas data melihat lingkup lokasi; mandor berfokus pada regunya sendiri.</p>
+          <h2 id="roles-title">Setiap peran tahu langkah berikutnya.</h2>
+          <p>Untuk tim di satu lokasi proyek konstruksi. Petugas data menyiapkan dasar, HSE meninjau rencana, dan mandor mencatat pelaksanaan regunya.</p>
         </div>
         <div className="landing-team">
-          <LandingHandoff />
           <div className="landing-roles">{roles.map(role => <article key={role.name}><h3>{role.name}</h3><p className="mt-2 font-medium">{role.purpose}</p><p className="mt-3 text-sm leading-relaxed text-muted-foreground">{role.tasks}</p><p className="mt-3 text-sm leading-relaxed"><span className="text-muted-foreground">Hasil kerja: </span>{role.output}</p></article>)}</div>
+          <LandingHandoff />
         </div>
       </section>
       <section id="cara-kerja" className="landing-section" aria-labelledby="how-title">
@@ -96,7 +100,7 @@ export default function Home() {
         </div>
         <div className="landing-stages">{stages.map(stage => <div key={stage.title} className="landing-stage">
           <div><h3>{stage.title}</h3><p className="mt-3 max-w-sm text-sm leading-relaxed text-muted-foreground">{stage.description}</p></div>
-          <ol start={stage.steps[0].no}>{stage.steps.map(step => <li key={step.href}><Link href={step.href} className="landing-step"><span className="landing-step-number" aria-hidden>{step.no}</span><span><span className="block font-medium">{step.title}</span><span className="mt-2 block text-sm leading-relaxed text-muted-foreground">{step.description}</span><span className="mt-3 inline-flex items-center gap-2 text-sm text-primary">Buka fitur<ArrowRight className="size-4" aria-hidden /></span></span></Link></li>)}</ol>
+          <ol start={stage.steps[0].no}>{stage.steps.map(step => <li key={step.href}><Link href={step.href} className="landing-step" aria-label={`Buka ${step.title}`}><span className="landing-step-number" aria-hidden>{step.no}</span><span className="font-medium">{step.title}</span><ArrowRight className="ml-auto size-4 shrink-0 text-primary" aria-hidden /></Link></li>)}</ol>
         </div>)}</div>
       </section>
       <section className="landing-example" aria-labelledby="example-title">

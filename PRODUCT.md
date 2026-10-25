@@ -32,7 +32,9 @@ Penggunaan utama saat ini adalah simulasi pekerjaan HSE harian dengan seluruh da
 
 Nama TERMA dipertahankan. Pada 25 Oktober 2026 pengguna menyetujui penggantian identitas Heritage dengan Atmosphere, lalu penyederhanaan pengantar produk, alur HSE–mandor–HSE, dan prioritas kerja harian. Perluasan dashboard yang disetujui menambahkan sidebar serta pemantauan zona langsung. Wordmark teks dipakai sementara menunggu logo tim. Isi medis dan angka referensi visual bukan data produk dan tidak boleh disalin sebagai fakta.
 
-Penyempurnaan terbaru pada 25 Oktober 2026 mengikuti screenshot PlanetScale untuk layout dan kerapian komponen. Pengguna menegaskan “Tetap biru, fokus layout PlanetScale”: aksen biru dipertahankan, dengan sidebar pucat, kanvas putih, panel solid, sudut ringkas, dan Plus Jakarta Sans. Skema zona memakai interaksi isometrik yang tetap berfungsi dengan reduced motion. Komposisi serta aset landing dipertahankan; font dan token bersama mengikuti penyempurnaan ini. Komitmen ini menggantikan arahan font, sidebar gelap, dan gradasi dari iterasi sebelumnya tanpa mengubah makna data atau alur kerja.
+Ruang kerja mempertahankan penyempurnaan layout yang disetujui dari referensi PlanetScale: aksen biru, sidebar pucat, kanvas putih, panel solid, dan sudut ringkas. Skema zona memakai interaksi isometrik yang tetap berfungsi dengan reduced motion. Arahan terbaru pada 25 Oktober 2026 mengganti font bersama menjadi Open Sans untuk isi, kontrol, data, dan sebagian besar judul; Roboto Slab dipakai terbatas pada dua judul aksen di landing. Arahan ini menggantikan pilihan Plus Jakarta Sans sebelumnya.
+
+Landing kini mengikuti hierarki layout referensi Cloudflare: header putih, hero biru dominan dengan pesan ringkas dan CTA ke ruang kerja demo, lalu ilustrasi lokasi interaktif, peran, alur kerja, contoh, batas simulasi, FAQ, dan ajakan akhir. Komposisinya menonjolkan produk sebagai aplikasi yang dapat dicoba, bukan halaman dokumentasi panjang. Bahasa, konten, dan klaim tetap milik TERMA; angka atau janji dari referensi visual tidak menjadi fakta produk. Perubahan ini tidak mengubah makna data maupun alur kerja.
 
 ## Evidence on Hand
 

@@ -1,10 +1,11 @@
 import type { Metadata } from "next"
-import { Plus_Jakarta_Sans } from "next/font/google"
+import { Open_Sans, Roboto_Slab } from "next/font/google"
 import "./globals.css"
 import { AppShell } from "@/components/app-shell"
 import { AppProvider } from "@/lib/store"
 
-const jakarta = Plus_Jakarta_Sans({ variable: "--font-jakarta", subsets: ["latin"], display: "swap" })
+const openSans = Open_Sans({ variable: "--font-open-sans", subsets: ["latin"], display: "swap" })
+const robotoSlab = Roboto_Slab({ variable: "--font-roboto-slab", subsets: ["latin"], display: "swap" })
 
 export const metadata: Metadata = {
   title: "TERMA · Asisten pengelolaan paparan panas kerja",
@@ -13,7 +14,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="id" className={jakarta.variable}>
+    <html lang="id" className={`${openSans.variable} ${robotoSlab.variable}`}>
       <body className="antialiased">
         <AppProvider>
           <AppShell>{children}</AppShell>
