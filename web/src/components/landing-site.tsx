@@ -33,7 +33,7 @@ export function LandingSite() {
         <span className="site-choice-number" aria-hidden>{active === index ? <Check size={14} /> : index + 1}</span>{item.name}
       </button>)}
     </div>
-    <div id="site-area-detail" className="landing-site-detail" aria-live="polite" aria-atomic="true">
+    <div id="site-area-detail" key={active} className="landing-site-detail" aria-live="polite" aria-atomic="true">
       <h2>{area.title}</h2>
       <p>{area.description}</p>
       <Link href={area.href}>{area.action}<ArrowRight size={16} aria-hidden /></Link>

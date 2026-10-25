@@ -176,7 +176,7 @@ components:
 
 Atmosphere adalah ruang kerja yang tenang untuk membaca paparan panas dan menentukan tindak lanjut. Ruang kerja mempertahankan kanvas putih, sidebar netral pucat, garis tipis, sudut ringkas, dan aksen biru. Open Sans menjadi suara utama seluruh antarmuka; Roboto Slab muncul hanya pada dua penekanan besar di landing. Logo TERMA Heatwave dari pengguna dipakai sebagai identitas di pengantar dan ruang kerja.
 
-Warna zona membantu mengenali area; status tindakan, kualitas sumber, dan asal data tetap terpisah. Bahasa antarmuka tetap Bahasa Indonesia. Skema isometrik memberi umpan balik pilihan tanpa menyatakan lokasi nyata atau pelacakan pekerja. Landing kini memakai header putih dan hero biru dominan yang langsung mengarah ke ruang kerja demo, disusul ilustrasi lokasi interaktif, peran, alur, contoh, batas demo, dan FAQ. Susunan ini mengikuti hierarki referensi Cloudflare tanpa meminjam klaim atau kontennya.
+Warna zona membantu mengenali area; status tindakan, kualitas sumber, dan asal data tetap terpisah. Bahasa antarmuka tetap Bahasa Indonesia. Skema isometrik memberi umpan balik pilihan tanpa menyatakan lokasi nyata atau pelacakan pekerja. Landing kini memakai header putih dan hero biru dominan dengan contoh alur interaktif, disusul ilustrasi lokasi interaktif, peran, alur, contoh, batas demo, dan FAQ. Susunan ini mengikuti hierarki referensi Cloudflare tanpa meminjam klaim atau kontennya.
 
 **Key Characteristics:**
 
@@ -185,6 +185,7 @@ Warna zona membantu mengenali area; status tindakan, kualitas sumber, dan asal d
 - Biru untuk tindakan dan pilihan; warna zona tidak menyatakan risiko.
 - Kontrol ringkas, fokus keyboard terlihat, dan rincian bertahap.
 - Isometri bergerak mengikuti pilihan; reduced motion menghapus transisinya.
+- Dashboard menonjolkan rencana, pekerja, dan cakupan bacaan sesuai lingkup peran; laporan memakai grafik status, tindak lanjut, dan matriks kualitas sumber dengan label di setiap nilai.
 
 Frontmatter adalah ringkasan normatif dari `web/src/app/globals.css`, `layout.tsx`, dan komponen yang telah dibangun. Ekstensi serta contoh mandiri ada di `.impeccable/design.json`; kontrak komposisi Dashboard dan landing ada di `.impeccable/surfaces/`. Gradasi biru adalah perlakuan khusus hero landing; ruang kerja tetap memakai permukaan solid.
 

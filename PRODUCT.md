@@ -36,6 +36,8 @@ Ruang kerja mempertahankan penyempurnaan layout yang disetujui dari referensi Pl
 
 Landing kini mengikuti hierarki layout referensi Cloudflare: header putih, hero biru dominan dengan pesan ringkas dan CTA ke ruang kerja demo, lalu ilustrasi lokasi interaktif, peran, alur kerja, contoh, batas simulasi, FAQ, dan ajakan akhir. Komposisinya menonjolkan produk sebagai aplikasi yang dapat dicoba, bukan halaman dokumentasi panjang. Bahasa, konten, dan klaim tetap milik TERMA; angka atau janji dari referensi visual tidak menjadi fakta produk. Perubahan ini tidak mengubah makna data maupun alur kerja.
 
+Penyempurnaan visual berikutnya menambahkan contoh alur yang bergerak dan bisa dipilih di hero, ringkasan shift berbasis data peran di dashboard, serta grafik status rencana, tahap tindak lanjut, dan matriks kualitas bacaan di laporan. Semua angka mengikuti tanggal dan lingkup pengguna yang aktif; visual sumber tidak menyatakan tingkat risiko atau data langsung. Animasi dapat dihentikan dan menghormati reduced motion.
+
 ## Evidence on Hand
 
 README.md, web/src/lib/types.ts, config.ts, store.tsx, rules.ts dan seed-data.ts adalah bukti domain/implementasi. Belum ada denah proyek nyata: visualisasi lokasi harus berlabel skema simulasi atau koordinat contoh, bukan posisi lapangan nyata atau pelacakan langsung.

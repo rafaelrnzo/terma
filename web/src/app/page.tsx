@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Wordmark } from "@/components/wordmark"
 import { LandingHandoff } from "@/components/landing-handoff"
 import { LandingMotion } from "@/components/landing-motion"
+import { LandingHeroFlow } from "@/components/landing-hero-flow"
 import { LandingSite } from "@/components/landing-site"
 import { QualityBadge, StatusChip } from "@/components/status"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
@@ -77,6 +78,7 @@ export default function Home() {
           <Button asChild size="lg" className="intro-hero-action"><Link href="/ringkasan">Masuk ke ruang kerja<ArrowRight className="shrink-0" aria-hidden /></Link></Button>
           <p className="intro-hero-note">Coba dengan data simulasi. Bukan untuk keputusan operasional.</p>
         </div>
+        <LandingHeroFlow />
         <div className="intro-hero-track" aria-hidden="true"><span>Data lapangan</span><i /><span>Rencana HSE</span><i /><span>Pelaksanaan regu</span></div>
       </section>
       <section className="landing-product" aria-labelledby="product-title">

@@ -2,19 +2,19 @@
 
 import { Printer } from "lucide-react"
 import { PageHeader } from "@/components/app-shell"
-import { LifecycleBadge, OriginBadge, QualityBadge, StatusChip } from "@/components/status"
+import { OriginBadge, QualityBadge, StatusChip } from "@/components/status"
 import { Stat } from "@/components/stat"
+import { ReportVisuals } from "@/components/report-visuals"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { ATURAN_FIXTURE, JAM_SHIFT, LOKASI, ZONA } from "@/lib/config"
 import { kualitasBacaan, rentangJam } from "@/lib/rules"
 import { kandidatUntuk, rencanaAktif, rencanaTanggal, useApp } from "@/lib/store"
-import type { ActionLifecycle, ActionStatus } from "@/lib/types"
+import type { ActionStatus } from "@/lib/types"
 import { scopedWorkspace } from "@/lib/workspace"
 
 const STATUSES: ActionStatus[] = ["RENCANA_TERSEDIA", "ADAPTASI_DIPERLUKAN", "TINJAU_HSE", "BATASI_ATAU_PINDAHKAN"]
-const LIFE: ActionLifecycle[] = ["DIBUAT", "DISAMPAIKAN", "DIAKUI", "TINDAKAN_DILAPORKAN", "TERVERIFIKASI", "BELUM_SELESAI"]
 
 export default function LaporanPage() {
   const { state: workspace, user } = useApp()
@@ -47,7 +47,7 @@ export default function LaporanPage() {
       </div>
 
       <div className="space-y-6">
-        <Card className="accent-summary border-0 bg-[image:var(--panel-accent)]">
+        <Card className="accent-summary report-summary border-0 bg-[image:var(--panel-accent)]">
           <CardHeader>
             <CardTitle>Laporan shift TERMA · {LOKASI}</CardTitle>
             <CardDescription>
@@ -55,7 +55,7 @@ export default function LaporanPage() {
               Dicetak {new Date().toLocaleString("id-ID")}.
             </CardDescription>
           </CardHeader>
-          <CardContent className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+          <CardContent className="grid grid-cols-2 gap-4 xl:grid-cols-4">
             {STATUSES.map((s) => (
               <div key={s} className="border-t pt-4">
                 <StatusChip status={s} />
@@ -65,6 +65,8 @@ export default function LaporanPage() {
             ))}
           </CardContent>
         </Card>
+
+        <ReportVisuals state={state} plans={aktif} actions={jatuhTempo} />
 
         <Card>
           <CardHeader>
@@ -77,11 +79,6 @@ export default function LaporanPage() {
               <Stat label={`Terverifikasi, dari ${jatuhTempo.length} tindakan jatuh tempo`} value={`${terverifikasi.length} / ${jatuhTempo.length}`} />
               <Stat label="Dibatalkan karena perubahan rencana" value={dibatalkan.length} />
               <Stat label="Pesan gagal (belum tersampaikan)" value={state.pengiriman.filter((p) => p.status === "GAGAL").length} />
-            </div>
-            <div className="flex flex-wrap gap-3 text-sm">
-              {LIFE.map((l) => (
-                <span key={l} className="flex items-center gap-1.5"><LifecycleBadge status={l} /> {jatuhTempo.filter((t) => t.status === l).length}</span>
-              ))}
             </div>
           </CardContent>
         </Card>

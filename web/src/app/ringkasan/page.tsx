@@ -5,6 +5,7 @@ import { ArrowRight } from "lucide-react"
 import { DemoSeed } from "@/components/demo-seed"
 import { HeatMonitor } from "@/components/heat-monitor"
 import { DashboardTour } from "@/components/dashboard-tour"
+import { DashboardSnapshot } from "@/components/dashboard-snapshot"
 import { Button } from "@/components/ui/button"
 import { lingkupPekerja } from "@/lib/access"
 import { rencanaAktif, useApp } from "@/lib/store"
@@ -23,6 +24,7 @@ export default function TodayPage() {
   return <>
     <div className="today-heading"><div><h1 className="font-heading text-3xl font-medium">Pekerjaan hari ini</h1><p className="mt-2 text-sm text-muted-foreground">{tanggalLabel(state.tanggal)} · {user.nama}{user.role === "MANDOR" ? " · Regu " + user.reguKode : " · Seluruh lokasi"}</p></div><DashboardTour /></div>
     {state.pekerja.length === 0 && <DemoSeed />}
+    <DashboardSnapshot />
     <section className="today-priority" aria-labelledby="priority-title" data-tour="priority">
       <div><h2 id="priority-title" className="font-heading text-lg font-semibold">{next.label}</h2><p className="mt-1 text-sm font-medium">{next.progress}</p><p className="mt-1 max-w-prose text-sm text-muted-foreground">{STEP_OUTCOMES[next.href]}</p></div>
       <Button asChild size="lg"><Link href={next.href}>Lanjutkan pekerjaan<ArrowRight aria-hidden /></Link></Button>
