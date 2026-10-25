@@ -77,7 +77,7 @@ export function LifecycleBadge({ status }: { status: ActionLifecycle }) {
 export function DeliveryBadge({ status }: { status: DeliveryStatus }) {
   return (
     <Badge variant="outline" className={cn("rounded-sm", status === "GAGAL" && "border-destructive text-destructive")}>
-      {status === "DIBAGIKAN_MANUAL" ? "DIBAGIKAN MANUAL" : status === "GAGAL" ? "GAGAL — belum tersampaikan" : "TERKIRIM"}
+      {status === "DIBAGIKAN_MANUAL" ? "DIBAGIKAN MANUAL" : status === "GAGAL" ? "GAGAL · belum tersampaikan" : "TERKIRIM"}
     </Badge>
   )
 }

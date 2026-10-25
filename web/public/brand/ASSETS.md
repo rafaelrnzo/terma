@@ -1,5 +1,12 @@
 # TERMA logo concept
 
+## Current blue version
+
+- Asset: `terma-logo-blue.png`, transparent PNG.
+- Palette-only edit made with the built-in Imagegen tool on 25 October 2026. The original green concept remains archived below.
+- This asset is not yet installed as the application wordmark.
+- Prompt: Edit the supplied TERMA logo. Palette-only change. Preserve exactly the T canopy symbol, sun disk, lowercase wordmark 'terma.', typography, spacing, silhouette, lockup, and wide proportions. Change the green emblem to solid royal blue #1d4ed8, the dark green wordmark to solid navy #172b4d, and the sun disk and final period to medium sky blue #609bd8. Use crisp flat solid color fills without gradients, shadows, texture or halos. Preserve genuinely transparent alpha background, with no painted checkerboard and no background rectangle. No extra text, no other design changes.
+
 - File: `terma-logo-v1.png`.
 - Created with the built-in Imagegen tool on 25 October 2026.
 - Transparent PNG concept; not a vector master.

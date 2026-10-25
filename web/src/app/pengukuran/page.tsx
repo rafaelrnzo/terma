@@ -85,7 +85,7 @@ export default function PengukuranPage() {
                         className="px-1 text-center align-top"
                         title={reading ? `${reading.idAlat} · ${reading.pencatat} · diambil ${new Date(reading.waktuCatat).toLocaleString("id-ID")} (${usiaBacaanMenit(reading)} mnt sebelum interval)` : undefined}
                       >
-                        <div className={`text-sm font-semibold tabular-nums ${reading && reading.isbb >= 31 ? "text-status-batasi" : ""}`}>{reading ? `${fmt(reading.isbb)}°` : "—"}</div>
+                        <div className={`text-sm font-semibold tabular-nums ${reading && reading.isbb >= 31 ? "text-status-batasi" : ""}`}>{reading ? `${fmt(reading.isbb)}°` : "Belum diukur"}</div>
                         <div className="mt-1 flex justify-center">
                           <QualityBadge kualitas={kualitas} className="text-xs" />
                         </div>

@@ -82,7 +82,7 @@ export function RencanaCard({ r, mode = "hse" }: { r: Rencana; mode?: "hse" | "m
             {r.intervals.map((iv) => (
               <TableRow key={iv.jamMulai} className={iv.barisNab === null ? "bg-muted/60" : undefined} title={iv.catatan}>
                 <TableCell className="tabular-nums">{rentangJam(iv.jamMulai)}</TableCell>
-                <TableCell className="tabular-nums">{iv.isbb !== null ? `${fmt(iv.isbb)}°C` : "—"}</TableCell>
+                <TableCell className="tabular-nums">{iv.isbb !== null ? `${fmt(iv.isbb)}°C` : "Belum tersedia"}</TableCell>
                 <TableCell><QualityBadge kualitas={iv.kualitas} /></TableCell>
                 <TableCell className="text-xs">
                   {iv.barisNab ?? <span className="font-medium text-status-batasi">{iv.isbb !== null && (iv.kualitas === "TERUKUR" || iv.kualitas === "REPLAY") ? "tidak ada alokasi" : "perlu pengukuran"}</span>}

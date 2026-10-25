@@ -40,7 +40,7 @@ export default function TindakanPage() {
     <RoleHint peran={user?.role === "HSE" ? ["HSE"] : ["MANDOR"]} />
 
     {daftar.length === 0 ? <WorkflowEmpty title="Belum ada tindakan untuk shift ini" href="/rencana" label="Buka rencana & persetujuan">Tindakan dibuat saat HSE menyetujui rencana. Setelah instruksi diakui, mandor dapat mencatat pelaksanaannya.</WorkflowEmpty> : <>
-      <section className="green-summary mb-6 rounded-xl bg-[image:var(--panel-green)] p-6" aria-label="Ringkasan tindak lanjut">
+      <section className="accent-summary mb-6 rounded-xl bg-[image:var(--panel-accent)] p-6" aria-label="Ringkasan tindak lanjut">
         <dl className="grid grid-cols-3 gap-4">
           {[["Seluruh tindakan", daftar.length], ["Perlu verifikasi", daftar.filter((t) => kelompok(t) === "VERIFIKASI").length], ["Terverifikasi", daftar.filter((t) => kelompok(t) === "TERVERIFIKASI").length]].map(([label, value]) => <div key={label}><dt className="text-xs text-muted-foreground">{label}</dt><dd className="mt-2 font-heading text-3xl font-medium tabular-nums">{value}</dd></div>)}
         </dl>
@@ -70,7 +70,7 @@ export default function TindakanPage() {
                 </div>
                 <div className="space-y-4">
                   <dl className="grid grid-cols-3 gap-2 rounded-md bg-background p-3">
-                    {[["Dirancang", t.menitDirencanakan], ["Dilaporkan", t.menitDilaporkan], ["Diverifikasi", t.menitDiverifikasi]].map(([label, value]) => <div key={label}><dt className="text-xs text-muted-foreground">{label}</dt><dd className="mt-1 font-heading text-xl font-medium tabular-nums">{value ?? "—"}<span className="ml-1 text-xs font-normal text-muted-foreground">{value !== undefined ? "mnt" : ""}</span></dd></div>)}
+                    {[["Dirancang", t.menitDirencanakan], ["Dilaporkan", t.menitDilaporkan], ["Diverifikasi", t.menitDiverifikasi]].map(([label, value]) => <div key={label}><dt className="text-xs text-muted-foreground">{label}</dt><dd className={`mt-1 font-heading font-medium tabular-nums ${value !== undefined ? "text-xl" : "text-sm"}`}>{value ?? "Belum tersedia"}<span className="ml-1 text-xs font-normal text-muted-foreground">{value !== undefined ? "mnt" : ""}</span></dd></div>)}
                   </dl>
                   <div className="no-print flex flex-wrap items-center gap-2 xl:justify-end">
                     {izin("LAPOR_TINDAKAN", t.reguKode) && ["DIAKUI", "TINDAKAN_DILAPORKAN"].includes(t.status) && !dibatalkan.has(t.rencanaId) && <LaporDialog t={t} />}
@@ -174,7 +174,7 @@ function VerifikasiDialog({ t }: { t: Tindakan }) {
         <div className="space-y-1">
           <Label htmlFor="mv">Menit paparan yang diverifikasi HSE</Label>
           <Input id="mv" type="number" min={0} max={480} value={menit} onChange={(e) => setMenit(e.target.value)} />
-          <p className="text-xs text-muted-foreground">Dirancang {t.menitDirencanakan} · dilaporkan {t.menitDilaporkan ?? "—"}</p>
+          <p className="text-xs text-muted-foreground">Dirancang {t.menitDirencanakan} · dilaporkan {t.menitDilaporkan ?? "Belum tersedia"}</p>
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => kirim("BELUM_SELESAI")}>Tandai belum selesai</Button>

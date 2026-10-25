@@ -67,7 +67,7 @@ function KartuRegu({ reguKode }: { reguKode: string }) {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2"><MessageSquare className="size-4" /> {g.nama}</CardTitle>
-        <CardDescription>Versi rencana: {rencanaIds.length ? rencanaIds.join(", ") : "—"}</CardDescription>
+        <CardDescription>Versi rencana: {rencanaIds.length ? rencanaIds.join(", ") : "Belum tersedia"}</CardDescription>
       </CardHeader>
       <CardContent className="grid items-start gap-6 xl:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
         <div className="space-y-4">

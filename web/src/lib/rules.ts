@@ -275,7 +275,7 @@ export function hitungRencana(input: InputRencana): HasilRencana {
         barisNab: null,
         kerjaMaksMenit: 0,
         kerjaDirencanakan: 0,
-        catatan: `ISBB ${fmt(isbb)}°C melewati NAB tertinggi (0–25%) ${nabMaks !== undefined ? fmt(nabMaks) + "°C" : "—"} untuk beban ${tugas.beban.toLowerCase()}: tidak ada alokasi.`,
+        catatan: `ISBB ${fmt(isbb)}°C melewati NAB tertinggi (0–25%) ${nabMaks !== undefined ? fmt(nabMaks) + "°C" : "Belum tersedia"} untuk beban ${tugas.beban.toLowerCase()}: tidak ada alokasi.`,
       }
     }
     return {

@@ -4,7 +4,7 @@
 
 import type { Aturan, Regu, Tugas, User, Zona } from "./types"
 
-export const LOKASI = "Proyek Gedung — Lokasi 1"
+export const LOKASI = "Proyek Gedung · Lokasi 1"
 export const NORMAL_PAPARAN_MENIT = 480 // planned normal exposure: 8 hours
 export const JAM_SHIFT = [8, 9, 10, 11, 12, 13, 14, 15] // hourly intervals 08.00–16.00
 /**

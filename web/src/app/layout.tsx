@@ -8,7 +8,7 @@ const inter = Inter({ variable: "--font-inter", subsets: ["latin"] })
 const manrope = Manrope({ variable: "--font-manrope", subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "TERMA — Asisten pengelolaan paparan panas kerja",
+  title: "TERMA · Asisten pengelolaan paparan panas kerja",
   description: "Rencana kerja panas yang bisa ditindaklanjuti mandor dan ditinjau HSE.",
 }
 

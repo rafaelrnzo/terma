@@ -17,7 +17,13 @@ const key = 'terma-demo-v2';
     await context.addInitScript(() => { if (!localStorage.getItem('terma-v1')) localStorage.setItem('terma-v1', 'legacy-untouched'); });
     const page = await context.newPage();
     const errors = []; page.on('pageerror', e => errors.push(e.message));
-    const go = async route => { await page.goto(base + route); await page.locator('main h1').waitFor(); };
+    const go = async route => {
+      await page.goto(base + route);
+      await page.locator('main h1').waitFor();
+      assert.equal((await page.locator('body').innerText()).includes(String.fromCodePoint(0x2014)), false, 'Unexpected em dash: ' + route);
+      assert.equal(await page.evaluate(() => getComputedStyle(document.body).getPropertyValue('--primary').trim()), '#285ea8');
+      assert.equal(await page.evaluate(() => getComputedStyle(document.body).backgroundColor), route === '/' ? 'rgb(247, 249, 252)' : 'rgb(255, 255, 255)');
+    };
     const state = () => page.evaluate(k => JSON.parse(localStorage.getItem(k)), key);
     const user = async name => { await page.getByRole('combobox', { name: 'Pengguna', exact: true }).click(); await page.getByRole('option', { name: new RegExp(name) }).click(); };
     const close = async () => { await page.keyboard.press('Escape'); await page.getByRole('dialog').waitFor({ state: 'hidden' }); };

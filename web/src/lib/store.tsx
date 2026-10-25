@@ -89,7 +89,7 @@ export const userById = (id?: string): User | null => USERS.find((u) => u.id ===
 const aktor = (s: AppState) => userById(s.sesi?.userId)
 
 function audit(s: AppState, aksi: string, detail: string, nama?: string): AppState {
-  return { ...s, audit: [{ waktu: now(), aktor: nama ?? aktor(s)?.nama ?? "—", aksi, detail: s.demo ? `[SIMULASI] ${detail}` : detail }, ...s.audit] }
+  return { ...s, audit: [{ waktu: now(), aktor: nama ?? aktor(s)?.nama ?? "Belum tersedia", aksi, detail: s.demo ? `[SIMULASI] ${detail}` : detail }, ...s.audit] }
 }
 function notice(s: AppState, tipe: "ok" | "error" | "info", pesan: string): AppState {
   return { ...s, notice: { id: ++noticeSeq, tipe, pesan } }
@@ -202,7 +202,7 @@ function imporPengukuran(s: AppState, csv: string, source: string): AppState {
     else if (isNaN(Date.parse(waktu))) return tolak(`Waktu catat tidak valid: ${waktuCatat}`)
     return {
       kunci: `${zona}|${tgl}|${jam}`,
-      nilai: { zonaKode: zona, tanggal: tgl, jamMulai: jam, isbb, idAlat, pencatat: pencatat || "—", kalibrasi: kalibrasi || "—", origin: jenis === "REPLAY" ? "REPLAY" : "AKTUAL", waktuCatat: waktu },
+      nilai: { zonaKode: zona, tanggal: tgl, jamMulai: jam, isbb, idAlat, pencatat: pencatat || "Belum tersedia", kalibrasi: kalibrasi || "Belum tersedia", origin: jenis === "REPLAY" ? "REPLAY" : "AKTUAL", waktuCatat: waktu },
     }
   })
   if (kosong) return notice(s, "error", "Berkas kosong atau hanya berisi header.")
@@ -226,7 +226,7 @@ function imporPrakiraan(s: AppState, csv: string, source: string): AppState {
     const lembab = angka(lembabS)
     if (!isFinite(suhu) || !isFinite(lembab)) return tolak("Suhu atau kelembapan bukan angka")
     if (!produksi || isNaN(Date.parse(produksi))) return tolak(`Waktu produksi tidak valid: ${produksi}`)
-    return { kunci: `${tgl}|${jam}`, nilai: { tanggal: tgl, lokasi: lokasi || "—", jamMulai: jam, intervalJam: interval, suhu, kelembapan: lembab, waktuProduksi: produksi } }
+    return { kunci: `${tgl}|${jam}`, nilai: { tanggal: tgl, lokasi: lokasi || "Belum tersedia", jamMulai: jam, intervalJam: interval, suhu, kelembapan: lembab, waktuProduksi: produksi } }
   })
   if (kosong) return notice(s, "error", "Berkas kosong atau hanya berisi header.")
   const map = new Map(s.prakiraan.map((p) => [`${p.tanggal}|${p.jamMulai}`, p]))
@@ -309,12 +309,12 @@ export function isiPesan(s: AppState, reguKode: string): { teks: string; rencana
   const sumber = [...new Set(rs.map((r) => `${namaZona(r.zonaKode)}: ${r.kualitas.replace(/_/g, " ")}`))].join("; ")
   const baris = rs.map((r) => {
     const p = s.pekerja.find((x) => x.kode === r.pekerjaKode)!
-    return `• ${p.nama} — ${r.status.replace(/_/g, " ")}. ${deskripsiTindakan(r, p).join(" ")}`
+    return `• ${p.nama} · ${r.status.replace(/_/g, " ")}. ${deskripsiTindakan(r, p).join(" ")}`
   })
   const teks = [
-    ...(s.demo ? ["DATA DEMO / SIMULASI — bukan instruksi operasional. Jangan digunakan untuk penugasan nyata."] : []),
-    `TERMA — ${regu.nama}, ${LOKASI}, ${s.tanggal}.`,
-    `Sumber: ${sumber || "—"}; aturan ${ATURAN_FIXTURE.versi}${ATURAN_FIXTURE.isFixture ? " (belum disahkan)" : ""}.`,
+    ...(s.demo ? ["DATA DEMO / SIMULASI · bukan instruksi operasional. Jangan digunakan untuk penugasan nyata."] : []),
+    `TERMA · ${regu.nama}, ${LOKASI}, ${s.tanggal}.`,
+    `Sumber: ${sumber || "Belum tersedia"}; aturan ${ATURAN_FIXTURE.versi}${ATURAN_FIXTURE.isFixture ? " (belum disahkan)" : ""}.`,
     ...baris,
     "Mohon akui penerimaan di TERMA lalu catat tindakan dan waktunya. Pengakuan pesan belum berarti tindakan terlaksana.",
     "Pesan ini tidak menyatakan pekerja sehat atau aman secara medis. Keluhan atau dugaan darurat: ikuti SOP lokasi, jangan menunggu aplikasi.",
@@ -384,7 +384,7 @@ function inner(s: AppState, a: Action): AppState {
     }
     case "INPUT_BACAAN": {
       const u = aktor(s)!
-      const r: PengukuranWBGT = { zonaKode: a.zonaKode, tanggal: s.tanggal, jamMulai: a.jamMulai, isbb: a.isbb, idAlat: a.idAlat, pencatat: u.nama, kalibrasi: a.kalibrasi || "—", origin: "MANUAL", waktuCatat: now() }
+      const r: PengukuranWBGT = { zonaKode: a.zonaKode, tanggal: s.tanggal, jamMulai: a.jamMulai, isbb: a.isbb, idAlat: a.idAlat, pencatat: u.nama, kalibrasi: a.kalibrasi || "Belum tersedia", origin: "MANUAL", waktuCatat: now() }
       const bacaan = [...s.bacaan.filter((b) => !(b.zonaKode === a.zonaKode && b.tanggal === s.tanggal && b.jamMulai === a.jamMulai)), r]
       const n = audit({ ...s, bacaan }, "PENGUKURAN", `Input manual ${namaZona(a.zonaKode)} ${s.tanggal} ${rentangJam(a.jamMulai)}: ISBB ${a.isbb}°C (${a.idAlat})`)
       return recompute(notice(n, "ok", "Bacaan WBGT dicatat."))
@@ -451,7 +451,7 @@ function inner(s: AppState, a: Action): AppState {
       const tindakan = s.tindakan.map((x) =>
         x.id === t.id ? { ...x, status: "TINDAKAN_DILAPORKAN" as const, dijalankan: a.dijalankan, pelaksana: a.pelaksana, waktuTindakan: a.waktu, menitDilaporkan: a.menit, alasanTidakDijalankan: a.alasan } : x,
       )
-      const n = audit({ ...s, tindakan }, "LAPOR_TINDAKAN", `${t.id}: ${a.dijalankan ? "dijalankan" : "tidak dijalankan — " + a.alasan} (${a.menit} menit paparan dilaporkan)`)
+      const n = audit({ ...s, tindakan }, "LAPOR_TINDAKAN", `${t.id}: ${a.dijalankan ? "dijalankan" : "tidak dijalankan · " + a.alasan} (${a.menit} menit paparan dilaporkan)`)
       return notice(n, "ok", t.status === "TINDAKAN_DILAPORKAN" ? "Laporan diperbarui (tidak digandakan)." : "Tindakan dilaporkan. Menunggu verifikasi HSE.")
     }
     case "VERIFIKASI": {

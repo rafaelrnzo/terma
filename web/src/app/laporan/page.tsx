@@ -47,9 +47,9 @@ export default function LaporanPage() {
       </div>
 
       <div className="space-y-6">
-        <Card className="green-summary border-0 bg-[image:var(--panel-green)]">
+        <Card className="accent-summary border-0 bg-[image:var(--panel-accent)]">
           <CardHeader>
-            <CardTitle>Laporan shift TERMA — {LOKASI}</CardTitle>
+            <CardTitle>Laporan shift TERMA · {LOKASI}</CardTitle>
             <CardDescription>
               Tanggal rencana {state.tanggal} · aturan {ATURAN_FIXTURE.versi}{ATURAN_FIXTURE.isFixture ? " (belum disahkan sebagai aturan operasional)" : ""}.
               Dicetak {new Date().toLocaleString("id-ID")}.

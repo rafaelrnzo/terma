@@ -10,7 +10,7 @@ import { QualityBadge, StatusChip } from "@/components/status"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 
 export const metadata: Metadata = {
-  title: "TERMA — Kenali alur pengelolaan paparan panas kerja",
+  title: "TERMA · Kenali alur pengelolaan paparan panas kerja",
   description: "Kenali fitur dan alur TERMA: data pekerja, adaptasi, pengukuran panas, rencana kerja-istirahat, instruksi mandor, verifikasi, dan laporan. Coba dengan data simulasi.",
 }
 
@@ -73,7 +73,7 @@ export default function Home() {
       <section className="intro-hero" aria-labelledby="intro-title">
         <div className="intro-copy">
           <h1 id="intro-title">Panas di lapangan.<br /><span className="text-primary">Rencana yang jelas.</span></h1>
-          <p className="intro-description">TERMA membantu petugas HSE dan mandor mengatur paparan panas pekerja—dari meninjau kondisi lapangan, menyusun rencana kerja-istirahat, hingga memeriksa pelaksanaannya.</p>
+          <p className="intro-description">TERMA membantu petugas HSE dan mandor mengatur paparan panas pekerja, mulai dari meninjau kondisi lapangan, menyusun rencana kerja-istirahat, hingga memeriksa pelaksanaannya.</p>
           <Button asChild size="lg" className="mt-8 h-auto min-h-12 whitespace-normal py-3"><Link href="/ringkasan">Masuk ke pekerjaan hari ini<ArrowRight className="shrink-0" aria-hidden /></Link></Button>
           <p className="mt-4 max-w-md text-sm leading-relaxed text-muted-foreground">Demo interaktif dengan data contoh. Coba sebagai HSE, lalu ganti peran menjadi mandor. Bukan untuk keputusan operasional.</p>
         </div>

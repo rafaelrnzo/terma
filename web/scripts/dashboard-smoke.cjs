@@ -70,7 +70,7 @@ const out = path.resolve(__dirname, '../../.impeccable/review/dashboard');
     // Date/role changes keep the map data honest, including missing readings.
     await page.locator('#tanggal').fill('2026-11-04');
     await page.getByRole('button', { name: /Pilih Zona Cor B/ }).click();
-    assert.match(await page.locator('.zone-readout').innerText(), /—/);
+    assert.match(await page.locator('.zone-readout').innerText(), /Belum diukur/);
     await page.getByRole('button', { name: /Profil panas & riwayat/ }).click();
     assert.match(await page.locator('main').innerText(), /Belum ada bacaan WBGT/);
     await page.getByRole('button', { name: 'Kembali ke tanggal demo' }).click();

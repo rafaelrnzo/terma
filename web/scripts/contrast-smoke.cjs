@@ -47,7 +47,7 @@ async function contrast(page, scope = 'body') {
     const pairs = [
       ['--input', '--card'], ['--input', '--background'], ['--input', '--secondary'],
       ['--ring', '--background'], ['--ring', '--card'],
-      ['--ring', '--zone-blue'], ['--ring', '--zone-lime'], ['--ring', '--zone-sage'],
+      ['--ring', '--zone-blue'], ['--ring', '--zone-ice'], ['--ring', '--zone-steel'],
       ['--sidebar-active', '--sidebar-background'], ['--sidebar-active', '--sidebar-hover'],
     ];
     const indicators = pairs.map(([a, b]) => ({ pair: a + '/' + b, ratio: +ratio(rgba(root.getPropertyValue(a)), rgba(root.getPropertyValue(b))).toFixed(2) }));

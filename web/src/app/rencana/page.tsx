@@ -71,7 +71,7 @@ export default function RencanaPage() {
 
       {state.rencanaDihitung && (
         <>
-          <Card className="green-summary mb-6 border-0 bg-[image:var(--panel-green)] py-0">
+          <Card className="accent-summary mb-6 border-0 bg-[image:var(--panel-accent)] py-0">
           <CardContent className="grid gap-x-6 gap-y-4 py-5 sm:grid-cols-2 xl:grid-cols-4">
             {URUT.map((s) => (
               <div key={s} className="flex flex-wrap items-center justify-between gap-3 sm:block">

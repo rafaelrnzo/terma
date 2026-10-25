@@ -1,5 +1,11 @@
 # Landing illustration
 
+## Current blue theme
+
+- Active asset: `terma-project-diorama-blue.png`.
+- Palette-only edit of the original scene, created with built-in Imagegen on 25 October 2026. The original below is retained as an archive and is no longer rendered.
+- Prompt: Edit the supplied TERMA construction-site illustration. Change only its branding palette from green/sage to blue. Preserve the exact isometric composition, building geometry, crane, people, positions, safety equipment, walkway, canopy, lighting, realistic scale-model materials, and framing. Recolor the green canopy, scaffold netting, fence panels and branded structural accents to muted medium blue and navy, coordinated with #1d4ed8 and #17345c. Change the pale sage backdrop to a very pale blue-gray #f2f6fc. Keep concrete neutral white/gray, natural foliage green and workers' high-visibility safety vests yellow-green. No text, labels, UI, logos, extra objects, cropping, or added effects. This is a palette-only edit for the same website hero.
+
 - Asset: `terma-project-diorama.png` (1536 × 1024).
 - Created: 25 October 2026, using the built-in Imagegen tool.
 - Purpose: a fictional construction-site diorama for the TERMA landing page, not a map, live monitoring view, or safety instruction.
