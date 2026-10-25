@@ -168,7 +168,10 @@ body:has(.app-frame, .app-loading) { --background: var(--card); }
 .app-sidebar .nav-item:hover { background: var(--sidebar-hover); color: var(--sidebar-foreground); }
 .app-sidebar .nav-item-active, .app-sidebar .nav-item-active:hover { background: var(--sidebar-active); color: var(--foreground); }
 .app-sidebar .sidebar-subroutes a[aria-current="page"] { background: var(--sidebar-hover); color: var(--primary); }
-.sidebar-brand .text-primary { color: var(--primary); }
+.brand-logo { display: inline-flex; width: fit-content; vertical-align: middle; }
+.brand-logo-frame { display: block; width: 170px; aspect-ratio: 1550 / 455; overflow: hidden; }
+.brand-logo-frame img { display: block; width: 134.06%; max-width: none; height: auto; transform: translate(-13.475%, -19.15%); mix-blend-mode: multiply; }
+.app-header .brand-logo-frame { width: 132px; }
 .app-header { padding: 16px 32px 0; }
 .workspace-breadcrumb { align-items: center; flex-wrap: wrap; gap: 12px; color: var(--muted-foreground); font-size: 12px; }
 .workspace-breadcrumb > span:nth-child(2) { color: var(--input); }
@@ -477,6 +480,7 @@ body:has(.app-frame, .app-loading) { --background: var(--card); }
 /* Landing composition: a focused product entry with the supplied Cloudflare layout as reference. */
 .intro-shell { max-width: none; padding: 0; background: #fff; }
 .intro-header { max-width: 1440px; min-height: 76px; margin: 0 auto; padding: 14px 28px; border-bottom: 0; }
+.intro-header .brand-logo-frame { width: 170px; }
 .intro-header .landing-nav { gap: 36px; }
 .intro-header .landing-nav a { color: var(--foreground); font-size: 13px; font-weight: 600; }
 .intro-header-action { border-color: var(--border); border-radius: 999px; }
@@ -547,6 +551,7 @@ body:has(.app-frame, .app-loading) { --background: var(--card); }
 }
 @media (max-width: 767px) {
   .intro-header { min-height: 64px; padding: 12px 20px; }
+  .intro-header .brand-logo-frame { width: 132px; }
   .intro-header .landing-nav { width: 100%; order: 3; gap: 24px; }
   .intro-header .landing-nav a { min-height: 32px; font-size: 12px; }
   .intro-header-action { min-height: 40px; padding: 8px 12px; font-size: 12px; }

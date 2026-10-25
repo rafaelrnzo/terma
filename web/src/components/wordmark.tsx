@@ -1,6 +1,8 @@
 import Link from "next/link"
+import Image from "next/image"
 
-/** Text identity while the team's custom logo is pending. No substitute emblem. */
 export function Wordmark({ href = "/ringkasan" }: { href?: string }) {
-  return <Link href={href} aria-label={href === "/" ? "TERMA · Tentang aplikasi" : "TERMA · Hari ini"} className="shrink-0 rounded-sm font-heading text-2xl font-semibold tracking-tight">terma<span className="text-primary">.</span></Link>
+  return <Link href={href} aria-label={href === "/" ? "TERMA · Tentang aplikasi" : "TERMA · Hari ini"} className="brand-logo shrink-0 rounded-sm">
+    <span className="brand-logo-frame"><Image src="/brand/terma-heatwave.png" alt="" width={2078} height={757} priority /></span>
+  </Link>
 }

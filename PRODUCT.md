@@ -30,7 +30,7 @@ Penggunaan utama saat ini adalah simulasi pekerjaan HSE harian dengan seluruh da
 
 ## Brand Commitments
 
-Nama TERMA dipertahankan. Pada 25 Oktober 2026 pengguna menyetujui penggantian identitas Heritage dengan Atmosphere, lalu penyederhanaan pengantar produk, alur HSE–mandor–HSE, dan prioritas kerja harian. Perluasan dashboard yang disetujui menambahkan sidebar serta pemantauan zona langsung. Wordmark teks dipakai sementara menunggu logo tim. Isi medis dan angka referensi visual bukan data produk dan tidak boleh disalin sebagai fakta.
+Nama TERMA dipertahankan. Pada 25 Oktober 2026 pengguna menyetujui penggantian identitas Heritage dengan Atmosphere, lalu penyederhanaan pengantar produk, alur HSE–mandor–HSE, dan prioritas kerja harian. Perluasan dashboard yang disetujui menambahkan sidebar serta pemantauan zona langsung. Logo TERMA Heatwave dari pengguna dipakai di header landing, sidebar ruang kerja, dan header mobile. Isi medis dan angka referensi visual bukan data produk dan tidak boleh disalin sebagai fakta.
 
 Ruang kerja mempertahankan penyempurnaan layout yang disetujui dari referensi PlanetScale: aksen biru, sidebar pucat, kanvas putih, panel solid, dan sudut ringkas. Skema zona memakai interaksi isometrik yang tetap berfungsi dengan reduced motion. Arahan terbaru pada 25 Oktober 2026 mengganti font bersama menjadi Open Sans untuk isi, kontrol, data, dan sebagian besar judul; Roboto Slab dipakai terbatas pada dua judul aksen di landing. Arahan ini menggantikan pilihan Plus Jakarta Sans sebelumnya.
 

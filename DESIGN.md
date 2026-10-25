@@ -174,7 +174,7 @@ components:
 
 **Creative North Star: "TERMA Atmosphere"**
 
-Atmosphere adalah ruang kerja yang tenang untuk membaca paparan panas dan menentukan tindak lanjut. Ruang kerja mempertahankan kanvas putih, sidebar netral pucat, garis tipis, sudut ringkas, dan aksen biru. Open Sans menjadi suara utama seluruh antarmuka; Roboto Slab muncul hanya pada dua penekanan besar di landing. Wordmark teks terma. dipertahankan sambil menunggu logo tim.
+Atmosphere adalah ruang kerja yang tenang untuk membaca paparan panas dan menentukan tindak lanjut. Ruang kerja mempertahankan kanvas putih, sidebar netral pucat, garis tipis, sudut ringkas, dan aksen biru. Open Sans menjadi suara utama seluruh antarmuka; Roboto Slab muncul hanya pada dua penekanan besar di landing. Logo TERMA Heatwave dari pengguna dipakai sebagai identitas di pengantar dan ruang kerja.
 
 Warna zona membantu mengenali area; status tindakan, kualitas sumber, dan asal data tetap terpisah. Bahasa antarmuka tetap Bahasa Indonesia. Skema isometrik memberi umpan balik pilihan tanpa menyatakan lokasi nyata atau pelacakan pekerja. Landing kini memakai header putih dan hero biru dominan yang langsung mengarah ke ruang kerja demo, disusul ilustrasi lokasi interaktif, peran, alur, contoh, batas demo, dan FAQ. Susunan ini mengikuti hierarki referensi Cloudflare tanpa meminjam klaim atau kontennya.
 
@@ -283,7 +283,7 @@ Input memakai card, garis input, dan ukuran di frontmatter. Teks (16px) pada mob
 
 Sidebar pucat memakai ikon dan label teks. Kelompok aktif memakai tint `sidebar-active`, tinta foreground, ikon primary, dan bobot semibold. Turunan aktif memakai primary pada sidebar-hover. Drawer/subnavigasi memakai tint aktif dengan teks primary. Gunakan `aria-current="page"` pada rute tepat. Navigasi memiliki transisi warna/latar (160ms), dinonaktifkan pada reduced motion.
 
-Sumber kelompok adalah `web/src/lib/navigation.ts`: Dashboard, Data lapangan, Rencana kerja, Tindak lanjut, dan Laporan. Panduan penggunaan dan Tentang TERMA berada di bagian pendamping. Drawer menutup setelah navigasi. Skip link muncul saat fokus. Wordmark menggunakan keluarga font bersama dan titik primary; tautannya menuju `/` di pengantar dan `/ringkasan` di ruang kerja.
+Sumber kelompok adalah `web/src/lib/navigation.ts`: Dashboard, Data lapangan, Rencana kerja, Tindak lanjut, dan Laporan. Panduan penggunaan dan Tentang TERMA berada di bagian pendamping. Drawer menutup setelah navigasi. Skip link muncul saat fokus. Logo pengguna tampil di header pengantar, sidebar, dan header ruang kerja mobile; tautannya menuju `/` di pengantar dan `/ringkasan` di ruang kerja.
 
 ### Zone overview and chart
 
