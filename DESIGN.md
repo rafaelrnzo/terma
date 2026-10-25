@@ -151,7 +151,7 @@ components:
 
 **Creative North Star: "TERMA Atmosphere"**
 
-Atmosphere adalah ruang kerja yang lapang untuk membaca paparan panas dan menentukan tindak lanjut. Permukaan kabut, panel putih lembut, judul Manrope yang ringan, dan bidang gradasi hijau–kuning mengikuti gabungan dua referensi yang disetujui pengguna. Navigasi atas mempertahankan orientasi lintas langkah; informasi operasional memperoleh ruang yang lebih besar daripada ornamen.
+Atmosphere adalah ruang kerja yang lapang untuk membaca paparan panas dan menentukan tindak lanjut. Permukaan kabut, panel putih lembut, judul Manrope yang ringan, dan bidang gradasi hijau–kuning mengikuti gabungan dua referensi yang disetujui pengguna. Navigasi atas mengelompokkan pekerjaan; konteks ringkas dan rincian yang dapat dibuka memberi ruang bagi tindakan utama. Identitas tampil sebagai wordmark teks terma. sambil menunggu logo tim.
 
 Warna zona membantu mengenali area, sedangkan status tindakan dan kualitas sumber tetap memiliki label tersendiri. Angka berasal dari data aplikasi pada tanggal, zona, interval, dan lingkup pengguna yang dipilih. Skema lokasi bersifat ilustratif; tampilannya tidak menyatakan posisi geografis atau pelacakan langsung. Bahasa antarmuka tetap Bahasa Indonesia.
 
@@ -161,9 +161,11 @@ Warna zona membantu mengenali area, sedangkan status tindakan dan kualitas sumbe
 - Manrope untuk judul dan angka utama, Inter untuk pekerjaan sehari-hari.
 - Gradasi hijau, biru, dan pasir sebagai bidang data yang terarah.
 - Status tindakan, kualitas sumber, dan asal data terbaca terpisah.
-- Navigasi atas, ruang kerja responsif, dan fokus keyboard yang terlihat.
+- Lima kelompok navigasi atas, konteks ringkas, rincian bertahap, dan fokus keyboard yang terlihat.
 
 Dokumen ini menggantikan identitas Heritage sesuai persetujuan penggantian visual pada 25 Oktober 2026. Nilai di frontmatter diekstrak dari `web/src/app/globals.css`, `layout.tsx`, komponen shadcn di `web/src/components/ui/`, dan komposisi aplikasi. CSS dan komponen adalah sumber implementasi; frontmatter merangkum token yang digunakan. Ekstensi dan contoh mandiri berada di `.impeccable/design.json`.
+
+Penyederhanaan kegunaan yang disetujui mempertahankan seluruh nilai token, palet, dan font Atmosphere. Komposisi pengantar dan pekerjaan harian dicatat pada `.impeccable/usability-simplification.md`; kontrak tersebut memperbarui urutan masuk dan prioritas Ringkasan dari `.impeccable/reference-redesign.md` tanpa mengganti dunia visualnya.
 
 ## Colors
 
@@ -212,9 +214,11 @@ Manrope memberi judul dan angka utama bentuk yang terbuka tanpa kehilangan keteg
 
 Kerangka aplikasi terpusat dengan lebar maksimum 1800px. Header dan konten desktop memakai gutter 36px; konten memiliki padding atas 28px dan bawah 48px. Di bawah 768px, gutter menjadi 16px dengan padding konten atas 24px dan bawah 32px. Jarak mengikuti skala Tailwind 4px, dengan pengecualian komposisi yang sudah ada seperti padding panel skema 22px.
 
-Navigasi desktop ditampilkan mulai 1280px. Di bawahnya, tombol menu membuka Dialog sisi kiri yang mengelola fokus. Kontrol pengguna dan tanggal tetap berada di header; di bawah 640px konteks memakai dua kolom. Navigasi mobile memakai label lengkap dan nomor langkah.
+Navigasi desktop ditampilkan mulai 1280px. Di bawahnya, tombol menu membuka Dialog sisi kiri yang mengelola fokus. Kontrol pengguna dan tanggal tetap berada di header; di bawah 640px konteks memakai dua kolom. Desktop dan mobile memakai lima kelompok tugas dengan label teks; kelompok yang memiliki beberapa rute menyediakan navigasi turunan. Header halaman operasional merangkum tujuan dalam satu kalimat, panduan panjang tersedia melalui “Cara kerja”, dan kemajuan serta peran penanggung jawab tampil pada satu baris ringkas.
 
-Komposisi pemantauan pada Ringkasan memakai daftar zona, skema, dan panel bacaan dalam kolom 252px / fleksibel / 248px, berjarak 16px. Di bawah 1280px daftar menjadi 220px dan panel bacaan mengambil satu baris. Di bawah 768px urutan visual menjadi daftar zona, bacaan terpilih, lalu skema. Dua kolom bagian bawah berubah menjadi satu. Pola ini milik permukaan Ringkasan, bukan kewajiban setiap halaman operasional.
+Pengantar `/` berdiri di luar shell operasional dengan lebar maksimum 1360px dan gutter 48px. Tujuan produk dan aksi masuk berdampingan dengan contoh alur HSE–mandor–HSE; di bawah 768px komposisi menjadi satu kolom dengan gutter 20px. Kedua tautan masuk menuju `/ringkasan`. Label simulasi dan batas penggunaan tetap terlihat.
+
+Pada `/ringkasan`, pekerjaan berikutnya berada pada bidang hijau di atas daftar pekerjaan dan lingkup shift. Daftar serta lingkup memakai kolom fleksibel / 300px, menjadi fleksibel / 260px di bawah 1024px, lalu satu kolom di bawah 768px. Pemantauan berada dalam accordion “Lihat kondisi panas per zona” yang tertutup saat awal. Saat dibuka, daftar zona, skema, dan panel bacaan memakai kolom 252px / fleksibel / 248px, berjarak 16px. Di bawah 1280px daftar menjadi 220px dan panel bacaan mengambil satu baris. Di bawah 768px urutan visual menjadi daftar zona, bacaan terpilih, lalu skema. Komposisi ini milik pengantar dan pekerjaan harian, bukan kewajiban setiap halaman operasional.
 
 Tabel lebar bergulir di kontainernya dengan petunjuk geser. Tabel versi rencana memakai minimum 1000px; audit memakai 760px; batas ini dilepas saat cetak. Grafik memakai minimum 540px pada mobile dan kontainer yang dapat difokuskan. Kelompok provenance boleh membungkus antar item, sedangkan label kualitas dan asal data tetap utuh. Status dalam tabel versi juga tidak dipatahkan.
 
@@ -226,7 +230,7 @@ Kedalaman terutama berasal dari perbedaan tonal, gradasi lembut, ruang kosong, d
 
 ## Shapes
 
-Kontrol dan badge memakai sudut kecil; navigasi dan penanda langkah memakai sudut medium; bidang tindak lanjut memakai sudut besar; kartu serta panel zona memakai sudut ekstra besar. Nilai normatif berada di `rounded`. Tombol ukuran kecil memiliki override sudut dari komponennya, sehingga tidak semua ukuran tombol identik. Lambang merek memakai sudut 14px yang khusus untuk bentuk itu.
+Kontrol dan badge memakai sudut kecil; navigasi memakai sudut medium; bidang tindak lanjut memakai sudut besar; kartu serta panel zona memakai sudut ekstra besar. Nilai normatif berada di `rounded`. Tombol ukuran kecil memiliki override sudut dari komponennya, sehingga tidak semua ukuran tombol identik. Identitas menggunakan teks tanpa lambang; lingkaran bernomor pada contoh alur pengantar menyatakan urutan pekerjaan.
 
 Kontrol utama mempunyai sasaran minimal 44px; navigasi menjadi minimal 48px di bawah 640px. Badge boleh lebih kecil karena merupakan label, bukan tombol. Potongan dekoratif dan bentuk skema tidak boleh memotong informasi operasional.
 
@@ -256,11 +260,17 @@ Input default transparan dengan garis input, tinggi 44px, padding horizontal 10p
 
 ### Navigation
 
-Tab desktop memiliki teks Inter, sudut medium, dan warna teks sekunder. Hover menambah muted; halaman aktif memakai card, tinta utama, dan bayangan ambient. Gunakan `aria-current="page"`. Dialog mobile menampilkan ikon pendamping dan nama rute lengkap. Skip link muncul saat fokus. Jangan menambahkan sidebar desktop ke dunia visual ini.
+Tab desktop memiliki teks Inter, sudut medium, dan warna teks sekunder. Hover menambah muted; kelompok aktif memakai card, tinta utama, dan bayangan ambient. Gunakan `aria-current="page"`. Sumber pengelompokan adalah `web/src/lib/navigation.ts`: Hari ini (`/ringkasan`), Data lapangan (`/impor`, `/paparan`, `/pengukuran`), Rencana kerja (`/rencana`), Tindak lanjut (`/instruksi`, `/tindakan`, masuk melalui `/tindakan`), dan Laporan (`/laporan`). Profil pekerja dan regu berada dalam kelompok Data lapangan. Dialog mobile menampilkan kelompok dan rute turunannya sebagai teks; desktop menampilkan subnavigasi untuk kelompok dengan beberapa rute. Skip link muncul saat fokus. Jangan menambahkan sidebar desktop ke dunia visual ini.
+
+Wordmark `terma.` memakai Manrope semibold dengan titik primary; pada pengantar tautannya menuju `/`, pada ruang kerja menuju `/ringkasan`. Logo baru menunggu aset tim. Utilitas header menyediakan pencarian halaman/pekerja dan tautan Panduan; antrean pekerjaan berada pada halaman Hari ini.
+
+### Task and record rows
+
+Daftar pekerjaan memakai baris bertaut dengan label, kemajuan, status kelengkapan, dan panah menuju langkah terkait. Pada `/rencana`, filter persetujuan dan regu mendahului baris pekerja yang menampilkan identitas, persetujuan, status tindakan, kualitas sumber, dan total menit. Tautan `/pekerja/{kode}#rencana` membuka rincian untuk batas harian/interval, alasan, jadwal, dan persetujuan. Baris rencana berubah dari tiga kolom menjadi susunan vertikal di bawah 768px; ringkasan dan peringatan data tetap terlihat sebelum daftar.
 
 ### Zone overview and chart
 
-Pemilihan zona dan interval memakai `aria-pressed`, memperbarui bacaan, kualitas sumber, dan grafik yang sama. Bacaan terpilih diumumkan melalui live region. Skema mempunyai nama aksesibel dan label terlihat yang menyatakan bahwa posisi ilustratif. Grafik menyediakan label data per jam dan alternatif tabel melalui accordion.
+Monitor dapat dibuka dari pekerjaan harian melalui accordion. Pemilihan zona dan interval memakai `aria-pressed`, memperbarui bacaan, kualitas sumber, dan grafik yang sama. Bacaan terpilih diumumkan melalui live region. Skema mempunyai nama aksesibel dan label terlihat yang menyatakan bahwa posisi ilustratif. Grafik menyediakan label data per jam dan alternatif tabel melalui accordion.
 
 Bacaan hilang tampil sebagai em dash serta celah pada grafik; segmen hanya menghubungkan dua interval bertetangga yang memiliki bacaan. Angka tidak boleh disintesis dari referensi desain. Sumber REPLAY tetap ditandai sebagai replay.
 

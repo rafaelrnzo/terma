@@ -32,7 +32,7 @@ export default function PanduanPage() {
           <AccordionItem value="duration"><AccordionTrigger>Direncanakan, dilaporkan, atau diverifikasi?</AccordionTrigger><AccordionContent>Direncanakan berasal dari rencana kerja. Dilaporkan diisi mandor setelah pelaksanaan. Diverifikasi adalah durasi yang diperiksa HSE. Ketiganya tidak saling menggantikan.</AccordionContent></AccordionItem>
           <AccordionItem value="rules"><AccordionTrigger>Apakah ini siap untuk operasi nyata?</AccordionTrigger><AccordionContent>Belum. Ini prototipe interaktif dengan data mock, penyimpanan lokal, dan tabel NAB fixture yang belum disahkan HSE. Autentikasi, backend, integrasi pesan, serta validasi aturan operasional belum tersedia.</AccordionContent></AccordionItem>
         </Accordion></section>
-        <Button asChild><Link href="/">Kembali ke ringkasan<ArrowRight aria-hidden /></Link></Button>
+        <Button asChild><Link href="/ringkasan">Kembali ke ringkasan<ArrowRight aria-hidden /></Link></Button>
       </div>
     </div>
   </>

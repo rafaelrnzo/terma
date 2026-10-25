@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-24T19:44:04.753Z",
+  "generatedAt": "2026-10-25T09:40:26.331Z",
   "title": "Design System: TERMA Atmosphere",
   "extensions": {
     "colorMeta": {
@@ -546,8 +546,8 @@
       "name": "Top Navigation",
       "kind": "nav",
       "refersTo": "navigation-active",
-      "description": "Active route on a solid surface; desktop tabs are shown from 1280px in the app shell.",
-      "html": "<nav class=\"ds-nav\" aria-label=\"Alur kerja\"><a class=\"ds-nav-item\" href=\"/\" aria-current=\"page\">Ringkasan</a><a class=\"ds-nav-item\" href=\"/pengukuran\">WBGT</a><a class=\"ds-nav-item\" href=\"/rencana\">Rencana</a></nav>",
+      "description": "Five task groups from lib/navigation.ts; the active group uses a solid surface. Desktop tabs appear from 1280px; mobile shows text groups and their child routes in a focus-managed dialog.",
+      "html": "<nav class=\"ds-nav\" aria-label=\"Alur kerja\"><a class=\"ds-nav-item\" href=\"/ringkasan\" aria-current=\"page\">Hari ini</a><a class=\"ds-nav-item\" href=\"/impor\">Data lapangan</a><a class=\"ds-nav-item\" href=\"/rencana\">Rencana kerja</a><a class=\"ds-nav-item\" href=\"/tindakan\">Tindak lanjut</a><a class=\"ds-nav-item\" href=\"/laporan\">Laporan</a></nav>",
       "css": ".ds-nav{display:flex;flex-wrap:wrap;gap:4px;font-family:var(--font-inter, Inter, sans-serif)}.ds-nav-item{box-sizing:border-box;display:flex;align-items:center;min-height:44px;padding:10px 16px;border-radius:12px;font-size:14px;color:var(--muted-foreground,#586960);text-decoration:none;transition:background-color 160ms,color 160ms}.ds-nav-item:hover{background:var(--muted,#eaf0ec);color:var(--foreground,#263a32)}.ds-nav-item[aria-current=\"page\"]{background:var(--card,#fcfdfc);color:var(--foreground,#263a32);box-shadow:0 3px 12px rgb(38 58 50 / 5%)}.ds-nav-item:focus-visible{outline:2px solid var(--ring,#31694c);outline-offset:3px}@media(max-width:639px){.ds-nav-item{min-height:48px}}@media(prefers-reduced-motion:reduce){.ds-nav-item{transition:none}}"
     },
     {
@@ -569,13 +569,13 @@
   ],
   "narrative": {
     "northStar": "TERMA Atmosphere",
-    "overview": "Atmosphere adalah ruang kerja yang lapang untuk membaca paparan panas dan menentukan tindak lanjut. Permukaan kabut, panel putih lembut, judul Manrope yang ringan, dan bidang gradasi hijau–kuning mengikuti gabungan dua referensi yang disetujui pengguna. Navigasi atas mempertahankan orientasi lintas langkah; informasi operasional memperoleh ruang yang lebih besar daripada ornamen.\n\nWarna zona membantu mengenali area, sedangkan status tindakan dan kualitas sumber tetap memiliki label tersendiri. Angka berasal dari data aplikasi pada tanggal, zona, interval, dan lingkup pengguna yang dipilih. Skema lokasi bersifat ilustratif; tampilannya tidak menyatakan posisi geografis atau pelacakan langsung. Bahasa antarmuka tetap Bahasa Indonesia.",
+    "overview": "Atmosphere adalah ruang kerja yang lapang untuk membaca paparan panas dan menentukan tindak lanjut. Permukaan kabut, panel putih lembut, judul Manrope yang ringan, dan bidang gradasi hijau–kuning mengikuti gabungan dua referensi yang disetujui pengguna. Navigasi atas mengelompokkan pekerjaan; konteks ringkas dan rincian yang dapat dibuka memberi ruang bagi tindakan utama. Identitas tampil sebagai wordmark teks terma. sambil menunggu logo tim.\n\nWarna zona membantu mengenali area, sedangkan status tindakan dan kualitas sumber tetap memiliki label tersendiri. Angka berasal dari data aplikasi pada tanggal, zona, interval, dan lingkup pengguna yang dipilih. Skema lokasi bersifat ilustratif; tampilannya tidak menyatakan posisi geografis atau pelacakan langsung. Bahasa antarmuka tetap Bahasa Indonesia.",
     "keyCharacteristics": [
       "Permukaan kabut dan panel solid yang terasa ringan.",
       "Manrope untuk judul dan angka utama, Inter untuk pekerjaan sehari-hari.",
       "Gradasi hijau, biru, dan pasir sebagai bidang data yang terarah.",
       "Status tindakan, kualitas sumber, dan asal data terbaca terpisah.",
-      "Navigasi atas, ruang kerja responsif, dan fokus keyboard yang terlihat."
+      "Lima kelompok navigasi atas, konteks ringkas, rincian bertahap, dan fokus keyboard yang terlihat."
     ],
     "rules": [
       {

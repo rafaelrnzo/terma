@@ -2,11 +2,10 @@
 
 import Link from "next/link"
 import { useState } from "react"
-import { AlertTriangle, Calculator } from "lucide-react"
+import { AlertTriangle, ArrowRight, Calculator } from "lucide-react"
 import { NextStep, PageHeader, WorkflowEmpty } from "@/components/app-shell"
-import { RencanaCard } from "@/components/rencana-card"
 import { RoleHint } from "@/components/role-hint"
-import { StatusChip } from "@/components/status"
+import { QualityBadge, StatusChip } from "@/components/status"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -22,6 +21,7 @@ export default function RencanaPage() {
   const { state, dispatch, user } = useApp()
   const izin = useIzin()
   const [regu, setRegu] = useState("SEMUA")
+  const [persetujuan, setPersetujuan] = useState("SEMUA")
 
   if (state.pekerja.length === 0)
     return (
@@ -35,18 +35,23 @@ export default function RencanaPage() {
   const semua = rencanaAktif(state).filter((r) => terlihat.has(r.pekerjaKode))
   const daftar = semua
     .filter((r) => regu === "SEMUA" || state.pekerja.find((p) => p.kode === r.pekerjaKode)?.reguKode === regu)
+    .filter((r) => persetujuan === "SEMUA" || (persetujuan === "BELUM" ? !r.disetujuiOleh : !!r.disetujuiOleh))
     .sort((a, b) => URUT.indexOf(a.status) - URUT.indexOf(b.status))
   const gagalData = semua.filter((r) => ["PRAKIRAAN_SAJA", "KEDALUWARSA", "TIDAK_TERSEDIA"].includes(r.kualitas))
 
   return (
     <>
-      <PageHeader no="4" title="Rencana & persetujuan" peran="HSE" summary="Tinjau batas paparan dan alasan setiap pekerja, lalu setujui rencana kerja-istirahat.">
+      <PageHeader no="4" title="Rencana kerja" peran="HSE" summary="Pilih pekerja untuk meninjau jadwal, mengubah penugasan, atau menyetujui rencananya.">
         Setiap rencana menggabungkan batas harian adaptasi dan batas interval NAB, dalam menit. Kedua batas harus terpenuhi; persentase
         adaptasi tidak dikalikan dengan persentase baris NAB. Bila beberapa kondisi berlaku, status yang paling ketat dipakai.
       </PageHeader>
       <RoleHint peran={["HSE"]} />
 
       <div className="no-print mb-6 flex flex-wrap items-center gap-3">
+        <Select value={persetujuan} onValueChange={setPersetujuan}>
+          <SelectTrigger className="w-52 bg-card" aria-label="Filter persetujuan"><SelectValue /></SelectTrigger>
+          <SelectContent><SelectItem value="SEMUA">Semua rencana</SelectItem><SelectItem value="BELUM">Belum disetujui</SelectItem><SelectItem value="SUDAH">Sudah disetujui</SelectItem></SelectContent>
+        </Select>
         {state.rencanaDihitung ? <p role="status" className="flex items-center gap-2 text-sm text-muted-foreground"><Calculator className="size-4 shrink-0" aria-hidden />Rencana diperbarui otomatis saat input berubah.</p> : <Button onClick={() => dispatch({ type: "HITUNG_RENCANA" })} disabled={!izin("HITUNG_RENCANA")}><Calculator />Hitung rencana ({ATURAN_FIXTURE.versi})</Button>}
         {!state.bacaan.some((b) => b.tanggal === state.tanggal) && (
           <span className="text-sm text-muted-foreground">
@@ -88,11 +93,17 @@ export default function RencanaPage() {
             </Alert>
           )}
 
-          <div className="grid items-start gap-6 xl:grid-cols-2 xl:[&>div:first-child]:col-span-2 print:block print:space-y-6">
-            {daftar.length === 0 && <p className="rounded-md border bg-card p-6 text-muted-foreground">Tidak ada rencana untuk regu ini. Pilih regu lain atau periksa data penugasan.</p>}
-            {daftar.map((r) => (
-              <RencanaCard key={r.id} r={r} mode={user?.role === "MANDOR" ? "mandor" : "hse"} />
-            ))}
+          <p role="status" className="mb-3 text-sm text-muted-foreground">{daftar.length} rencana ditampilkan · batas dan alasan lengkap tersedia pada rincian pekerja.</p>
+          <div className="divide-y rounded-xl bg-card px-4 sm:px-6">
+            {daftar.length === 0 && <div className="py-6"><p className="text-muted-foreground">Tidak ada rencana yang cocok dengan filter.</p><Button variant="outline" className="mt-3" onClick={() => { setRegu("SEMUA"); setPersetujuan("SEMUA") }}>Reset filter</Button></div>}
+            {daftar.map(r => {
+              const p = state.pekerja.find(p => p.kode === r.pekerjaKode)!
+              return <Link key={r.id} href={`/pekerja/${p.kode}#rencana`} className="group grid items-center gap-4 py-5 hover:bg-muted/50 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto]">
+                <div><p className="font-medium group-hover:text-primary">{p.nama}</p><p className="mt-1 text-xs text-muted-foreground">{p.kode} · {REGU.find(g => g.kode === p.reguKode)?.nama}</p><p className="mt-2 text-xs text-muted-foreground">{r.disetujuiOleh ? "Disetujui HSE" : "Belum disetujui HSE"}</p></div>
+                <div><div className="flex flex-wrap gap-2"><StatusChip status={r.status} /><QualityBadge kualitas={r.kualitas} /></div><p className="mt-2 text-sm text-muted-foreground">Rencana paparan: {r.totalKerjaMenit} menit{r.belumLayak && <span className="block text-status-batasi">Sebagian interval belum layak</span>}</p></div>
+                <span className="inline-flex items-center gap-2 text-sm font-medium">{user?.role === "MANDOR" ? "Lihat rincian" : "Tinjau rencana"}<ArrowRight className="size-4" aria-hidden /></span>
+              </Link>
+            })}
           </div>
         </>
       )}

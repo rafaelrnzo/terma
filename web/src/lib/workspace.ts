@@ -4,7 +4,8 @@ import type { AppState } from "./store"
 import type { User } from "./types"
 
 export const SURFACES = [
-  { href: "/", label: "Ringkasan lokasi", detail: "Zona, bacaan panas, dan prioritas shift" },
+  { href: "/", label: "Tentang TERMA", detail: "Pengantar aplikasi dan alur HSE–mandor" },
+  { href: "/ringkasan", label: "Hari ini", detail: "Ringkasan pekerjaan, kondisi panas, dan prioritas shift" },
   { href: "/impor", label: "Pekerja & data", detail: "Direktori pekerja, penugasan, dan impor CSV" },
   { href: "/paparan", label: "Adaptasi pekerja", detail: "Riwayat kehadiran dan konfirmasi HSE" },
   { href: "/pengukuran", label: "Pengukuran WBGT", detail: "Bacaan panas per zona dan jam" },

@@ -2,17 +2,16 @@
 
 import Link from "next/link"
 import { useEffect, useState } from "react"
-import { ArrowUpRight, Bell, CircleHelp, Search } from "lucide-react"
+import { ArrowUpRight, Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { useApp } from "@/lib/store"
-import { attentionItems, searchWorkspace, tanggalLabel } from "@/lib/workspace"
+import { searchWorkspace } from "@/lib/workspace"
 
 export function WorkspaceTools() {
   const { state, user } = useApp()
   const [searchOpen, setSearchOpen] = useState(false)
-  const [attentionOpen, setAttentionOpen] = useState(false)
   const [query, setQuery] = useState("")
   useEffect(() => {
     const keydown = (event: KeyboardEvent) => {
@@ -23,7 +22,6 @@ export function WorkspaceTools() {
   }, [])
   if (!user) return null
   const results = searchWorkspace(state, user, query)
-  const attention = attentionItems(state, user)
   return <div className="flex items-center gap-1">
     <Dialog open={searchOpen} onOpenChange={setSearchOpen}>
       <DialogTrigger asChild><Button variant="secondary" size="icon" aria-label="Cari halaman atau pekerja" title="Cari (⌘ / Ctrl K)"><Search /></Button></DialogTrigger>
@@ -38,15 +36,6 @@ export function WorkspaceTools() {
         </div>
       </DialogContent>
     </Dialog>
-    <Dialog open={attentionOpen} onOpenChange={setAttentionOpen}>
-      <DialogTrigger asChild><Button variant="secondary" className="relative" size="icon" aria-label={`Pusat perhatian: ${attention.length} langkah belum lengkap`}><Bell />{attention.length > 0 && <span className="absolute -top-1 -right-1 rounded-full bg-primary px-1.5 text-xs text-primary-foreground">{attention.length}</span>}</Button></DialogTrigger>
-      <DialogContent className="sm:max-w-lg">
-        <DialogHeader><DialogTitle>Perlu perhatian Anda</DialogTitle><DialogDescription>{tanggalLabel(state.tanggal)} · Prioritas {user.nama}. Ini ringkasan data lokal, bukan notifikasi langsung dari lapangan.</DialogDescription></DialogHeader>
-        <div className="divide-y">{attention.map(item => <Link key={item.href} href={item.href} onClick={() => setAttentionOpen(false)} className="flex items-center justify-between gap-4 rounded-sm py-4 hover:bg-muted"><span><span className="block font-medium">{item.label}</span><span className="mt-1 block text-sm text-muted-foreground">{item.progress}</span></span><ArrowUpRight className="size-4 shrink-0" aria-hidden /></Link>)}</div>
-        {!attention.length && <p className="py-4 text-muted-foreground">Tidak ada langkah tertunda untuk peran ini. Anda tetap dapat meninjau laporan shift.</p>}
-        <Button asChild variant="outline"><Link href="/laporan" onClick={() => setAttentionOpen(false)}>Buka laporan shift</Link></Button>
-      </DialogContent>
-    </Dialog>
-    <Button asChild variant="ghost" size="icon" className="hidden sm:inline-flex"><Link href="/panduan" aria-label="Panduan aplikasi"><CircleHelp /></Link></Button>
+    <Button asChild variant="ghost" className="hidden sm:inline-flex"><Link href="/panduan">Panduan</Link></Button>
   </div>
 }

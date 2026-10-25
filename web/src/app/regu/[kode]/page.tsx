@@ -16,7 +16,7 @@ export default function ReguPage({ params }: { params: Promise<{ kode: string }>
   const { state, user } = useApp()
   const regu = REGU.find((g) => g.kode === kode.toUpperCase())
   if (!user) return null
-  if (!regu) return <><PageHeader title="Regu tidak ditemukan" /><WorkflowEmpty title="Periksa kode regu" href="/" label="Kembali ke ringkasan">Kode regu ini tidak terdaftar di lokasi demo.</WorkflowEmpty></>
+  if (!regu) return <><PageHeader title="Regu tidak ditemukan" /><WorkflowEmpty title="Periksa kode regu" href="/ringkasan" label="Kembali ke ringkasan">Kode regu ini tidak terdaftar di lokasi demo.</WorkflowEmpty></>
 
   try {
     // Same check the data layer uses for reads: a foreman outside this crew is refused here,
@@ -39,7 +39,7 @@ export default function ReguPage({ params }: { params: Promise<{ kode: string }>
             </Button>
           )}
           <Button asChild variant="outline">
-            <Link href="/">Kembali ke Ringkasan</Link>
+            <Link href="/ringkasan">Kembali ke Ringkasan</Link>
           </Button>
         </div>
       </>
