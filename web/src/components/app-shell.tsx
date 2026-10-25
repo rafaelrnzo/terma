@@ -79,7 +79,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       <header className="app-header no-print">
         <div className="flex min-w-0 items-center justify-between gap-4">
           <div className="lg:hidden"><Wordmark /></div>
-          <p className="hidden text-sm font-medium lg:block">{LOKASI}</p>
+          <p className="workspace-breadcrumb hidden text-sm lg:flex"><span>{LOKASI}</span><span aria-hidden>/</span><span className="font-semibold text-foreground">{group?.label ?? "Ruang kerja"}</span></p>
           <div className="flex min-w-0 items-center gap-2">
             <WorkspaceTools />
             <UserSelect />
@@ -104,7 +104,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         </div>
       </header>
       <main id="konten-utama" tabIndex={-1} className="app-main outline-none">
-        {state.demo && <p className="mb-5 text-xs leading-relaxed text-muted-foreground" role="note">Data simulasi · bukan untuk keputusan operasional. <Link className="underline underline-offset-4" href="/panduan">Tentang demo</Link></p>}
+        {state.demo && <p className="workspace-demo-note" role="note">Data simulasi · bukan untuk keputusan operasional. <Link className="underline underline-offset-4" href="/panduan">Tentang demo</Link></p>}
         {group && group.routes.length > 1 && <nav aria-label={group.label} className="no-print mb-6 flex flex-wrap gap-2 border-b pb-3 lg:hidden">{group.routes.map(route => <Link key={route.href} href={route.href} aria-current={path === route.href ? "page" : undefined} className={cn("nav-item", path === route.href && "nav-item-active")}>{route.label}</Link>)}</nav>}
         {storageError && <div role="alert" className="mb-6 rounded-md border border-destructive p-4 text-sm"><p>{storageError}</p><Button className="mt-3" variant="outline" onClick={retryStorage}>Coba simpan lagi</Button></div>}
         {state.demo && state.tanggal !== state.demo.tanggal && <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-md bg-secondary p-4 text-sm"><p>Contoh data tersedia pada {state.demo.tanggal}. Tanggal ini dapat belum memiliki bacaan atau rencana.</p><Button variant="outline" disabled={!izin("ATUR_TANGGAL")} onClick={() => dispatch({ type: "SET_TANGGAL", tanggal: state.demo!.tanggal })}>Kembali ke tanggal demo</Button></div>}

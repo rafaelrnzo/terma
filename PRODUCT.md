@@ -30,9 +30,9 @@ Penggunaan utama saat ini adalah simulasi pekerjaan HSE harian dengan seluruh da
 
 ## Brand Commitments
 
-Nama TERMA dipertahankan. Pengguna pada 25 Oktober 2026 menyetujui penggantian identitas Heritage dengan gabungan dua referensi yang dilampirkan: layout pemantauan zona dan navigasi atas dari dashboard warehouse, serta panel lapang, tipografi ringan, dan gradasi hijau–kuning lembut dari dashboard Neka. Isi medis dan angka referensi bukan data produk dan tidak boleh disalin sebagai fakta.
+Nama TERMA dipertahankan. Pada 25 Oktober 2026 pengguna menyetujui penggantian identitas Heritage dengan Atmosphere, lalu penyederhanaan pengantar produk, alur HSE–mandor–HSE, dan prioritas kerja harian. Perluasan dashboard yang disetujui menambahkan sidebar serta pemantauan zona langsung. Wordmark teks dipakai sementara menunggu logo tim. Isi medis dan angka referensi visual bukan data produk dan tidak boleh disalin sebagai fakta.
 
-Penyederhanaan berikutnya mempertahankan palet dan font Atmosphere, dengan wordmark teks sementara menunggu logo dari tim. Pengantar produk, alur HSE–mandor–HSE, dan prioritas kerja harian menjadi urutan pengalaman yang disetujui. Persetujuan perluasan dashboard pada 25 Oktober 2026 mengganti navigasi atas ruang kerja dengan sidebar dan membuka pemantauan zona langsung; landing dipertahankan.
+Penyempurnaan terbaru pada 25 Oktober 2026 mengikuti screenshot PlanetScale untuk layout dan kerapian komponen. Pengguna menegaskan “Tetap biru, fokus layout PlanetScale”: aksen biru dipertahankan, dengan sidebar pucat, kanvas putih, panel solid, sudut ringkas, dan Plus Jakarta Sans. Skema zona memakai interaksi isometrik yang tetap berfungsi dengan reduced motion. Komposisi serta aset landing dipertahankan; font dan token bersama mengikuti penyempurnaan ini. Komitmen ini menggantikan arahan font, sidebar gelap, dan gradasi dari iterasi sebelumnya tanpa mengubah makna data atau alur kerja.
 
 ## Evidence on Hand
 

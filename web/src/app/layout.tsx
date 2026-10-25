@@ -1,11 +1,10 @@
 import type { Metadata } from "next"
-import { Inter, Manrope } from "next/font/google"
+import { Plus_Jakarta_Sans } from "next/font/google"
 import "./globals.css"
 import { AppShell } from "@/components/app-shell"
 import { AppProvider } from "@/lib/store"
 
-const inter = Inter({ variable: "--font-inter", subsets: ["latin"] })
-const manrope = Manrope({ variable: "--font-manrope", subsets: ["latin"] })
+const jakarta = Plus_Jakarta_Sans({ variable: "--font-jakarta", subsets: ["latin"], display: "swap" })
 
 export const metadata: Metadata = {
   title: "TERMA · Asisten pengelolaan paparan panas kerja",
@@ -14,7 +13,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="id" className={`${inter.variable} ${manrope.variable}`}>
+    <html lang="id" className={jakarta.variable}>
       <body className="antialiased">
         <AppProvider>
           <AppShell>{children}</AppShell>
