@@ -1,0 +1,608 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-24T19:44:04.753Z",
+  "title": "Design System: TERMA Atmosphere",
+  "extensions": {
+    "colorMeta": {
+      "background": {
+        "role": "neutral",
+        "displayName": "background",
+        "tonalRamp": [
+          "oklch(15.00% 0.0041 157.18)",
+          "oklch(26.43% 0.0041 157.18)",
+          "oklch(37.86% 0.0041 157.18)",
+          "oklch(49.29% 0.0041 157.18)",
+          "oklch(60.71% 0.0041 157.18)",
+          "oklch(72.14% 0.0041 157.18)",
+          "oklch(83.57% 0.0041 157.18)",
+          "oklch(95.00% 0.0041 157.18)"
+        ],
+        "rampPurpose": "Synthesized preview ramp; not an additional implementation palette."
+      },
+      "foreground": {
+        "role": "neutral",
+        "displayName": "foreground",
+        "tonalRamp": [
+          "oklch(15.00% 0.0294 167.73)",
+          "oklch(26.43% 0.0294 167.73)",
+          "oklch(37.86% 0.0294 167.73)",
+          "oklch(49.29% 0.0294 167.73)",
+          "oklch(60.71% 0.0294 167.73)",
+          "oklch(72.14% 0.0294 167.73)",
+          "oklch(83.57% 0.0294 167.73)",
+          "oklch(95.00% 0.0294 167.73)"
+        ],
+        "rampPurpose": "Synthesized preview ramp; not an additional implementation palette."
+      },
+      "card": {
+        "role": "neutral",
+        "displayName": "card",
+        "tonalRamp": [
+          "oklch(15.00% 0.0017 145.56)",
+          "oklch(26.43% 0.0017 145.56)",
+          "oklch(37.86% 0.0017 145.56)",
+          "oklch(49.29% 0.0017 145.56)",
+          "oklch(60.71% 0.0017 145.56)",
+          "oklch(72.14% 0.0017 145.56)",
+          "oklch(83.57% 0.0017 145.56)",
+          "oklch(95.00% 0.0017 145.56)"
+        ],
+        "rampPurpose": "Synthesized preview ramp; not an additional implementation palette."
+      },
+      "popover": {
+        "role": "neutral",
+        "displayName": "popover",
+        "tonalRamp": [
+          "oklch(15.00% 0.0000 89.88)",
+          "oklch(26.43% 0.0000 89.88)",
+          "oklch(37.86% 0.0000 89.88)",
+          "oklch(49.29% 0.0000 89.88)",
+          "oklch(60.71% 0.0000 89.88)",
+          "oklch(72.14% 0.0000 89.88)",
+          "oklch(83.57% 0.0000 89.88)",
+          "oklch(95.00% 0.0000 89.88)"
+        ],
+        "rampPurpose": "Synthesized preview ramp; not an additional implementation palette."
+      },
+      "primary": {
+        "role": "primary",
+        "displayName": "primary",
+        "tonalRamp": [
+          "oklch(15.00% 0.0764 158.91)",
+          "oklch(26.43% 0.0764 158.91)",
+          "oklch(37.86% 0.0764 158.91)",
+          "oklch(49.29% 0.0764 158.91)",
+          "oklch(60.71% 0.0764 158.91)",
+          "oklch(72.14% 0.0764 158.91)",
+          "oklch(83.57% 0.0764 158.91)",
+          "oklch(95.00% 0.0764 158.91)"
+        ],
+        "rampPurpose": "Synthesized preview ramp; not an additional implementation palette."
+      },
+      "primary-hover": {
+        "role": "primary",
+        "displayName": "primary-hover",
+        "tonalRamp": [
+          "oklch(15.00% 0.0632 158.72)",
+          "oklch(26.43% 0.0632 158.72)",
+          "oklch(37.86% 0.0632 158.72)",
+          "oklch(49.29% 0.0632 158.72)",
+          "oklch(60.71% 0.0632 158.72)",
+          "oklch(72.14% 0.0632 158.72)",
+          "oklch(83.57% 0.0632 158.72)",
+          "oklch(95.00% 0.0632 158.72)"
+        ],
+        "rampPurpose": "Synthesized preview ramp; not an additional implementation palette."
+      },
+      "primary-foreground": {
+        "role": "primary",
+        "displayName": "primary-foreground",
+        "tonalRamp": [
+          "oklch(15.00% 0.0000 89.88)",
+          "oklch(26.43% 0.0000 89.88)",
+          "oklch(37.86% 0.0000 89.88)",
+          "oklch(49.29% 0.0000 89.88)",
+          "oklch(60.71% 0.0000 89.88)",
+          "oklch(72.14% 0.0000 89.88)",
+          "oklch(83.57% 0.0000 89.88)",
+          "oklch(95.00% 0.0000 89.88)"
+        ],
+        "rampPurpose": "Synthesized preview ramp; not an additional implementation palette."
+      },
+      "secondary": {
+        "role": "neutral",
+        "displayName": "secondary",
+        "tonalRamp": [
+          "oklch(15.00% 0.0100 155.09)",
+          "oklch(26.43% 0.0100 155.09)",
+          "oklch(37.86% 0.0100 155.09)",
+          "oklch(49.29% 0.0100 155.09)",
+          "oklch(60.71% 0.0100 155.09)",
+          "oklch(72.14% 0.0100 155.09)",
+          "oklch(83.57% 0.0100 155.09)",
+          "oklch(95.00% 0.0100 155.09)"
+        ],
+        "rampPurpose": "Synthesized preview ramp; not an additional implementation palette."
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "muted",
+        "tonalRamp": [
+          "oklch(15.00% 0.0083 157.09)",
+          "oklch(26.43% 0.0083 157.09)",
+          "oklch(37.86% 0.0083 157.09)",
+          "oklch(49.29% 0.0083 157.09)",
+          "oklch(60.71% 0.0083 157.09)",
+          "oklch(72.14% 0.0083 157.09)",
+          "oklch(83.57% 0.0083 157.09)",
+          "oklch(95.00% 0.0083 157.09)"
+        ],
+        "rampPurpose": "Synthesized preview ramp; not an additional implementation palette."
+      },
+      "muted-foreground": {
+        "role": "neutral",
+        "displayName": "muted-foreground",
+        "tonalRamp": [
+          "oklch(15.00% 0.0250 162.32)",
+          "oklch(26.43% 0.0250 162.32)",
+          "oklch(37.86% 0.0250 162.32)",
+          "oklch(49.29% 0.0250 162.32)",
+          "oklch(60.71% 0.0250 162.32)",
+          "oklch(72.14% 0.0250 162.32)",
+          "oklch(83.57% 0.0250 162.32)",
+          "oklch(95.00% 0.0250 162.32)"
+        ],
+        "rampPurpose": "Synthesized preview ramp; not an additional implementation palette."
+      },
+      "panel-muted": {
+        "role": "neutral",
+        "displayName": "panel-muted",
+        "tonalRamp": [
+          "oklch(15.00% 0.0267 159.28)",
+          "oklch(26.43% 0.0267 159.28)",
+          "oklch(37.86% 0.0267 159.28)",
+          "oklch(49.29% 0.0267 159.28)",
+          "oklch(60.71% 0.0267 159.28)",
+          "oklch(72.14% 0.0267 159.28)",
+          "oklch(83.57% 0.0267 159.28)",
+          "oklch(95.00% 0.0267 159.28)"
+        ],
+        "rampPurpose": "Synthesized preview ramp; not an additional implementation palette."
+      },
+      "accent": {
+        "role": "neutral",
+        "displayName": "accent",
+        "tonalRamp": [
+          "oklch(15.00% 0.0214 136.60)",
+          "oklch(26.43% 0.0214 136.60)",
+          "oklch(37.86% 0.0214 136.60)",
+          "oklch(49.29% 0.0214 136.60)",
+          "oklch(60.71% 0.0214 136.60)",
+          "oklch(72.14% 0.0214 136.60)",
+          "oklch(83.57% 0.0214 136.60)",
+          "oklch(95.00% 0.0214 136.60)"
+        ],
+        "rampPurpose": "Synthesized preview ramp; not an additional implementation palette."
+      },
+      "destructive": {
+        "role": "primary",
+        "displayName": "destructive",
+        "tonalRamp": [
+          "oklch(15.00% 0.1470 24.94)",
+          "oklch(26.43% 0.1470 24.94)",
+          "oklch(37.86% 0.1470 24.94)",
+          "oklch(49.29% 0.1470 24.94)",
+          "oklch(60.71% 0.1470 24.94)",
+          "oklch(72.14% 0.1470 24.94)",
+          "oklch(83.57% 0.1470 24.94)",
+          "oklch(95.00% 0.1470 24.94)"
+        ],
+        "rampPurpose": "Synthesized preview ramp; not an additional implementation palette."
+      },
+      "border": {
+        "role": "neutral",
+        "displayName": "border",
+        "tonalRamp": [
+          "oklch(15.00% 0.0117 153.66)",
+          "oklch(26.43% 0.0117 153.66)",
+          "oklch(37.86% 0.0117 153.66)",
+          "oklch(49.29% 0.0117 153.66)",
+          "oklch(60.71% 0.0117 153.66)",
+          "oklch(72.14% 0.0117 153.66)",
+          "oklch(83.57% 0.0117 153.66)",
+          "oklch(95.00% 0.0117 153.66)"
+        ],
+        "rampPurpose": "Synthesized preview ramp; not an additional implementation palette."
+      },
+      "input": {
+        "role": "neutral",
+        "displayName": "input",
+        "tonalRamp": [
+          "oklch(15.00% 0.0235 158.28)",
+          "oklch(26.43% 0.0235 158.28)",
+          "oklch(37.86% 0.0235 158.28)",
+          "oklch(49.29% 0.0235 158.28)",
+          "oklch(60.71% 0.0235 158.28)",
+          "oklch(72.14% 0.0235 158.28)",
+          "oklch(83.57% 0.0235 158.28)",
+          "oklch(95.00% 0.0235 158.28)"
+        ],
+        "rampPurpose": "Synthesized preview ramp; not an additional implementation palette."
+      },
+      "status-tersedia": {
+        "role": "primary",
+        "displayName": "status-tersedia",
+        "tonalRamp": [
+          "oklch(15.00% 0.0819 155.98)",
+          "oklch(26.43% 0.0819 155.98)",
+          "oklch(37.86% 0.0819 155.98)",
+          "oklch(49.29% 0.0819 155.98)",
+          "oklch(60.71% 0.0819 155.98)",
+          "oklch(72.14% 0.0819 155.98)",
+          "oklch(83.57% 0.0819 155.98)",
+          "oklch(95.00% 0.0819 155.98)"
+        ],
+        "rampPurpose": "Synthesized preview ramp; not an additional implementation palette."
+      },
+      "status-adaptasi": {
+        "role": "primary",
+        "displayName": "status-adaptasi",
+        "tonalRamp": [
+          "oklch(15.00% 0.0954 74.23)",
+          "oklch(26.43% 0.0954 74.23)",
+          "oklch(37.86% 0.0954 74.23)",
+          "oklch(49.29% 0.0954 74.23)",
+          "oklch(60.71% 0.0954 74.23)",
+          "oklch(72.14% 0.0954 74.23)",
+          "oklch(83.57% 0.0954 74.23)",
+          "oklch(95.00% 0.0954 74.23)"
+        ],
+        "rampPurpose": "Synthesized preview ramp; not an additional implementation palette."
+      },
+      "status-tinjau": {
+        "role": "primary",
+        "displayName": "status-tinjau",
+        "tonalRamp": [
+          "oklch(15.00% 0.0374 257.28)",
+          "oklch(26.43% 0.0374 257.28)",
+          "oklch(37.86% 0.0374 257.28)",
+          "oklch(49.29% 0.0374 257.28)",
+          "oklch(60.71% 0.0374 257.28)",
+          "oklch(72.14% 0.0374 257.28)",
+          "oklch(83.57% 0.0374 257.28)",
+          "oklch(95.00% 0.0374 257.28)"
+        ],
+        "rampPurpose": "Synthesized preview ramp; not an additional implementation palette."
+      },
+      "status-batasi": {
+        "role": "primary",
+        "displayName": "status-batasi",
+        "tonalRamp": [
+          "oklch(15.00% 0.1470 24.94)",
+          "oklch(26.43% 0.1470 24.94)",
+          "oklch(37.86% 0.1470 24.94)",
+          "oklch(49.29% 0.1470 24.94)",
+          "oklch(60.71% 0.1470 24.94)",
+          "oklch(72.14% 0.1470 24.94)",
+          "oklch(83.57% 0.1470 24.94)",
+          "oklch(95.00% 0.1470 24.94)"
+        ],
+        "rampPurpose": "Synthesized preview ramp; not an additional implementation palette."
+      },
+      "zone-blue": {
+        "role": "secondary",
+        "displayName": "zone-blue",
+        "tonalRamp": [
+          "oklch(15.00% 0.0481 238.59)",
+          "oklch(26.43% 0.0481 238.59)",
+          "oklch(37.86% 0.0481 238.59)",
+          "oklch(49.29% 0.0481 238.59)",
+          "oklch(60.71% 0.0481 238.59)",
+          "oklch(72.14% 0.0481 238.59)",
+          "oklch(83.57% 0.0481 238.59)",
+          "oklch(95.00% 0.0481 238.59)"
+        ],
+        "rampPurpose": "Synthesized preview ramp; not an additional implementation palette."
+      },
+      "zone-sage": {
+        "role": "secondary",
+        "displayName": "zone-sage",
+        "tonalRamp": [
+          "oklch(15.00% 0.0423 158.45)",
+          "oklch(26.43% 0.0423 158.45)",
+          "oklch(37.86% 0.0423 158.45)",
+          "oklch(49.29% 0.0423 158.45)",
+          "oklch(60.71% 0.0423 158.45)",
+          "oklch(72.14% 0.0423 158.45)",
+          "oklch(83.57% 0.0423 158.45)",
+          "oklch(95.00% 0.0423 158.45)"
+        ],
+        "rampPurpose": "Synthesized preview ramp; not an additional implementation palette."
+      },
+      "zone-lime": {
+        "role": "secondary",
+        "displayName": "zone-lime",
+        "tonalRamp": [
+          "oklch(15.00% 0.0717 121.48)",
+          "oklch(26.43% 0.0717 121.48)",
+          "oklch(37.86% 0.0717 121.48)",
+          "oklch(49.29% 0.0717 121.48)",
+          "oklch(60.71% 0.0717 121.48)",
+          "oklch(72.14% 0.0717 121.48)",
+          "oklch(83.57% 0.0717 121.48)",
+          "oklch(95.00% 0.0717 121.48)"
+        ],
+        "rampPurpose": "Synthesized preview ramp; not an additional implementation palette."
+      },
+      "heritage-moss": {
+        "role": "neutral",
+        "displayName": "heritage-moss",
+        "tonalRamp": [
+          "oklch(15.00% 0.0298 164.67)",
+          "oklch(26.43% 0.0298 164.67)",
+          "oklch(37.86% 0.0298 164.67)",
+          "oklch(49.29% 0.0298 164.67)",
+          "oklch(60.71% 0.0298 164.67)",
+          "oklch(72.14% 0.0298 164.67)",
+          "oklch(83.57% 0.0298 164.67)",
+          "oklch(95.00% 0.0298 164.67)"
+        ],
+        "rampPurpose": "Synthesized preview ramp; not an additional implementation palette."
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "WBGT Display",
+        "purpose": "Selected zone reading; tabular numerals."
+      },
+      "headline": {
+        "displayName": "Page Headline",
+        "purpose": "Fluid Manrope page titles."
+      },
+      "title": {
+        "displayName": "Card Title",
+        "purpose": "Section headings."
+      },
+      "body": {
+        "displayName": "Guidance",
+        "purpose": "Relaxed reading text with prose width."
+      },
+      "body-compact": {
+        "displayName": "Operational Body",
+        "purpose": "Tables and controls."
+      },
+      "label": {
+        "displayName": "Metadata",
+        "purpose": "Compact source and action labels."
+      },
+      "metric": {
+        "displayName": "Operational Count",
+        "purpose": "30px counts; 26px on mobile."
+      },
+      "mono": {
+        "displayName": "Audit Identifier",
+        "purpose": "Record IDs and timestamps."
+      }
+    },
+    "shadows": [
+      {
+        "name": "navigation-active",
+        "value": "0 3px 12px rgb(38 58 50 / 5%)",
+        "purpose": "Only the selected desktop/mobile navigation item."
+      },
+      {
+        "name": "control-focus",
+        "value": "0 0 0 3px var(--ring)",
+        "purpose": "Keyboard focus on Button and Input; not ambient elevation."
+      }
+    ],
+    "motion": [
+      {
+        "name": "control-transition",
+        "value": "150ms cubic-bezier(0.4, 0, 0.2, 1)",
+        "purpose": "Shared Tailwind control state transitions."
+      },
+      {
+        "name": "navigation-transition",
+        "value": "background-color 160ms, color 160ms",
+        "purpose": "Navigation hover and active states."
+      },
+      {
+        "name": "zone-selection",
+        "value": "opacity 180ms ease-out, stroke 180ms ease-out",
+        "purpose": "Selected zone outline."
+      },
+      {
+        "name": "button-press",
+        "value": "translateY(1px)",
+        "purpose": "Pressed action buttons; excluded for popup triggers."
+      }
+    ],
+    "reducedMotion": {
+      "query": "(prefers-reduced-motion: reduce)",
+      "behavior": "Disable navigation and zone transitions, targeted Dialog/Select/Accordion animations, and button press translation."
+    },
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "md",
+        "value": "768px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      },
+      {
+        "name": "xl",
+        "value": "1280px"
+      }
+    ],
+    "gradients": [
+      {
+        "name": "panel-green",
+        "value": "linear-gradient(150deg, #c2d9b0 0%, #e4eac9 60%, #edf0da 100%)",
+        "purpose": "WBGT readout and report/plan summaries."
+      },
+      {
+        "name": "panel-blue",
+        "value": "linear-gradient(145deg, #dae7ee, #edf2e9)",
+        "purpose": "Illustrative zone schematic."
+      },
+      {
+        "name": "panel-sand",
+        "value": "linear-gradient(145deg, #f2e4c7, #edf0da)",
+        "purpose": "Next workflow step."
+      }
+    ],
+    "contextOverrides": [
+      {
+        "selector": ".zone-readout, .green-summary",
+        "property": "--muted-foreground",
+        "token": "colors.panel-muted"
+      },
+      {
+        "selector": ".green-summary [data-slot=\"badge\"]",
+        "property": "background-color",
+        "value": "var(--card)"
+      }
+    ],
+    "sourceFiles": [
+      "web/src/app/globals.css",
+      "web/src/app/layout.tsx",
+      "web/src/components/app-shell.tsx",
+      "web/src/components/zone-overview.tsx",
+      "web/src/components/ui/button.tsx",
+      "web/src/components/ui/input.tsx",
+      "web/src/components/ui/card.tsx",
+      "web/src/components/ui/badge.tsx",
+      "web/src/components/status.tsx",
+      "web/src/app/page.tsx",
+      "web/src/app/rencana/page.tsx",
+      "web/src/app/laporan/page.tsx",
+      "web/src/app/pengukuran/page.tsx"
+    ]
+  },
+  "components": [
+    {
+      "name": "Default Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Button variant primary, default size; copied from the shared primitive.",
+      "html": "<button class=\"ds-button-primary\" type=\"button\">Setujui rencana</button>",
+      "css": ".ds-button-primary{display:inline-flex;max-width:100%;min-height:44px;align-items:center;justify-content:center;gap:8px;padding:8px 16px;border:1px solid transparent;border-radius:var(--radius-sm,8px);font-family:var(--font-inter, Inter, sans-serif);font-size:14px;line-height:20px;font-weight:500;white-space:normal;text-align:center;cursor:pointer;transition:all 150ms cubic-bezier(0.4,0,0.2,1);background:var(--primary,#31694c);color:var(--primary-foreground,#fff);}.ds-button-primary:hover{background:var(--primary-hover,#245039);}.ds-button-primary:focus-visible{outline:none;border-color:var(--ring,#31694c);box-shadow:0 0 0 3px var(--ring,#31694c);}.ds-button-primary:active:not([aria-haspopup]){transform:translateY(1px)}.ds-button-primary:disabled{opacity:.5;pointer-events:none}@media(prefers-reduced-motion:reduce){.ds-button-primary:active{transform:none}}"
+    },
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Button variant outline, default size; copied from the shared primitive.",
+      "html": "<button class=\"ds-button-outline\" type=\"button\">Detail pengukuran</button>",
+      "css": ".ds-button-outline{display:inline-flex;max-width:100%;min-height:44px;align-items:center;justify-content:center;gap:8px;padding:8px 16px;border:1px solid transparent;border-radius:var(--radius-sm,8px);font-family:var(--font-inter, Inter, sans-serif);font-size:14px;line-height:20px;font-weight:500;white-space:normal;text-align:center;cursor:pointer;transition:all 150ms cubic-bezier(0.4,0,0.2,1);border-color:var(--input,#85958b);background:var(--card,#fcfdfc);color:var(--foreground,#263a32);}.ds-button-outline:hover{background:var(--muted,#eaf0ec);color:var(--foreground,#263a32);}.ds-button-outline:focus-visible{outline:none;border-color:var(--ring,#31694c);box-shadow:0 0 0 3px var(--ring,#31694c);}.ds-button-outline:active:not([aria-haspopup]){transform:translateY(1px)}.ds-button-outline:disabled{opacity:.5;pointer-events:none}@media(prefers-reduced-motion:reduce){.ds-button-outline:active{transform:none}}"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Button variant secondary, default size; copied from the shared primitive.",
+      "html": "<button class=\"ds-button-secondary\" type=\"button\">Buka navigasi</button>",
+      "css": ".ds-button-secondary{display:inline-flex;max-width:100%;min-height:44px;align-items:center;justify-content:center;gap:8px;padding:8px 16px;border:1px solid transparent;border-radius:var(--radius-sm,8px);font-family:var(--font-inter, Inter, sans-serif);font-size:14px;line-height:20px;font-weight:500;white-space:normal;text-align:center;cursor:pointer;transition:all 150ms cubic-bezier(0.4,0,0.2,1);background:var(--secondary,#e5ece7);color:var(--foreground,#263a32);}.ds-button-secondary:hover{background:color-mix(in oklch,var(--secondary,#e5ece7),var(--foreground,#263a32) 5%);}.ds-button-secondary:focus-visible{outline:none;border-color:var(--ring,#31694c);box-shadow:0 0 0 3px var(--ring,#31694c);}.ds-button-secondary:active:not([aria-haspopup]){transform:translateY(1px)}.ds-button-secondary:disabled{opacity:.5;pointer-events:none}@media(prefers-reduced-motion:reduce){.ds-button-secondary:active{transform:none}}"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Button variant ghost, default size; copied from the shared primitive.",
+      "html": "<button class=\"ds-button-ghost\" type=\"button\">Lihat seluruh rencana</button>",
+      "css": ".ds-button-ghost{display:inline-flex;max-width:100%;min-height:44px;align-items:center;justify-content:center;gap:8px;padding:8px 16px;border:1px solid transparent;border-radius:var(--radius-sm,8px);font-family:var(--font-inter, Inter, sans-serif);font-size:14px;line-height:20px;font-weight:500;white-space:normal;text-align:center;cursor:pointer;transition:all 150ms cubic-bezier(0.4,0,0.2,1);background:transparent;color:var(--foreground,#263a32);}.ds-button-ghost:hover{background:var(--muted,#eaf0ec);color:var(--foreground,#263a32);}.ds-button-ghost:focus-visible{outline:none;border-color:var(--ring,#31694c);box-shadow:0 0 0 3px var(--ring,#31694c);}.ds-button-ghost:active:not([aria-haspopup]){transform:translateY(1px)}.ds-button-ghost:disabled{opacity:.5;pointer-events:none}@media(prefers-reduced-motion:reduce){.ds-button-ghost:active{transform:none}}"
+    },
+    {
+      "name": "Destructive Button",
+      "kind": "button",
+      "refersTo": "button-destructive",
+      "description": "Button variant destructive, default size; copied from the shared primitive.",
+      "html": "<button class=\"ds-button-destructive\" type=\"button\">Batalkan</button>",
+      "css": ".ds-button-destructive{display:inline-flex;max-width:100%;min-height:44px;align-items:center;justify-content:center;gap:8px;padding:8px 16px;border:1px solid transparent;border-radius:var(--radius-sm,8px);font-family:var(--font-inter, Inter, sans-serif);font-size:14px;line-height:20px;font-weight:500;white-space:normal;text-align:center;cursor:pointer;transition:all 150ms cubic-bezier(0.4,0,0.2,1);background:color-mix(in oklab,var(--destructive,#9b2c2c) 10%,transparent);color:var(--destructive,#9b2c2c);}.ds-button-destructive:hover{background:color-mix(in oklab,var(--destructive,#9b2c2c) 20%,transparent);}.ds-button-destructive:focus-visible{outline:none;border-color:var(--ring,#31694c);box-shadow:0 0 0 3px color-mix(in oklab,var(--destructive,#9b2c2c) 20%,transparent);}.ds-button-destructive:active:not([aria-haspopup]){transform:translateY(1px)}.ds-button-destructive:disabled{opacity:.5;pointer-events:none}@media(prefers-reduced-motion:reduce){.ds-button-destructive:active{transform:none}}"
+    },
+    {
+      "name": "Link Button",
+      "kind": "button",
+      "refersTo": "button-link",
+      "description": "Button variant link, default size; copied from the shared primitive.",
+      "html": "<button class=\"ds-button-link\" type=\"button\">Lihat detail</button>",
+      "css": ".ds-button-link{display:inline-flex;max-width:100%;min-height:44px;align-items:center;justify-content:center;gap:8px;padding:8px 16px;border:1px solid transparent;border-radius:var(--radius-sm,8px);font-family:var(--font-inter, Inter, sans-serif);font-size:14px;line-height:20px;font-weight:500;white-space:normal;text-align:center;cursor:pointer;transition:all 150ms cubic-bezier(0.4,0,0.2,1);background:transparent;color:var(--primary,#31694c);text-underline-offset:4px;}.ds-button-link:hover{text-decoration:underline;}.ds-button-link:focus-visible{outline:none;border-color:var(--ring,#31694c);box-shadow:0 0 0 3px var(--ring,#31694c);}.ds-button-link:active:not([aria-haspopup]){transform:translateY(1px)}.ds-button-link:disabled{opacity:.5;pointer-events:none}@media(prefers-reduced-motion:reduce){.ds-button-link:active{transform:none}}"
+    },
+    {
+      "name": "Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Transparent field; the application adds card backgrounds for shell controls.",
+      "html": "<label class=\"ds-field-label\" for=\"ds-reading\">WBGT / ISBB (°C)</label><input class=\"ds-input\" id=\"ds-reading\" type=\"number\" step=\"0.1\" placeholder=\"Masukkan bacaan\" />",
+      "css": ".ds-field-label{display:block;margin-bottom:8px;font-family:var(--font-inter, Inter, sans-serif);font-size:14px;color:var(--foreground,#263a32)}.ds-input{box-sizing:border-box;height:44px;width:100%;min-width:0;padding:4px 10px;border:1px solid var(--input,#85958b);border-radius:var(--radius-sm,8px);background:transparent;color:var(--foreground,#263a32);font-family:var(--font-inter, Inter, sans-serif);font-size:16px;caret-color:var(--primary,#31694c);transition:border-color 150ms cubic-bezier(.4,0,.2,1)}.ds-input::placeholder{color:var(--muted-foreground,#586960)}.ds-input:focus-visible{outline:none;border-color:var(--ring,#31694c);box-shadow:0 0 0 3px var(--ring,#31694c)}.ds-input[aria-invalid=\"true\"]{border-color:var(--destructive,#9b2c2c)}.ds-input:disabled{opacity:.5;pointer-events:none;background:color-mix(in oklab,var(--input,#85958b) 50%,transparent)}@media(min-width:768px){.ds-input{font-size:14px}}"
+    },
+    {
+      "name": "Top Navigation",
+      "kind": "nav",
+      "refersTo": "navigation-active",
+      "description": "Active route on a solid surface; desktop tabs are shown from 1280px in the app shell.",
+      "html": "<nav class=\"ds-nav\" aria-label=\"Alur kerja\"><a class=\"ds-nav-item\" href=\"/\" aria-current=\"page\">Ringkasan</a><a class=\"ds-nav-item\" href=\"/pengukuran\">WBGT</a><a class=\"ds-nav-item\" href=\"/rencana\">Rencana</a></nav>",
+      "css": ".ds-nav{display:flex;flex-wrap:wrap;gap:4px;font-family:var(--font-inter, Inter, sans-serif)}.ds-nav-item{box-sizing:border-box;display:flex;align-items:center;min-height:44px;padding:10px 16px;border-radius:12px;font-size:14px;color:var(--muted-foreground,#586960);text-decoration:none;transition:background-color 160ms,color 160ms}.ds-nav-item:hover{background:var(--muted,#eaf0ec);color:var(--foreground,#263a32)}.ds-nav-item[aria-current=\"page\"]{background:var(--card,#fcfdfc);color:var(--foreground,#263a32);box-shadow:0 3px 12px rgb(38 58 50 / 5%)}.ds-nav-item:focus-visible{outline:2px solid var(--ring,#31694c);outline-offset:3px}@media(max-width:639px){.ds-nav-item{min-height:48px}}@media(prefers-reduced-motion:reduce){.ds-nav-item{transition:none}}"
+    },
+    {
+      "name": "Status, Quality, and Origin Badges",
+      "kind": "chip",
+      "refersTo": "status-tinjau",
+      "description": "Separate action, source quality, and provenance signals; complete labels remain visible.",
+      "html": "<div class=\"ds-badges\"><span class=\"ds-badge ds-status\" aria-label=\"Status tindakan: TINJAU HSE\">TINJAU HSE</span><span class=\"ds-badge ds-quality\" aria-label=\"Kualitas data: REPLAY\"><span class=\"ds-dot\" aria-hidden=\"true\"></span>REPLAY</span><span class=\"ds-badge ds-origin\">SINTETIS</span></div>",
+      "css": ".ds-badges{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.ds-badge{box-sizing:border-box;display:inline-flex;min-height:24px;max-width:100%;width:fit-content;align-items:center;justify-content:center;gap:4px;border:1px solid transparent;border-radius:var(--radius-sm,8px);padding:2px 8px;font-family:var(--font-inter, Inter, sans-serif);font-size:12px;line-height:16px;font-weight:500;text-align:left}.ds-status{background:color-mix(in oklab,var(--status-tinjau,#475569) 10%,transparent);color:var(--status-tinjau,#475569);font-weight:600;white-space:normal}.ds-quality{background:var(--card,#fcfdfc);border-color:var(--border,#dde5df);color:var(--muted-foreground,#586960);white-space:nowrap;flex-shrink:0}.ds-origin{border-color:var(--border,#dde5df);color:var(--muted-foreground,#586960);white-space:nowrap;flex-shrink:0}.ds-dot{width:6px;height:6px;border-radius:50%;background:var(--heritage-moss,#53685e)}"
+    },
+    {
+      "name": "Operational Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Shared Card primitive; tonal layering, a fine border, and a Manrope title.",
+      "html": "<section class=\"ds-card\"><header class=\"ds-card-header\"><h2 class=\"ds-card-title\">Profil panas harian</h2><p class=\"ds-card-description\">Bacaan dan kualitas sumber per interval</p></header><div class=\"ds-card-content\">Belum ada bacaan WBGT untuk zona ini pada tanggal yang dipilih.</div></section>",
+      "css": ".ds-card{display:flex;min-width:0;flex-direction:column;gap:24px;overflow:hidden;padding:24px 0;border:1px solid color-mix(in oklab,var(--border,#dde5df) 60%,transparent);border-radius:var(--radius-xl,20px);background:var(--card,#fcfdfc);color:var(--foreground,#263a32);font-family:var(--font-inter, Inter, sans-serif);font-size:14px;line-height:20px}.ds-card-header{display:grid;gap:4px;padding:0 24px}.ds-card-title{margin:0;font-family:var(--font-heading, var(--font-manrope, Manrope)), Inter, sans-serif;font-size:18px;line-height:1.375;font-weight:600;text-wrap:balance}.ds-card-description{margin:0;color:var(--muted-foreground,#586960)}.ds-card-content{padding:0 24px;color:var(--muted-foreground,#586960);overflow-wrap:anywhere}"
+    }
+  ],
+  "narrative": {
+    "northStar": "TERMA Atmosphere",
+    "overview": "Atmosphere adalah ruang kerja yang lapang untuk membaca paparan panas dan menentukan tindak lanjut. Permukaan kabut, panel putih lembut, judul Manrope yang ringan, dan bidang gradasi hijau–kuning mengikuti gabungan dua referensi yang disetujui pengguna. Navigasi atas mempertahankan orientasi lintas langkah; informasi operasional memperoleh ruang yang lebih besar daripada ornamen.\n\nWarna zona membantu mengenali area, sedangkan status tindakan dan kualitas sumber tetap memiliki label tersendiri. Angka berasal dari data aplikasi pada tanggal, zona, interval, dan lingkup pengguna yang dipilih. Skema lokasi bersifat ilustratif; tampilannya tidak menyatakan posisi geografis atau pelacakan langsung. Bahasa antarmuka tetap Bahasa Indonesia.",
+    "keyCharacteristics": [
+      "Permukaan kabut dan panel solid yang terasa ringan.",
+      "Manrope untuk judul dan angka utama, Inter untuk pekerjaan sehari-hari.",
+      "Gradasi hijau, biru, dan pasir sebagai bidang data yang terarah.",
+      "Status tindakan, kualitas sumber, dan asal data terbaca terpisah.",
+      "Navigasi atas, ruang kerja responsif, dan fokus keyboard yang terlihat."
+    ],
+    "rules": [
+      {
+        "name": "The Separate Signals Rule",
+        "body": "Status tindakan, kualitas sumber, dan asal data harus tetap menjadi label terpisah; warna zona atau gradasi tidak menyatakan pekerja aman.",
+        "section": "colors"
+      },
+      {
+        "name": "The Quiet Depth Rule",
+        "body": "Pertahankan kedalaman melalui tonalitas; bayangan navigasi aktif dan ring fokus memiliki fungsi keadaan yang jelas.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do gunakan token Atmosphere dan komponen shadcn yang ada untuk layar berikutnya.",
+      "Do tampilkan status tindakan, kualitas sumber, dan asal data sebagai informasi terpisah.",
+      "Do pertahankan label demo, sumber replay, data hilang, dan aturan fixture dalam konteks keputusan serta hasil cetak.",
+      "Do gunakan data aplikasi sesuai tanggal, interval, zona, dan lingkup pengguna; beri label skema pada geometri ilustratif.",
+      "Do pertahankan fokus keyboard, petunjuk geser, dan sasaran kontrol minimal 44px.",
+      "Do pakai teks panel-muted dan dasar badge card solid pada ringkasan hijau."
+    ],
+    "donts": [
+      "Don't gunakan warna zona atau gradasi sebagai klaim keamanan atau diagnosis kesehatan.",
+      "Don't mengisi celah pengukuran dengan nol atau angka dari referensi visual.",
+      "Don't mematahkan badge kualitas dan asal data; bungkus kelompok di sekelilingnya.",
+      "Don't menghidupkan kembali sidebar desktop atau token Heritage yang telah diganti.",
+      "Don't menyembunyikan batas harian, batas interval, alasan keputusan, atau kebutuhan tinjauan HSE demi tampilan."
+    ]
+  }
+}
