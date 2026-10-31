@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useLayoutEffect, useRef } from "react"
-import { SquaresFourIcon as LayoutDashboard, ClipboardTextIcon as ClipboardList, CalendarCheckIcon as CalendarCheck, ListChecksIcon as ListChecks, FileTextIcon as FileText } from "@phosphor-icons/react"
+import { SquaresFourIcon as LayoutDashboard, ClipboardTextIcon as ClipboardList, ChartLineUpIcon as CalendarCheck, CpuIcon as ListChecks, FileTextIcon as FileText } from "@phosphor-icons/react"
 import { NAV_GROUPS, navigationGroup } from "@/lib/navigation"
 import { cn } from "@/lib/utils"
 

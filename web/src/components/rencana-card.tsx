@@ -162,7 +162,7 @@ function Limit({ label, value, sub, strong }: { label: string; value: string; su
   )
 }
 
-function UbahPenugasan({ pekerjaKode, zonaAwal, tugasAwal }: { pekerjaKode: string; zonaAwal: string; tugasAwal: string }) {
+export function UbahPenugasan({ pekerjaKode, zonaAwal, tugasAwal }: { pekerjaKode: string; zonaAwal: string; tugasAwal: string }) {
   const { dispatch } = useApp()
   const [open, setOpen] = useState(false)
   const [zona, setZona] = useState(zonaAwal)

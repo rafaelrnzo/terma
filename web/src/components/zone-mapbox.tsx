@@ -63,5 +63,5 @@ export default function ZoneMapbox({ zones, selected, onZone, token, onFailure }
       map?.remove()
     }
   }, [token])
-  return <div ref={container} className="mapbox-canvas" role="region" aria-label="Peta Mapbox dengan koordinat zona simulasi" />
+  return <div ref={container} className="mapbox-canvas" role="region" aria-label="Peta Mapbox dengan koordinat zona ilustratif" />
 }

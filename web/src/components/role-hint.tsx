@@ -16,7 +16,7 @@ export function RoleHint({ peran }: { peran: Role[] }) {
     <Alert className="mb-6 bg-card">
       <Info />
       <AlertTitle>Langkah ini dikerjakan oleh {peran.map((p) => LABEL_PERAN[p]).join(" atau ")}</AlertTitle>
-      <AlertDescription><p>Anda sedang mencoba peran {LABEL_PERAN[user.role]}. Untuk menjalankan langkah ini, ganti peran simulasi:</p><div className="mt-3 flex flex-wrap gap-2">{USERS.filter(u => peran.includes(u.role)).map(u => <Button key={u.id} variant="outline" onClick={() => dispatch({ type: "LOGIN", userId: u.id })}>Coba sebagai {u.nama} · {LABEL_PERAN[u.role]}</Button>)}</div></AlertDescription>
+      <AlertDescription><p>Peran aktif Anda: {LABEL_PERAN[user.role]}. Langkah ini ditangani oleh:</p><div className="mt-3 flex flex-wrap gap-2">{USERS.filter(u => peran.includes(u.role)).map(u => <Button key={u.id} variant="outline" onClick={() => dispatch({ type: "LOGIN", userId: u.id })}>Buka sebagai {u.nama} · {LABEL_PERAN[u.role]}</Button>)}</div></AlertDescription>
     </Alert>
   )
 }

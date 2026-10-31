@@ -62,7 +62,7 @@ export function LandingHandoff() {
 
   return <aside ref={root} className="intro-handoff handoff-demo" aria-label="Contoh alur koordinasi" data-playing={playing}>
     <div className="handoff-heading"><h2 className="font-heading text-2xl font-medium">Satu rencana,<br />sampai selesai di lapangan.</h2><span className="handoff-counter" aria-hidden>{active + 1}<span> / 3</span></span></div>
-    <p className="mt-3 text-sm text-muted-foreground">Contoh alur dalam simulasi. Pilih tahap untuk menjelajah.</p>
+    <p className="mt-3 text-sm text-muted-foreground">Alur koordinasi tim. Pilih tahap untuk menjelajah.</p>
     <ol className="handoff-list">{steps.map((step, index) => <li key={step.title} data-passed={index < active}>
       <button type="button" className="handoff-step" aria-pressed={active === index} aria-controls="handoff-output" onClick={() => select(index)}>
         <span className="handoff-node" aria-hidden>{index + 1}</span><span><span className="block font-medium">{step.title}</span><span className="mt-1 block text-sm text-muted-foreground">{step.description}</span></span>
@@ -75,7 +75,7 @@ export function LandingHandoff() {
         <div className="handoff-receipt-footer"><span>{current.owner}</span><span className="handoff-output-label">{current.output}</span></div>
       </div>
     </div>
-    <div className="handoff-controls"><p className="text-xs leading-relaxed text-muted-foreground">Ilustrasi saja.<br />Tidak mengubah data demo.</p>
+    <div className="handoff-controls"><p className="text-xs leading-relaxed text-muted-foreground">Ilustrasi saja.<br />Jelajahi setiap tahap.</p>
       {ready && !reduced ? <Button variant="ghost" size="sm" onClick={() => {
         autoStarted.current = true
         if (playing) setPlaying(false)

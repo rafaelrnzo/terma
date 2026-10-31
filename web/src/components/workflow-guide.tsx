@@ -8,6 +8,7 @@ import "driver.js/dist/driver.css"
 import { Button } from "@/components/ui/button"
 import { useApp } from "@/lib/store"
 import { guideItinerary } from "@/lib/shift-journey"
+import { currentShift } from "@/lib/management-state"
 import { pageGuide } from "@/lib/guide-content"
 
 type Mode = "page" | "journey"
@@ -27,7 +28,8 @@ export function WorkflowGuideProvider({ children }: { children: ReactNode }) {
     if (!user || !ready || loading) return
     active.current?.destroy()
     setError("")
-    const routes = mode === "page" ? [path] : guideItinerary(state, user)
+    const shift = currentShift(state)
+    const routes = mode === "page" ? [path] : !shift ? ["/ringkasan", "/impor"] : [`/shift/${shift.id}`, ...guideItinerary(state, user).filter(route => route !== "/impor"), `/shift/${shift.id}`]
     requestedRoute.current = routes[0]
     setSession({ mode, routes, index: 0, userId: user.id, date: state.tanggal })
     if (path !== routes[0]) router.push(routes[0])

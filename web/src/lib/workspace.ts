@@ -4,11 +4,12 @@ import type { AppState } from "./store"
 import type { User } from "./types"
 
 export const SURFACES = [
+  { href: "/analitik", label: "Analitik shift", detail: "Grafik kondisi panas, adaptasi, dan ringkasan data shift terpilih" },
   { href: "/perangkat", label: "Perangkat IoT", detail: "TERMA Station, smart water station RFID, TERMA Band BLE" },
   { href: "/kesehatan", label: "Paparan & rujukan klinik", detail: "Akumulasi paparan terverifikasi, kesiapan rujukan pemeriksaan ginjal" },
   { href: "/", label: "Tentang TERMA", detail: "Pengantar aplikasi dan alur HSE–mandor" },
-  { href: "/ringkasan", label: "Dashboard", detail: "Hari ini: ringkasan pekerjaan, peta zona, kondisi panas, dan prioritas shift" },
-  { href: "/impor", label: "Pekerja & data", detail: "Direktori pekerja, penugasan, dan impor CSV" },
+  { href: "/ringkasan", label: "Shift kerja", detail: "Buat draft, pilih peserta, lanjutkan shift, dan lihat hasil penutupan" },
+  { href: "/impor", label: "Data pekerja", detail: "Tambah, edit, hapus, dan arsipkan pekerja serta penugasan awal" },
   { href: "/paparan", label: "Adaptasi pekerja", detail: "Riwayat kehadiran dan konfirmasi HSE" },
   { href: "/pengukuran", label: "Pengukuran WBGT", detail: "Bacaan panas per zona dan jam" },
   { href: "/rencana", label: "Rencana kerja", detail: "Batas paparan, penugasan, dan persetujuan" },
@@ -16,7 +17,7 @@ export const SURFACES = [
   { href: "/instruksi", label: "Instruksi mandor", detail: "Pembagian dan penerimaan rencana per regu" },
   { href: "/tindakan", label: "Tindakan & verifikasi", detail: "Pelaksanaan, laporan mandor, dan pemeriksaan HSE" },
   { href: "/laporan", label: "Laporan & audit", detail: "Rekap shift dan jejak aktivitas" },
-  { href: "/panduan", label: "Panduan alur shift", detail: "Empat tahap, tanggung jawab peran, serah terima dan panduan interaktif" },
+  { href: "/panduan", label: "Panduan alur shift", detail: "Data pekerja, draft, terbitkan, pelaksanaan, verifikasi, dan penutupan" },
 ]
 
 export const STEP_OUTCOMES: Record<string, string> = {

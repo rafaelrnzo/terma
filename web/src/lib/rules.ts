@@ -67,7 +67,8 @@ export function deteksiKandidat(
   kehadiran: Kehadiran[],
   tanggalRencana: string,
 ): KandidatAdaptasi {
-  const milik = kehadiran.filter((k) => k.pekerjaKode === p.kode).sort((a, b) => a.tanggal.localeCompare(b.tanggal))
+  // Today's roster and future attendance cannot establish prior exposure history.
+  const milik = kehadiran.filter((k) => k.pekerjaKode === p.kode && k.tanggal < tanggalRencana).sort((a, b) => a.tanggal.localeCompare(b.tanggal))
   const plan = new Date(tanggalRencana + "T00:00:00Z")
   const tujuhHari: string[] = []
   for (let i = 1; i <= 7; i++) {
