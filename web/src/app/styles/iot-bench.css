@@ -43,6 +43,19 @@
 .iot-summary-strip strong { display:block; margin-top:.15rem; color:var(--foreground); font-weight:500; }
 .iot-summary-strip a { margin-left:auto; display:inline-flex; align-items:center; gap:.5rem; min-height:36px; }
 .iot-radio-rings circle { fill:none; stroke:var(--primary); stroke-width:.7; vector-effect:non-scaling-stroke; }
+.iot-activity { pointer-events:none; }
+.iot-data-route { fill:none; stroke:var(--primary); stroke-width:1.15; stroke-dasharray:3 7; opacity:.32; vector-effect:non-scaling-stroke; }
+.iot-data-links circle { fill:var(--primary); stroke:var(--card); stroke-width:1; vector-effect:non-scaling-stroke; }
+[data-rfid-scan] { fill:var(--primary); }
+[data-rfid-flash] { fill:var(--primary); }
+.iot-lcd-rail { fill:#091b2d; }
+[data-station-bar] { fill:#8fc7ff; }
+.iot-ecg-screen { fill:none; stroke:#9ed4ff; stroke-width:.8; stroke-linecap:round; stroke-linejoin:round; }
+.iot-heartbeat-halo,.iot-gateway-receive { fill:var(--primary); stroke:var(--primary); stroke-width:.8; vector-effect:non-scaling-stroke; }
+.iot-band-signal { display:block; width:68px; height:24px; overflow:hidden; }
+.iot-band-signal path { fill:none; stroke:var(--primary); stroke-width:1.4; stroke-linecap:round; stroke-linejoin:round; }
+.iot-band-signal-large { width:100%; height:48px; border-top:1px solid var(--border); padding-top:.5rem; }
+.iot-motion-preference { margin-top:.5rem; font-size:.6875rem; line-height:1.7; color:var(--muted-foreground); }
 .iot-globe { --anatomy-top:#343941; --anatomy-paper:#11151c; --anatomy-shade-0:#0c0e12; --anatomy-shade-1:#151a21; --anatomy-shade-2:#222831; --anatomy-shade-3:#2d3540; --anatomy-mid:#737c89; }
 .iot-solar,.iot-display { --anatomy-top:#304360; --anatomy-paper:#192738; --anatomy-shade-0:#111c2b; --anatomy-shade-1:#192738; --anatomy-shade-2:#24374f; --anatomy-shade-3:#304360; }
 .iot-rubber { --anatomy-top:#3b4048; --anatomy-paper:#252a31; --anatomy-shade-0:#171b21; --anatomy-shade-1:#242a32; --anatomy-shade-2:#333b46; --anatomy-shade-3:#434c58; }
