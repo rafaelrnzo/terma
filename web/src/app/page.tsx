@@ -1,11 +1,12 @@
 import Link from "next/link"
 import type { Metadata } from "next"
-import { ArrowRight } from "lucide-react"
+import { ArrowRightIcon as ArrowRight } from "@phosphor-icons/react/ssr"
 import { Button } from "@/components/ui/button"
 import { Wordmark } from "@/components/wordmark"
 import { LandingHandoff } from "@/components/landing-handoff"
 import { LandingMotion } from "@/components/landing-motion"
 import { LandingHeroFlow } from "@/components/landing-hero-flow"
+import { DeviceEcosystem } from "@/components/device-ecosystem"
 import { LandingSite } from "@/components/landing-site"
 import { QualityBadge, StatusChip } from "@/components/status"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
@@ -85,6 +86,7 @@ export default function Home() {
         <div className="landing-product-heading"><h2 id="product-title">Satu lokasi, tiga hal yang saling terhubung.</h2><p>Kenali area kerja, alur regu, dan ruang istirahat sebelum membuka rencana. Ilustrasi ini memakai lokasi contoh, tanpa pelacakan pekerja.</p></div>
         <LandingSite />
       </section>
+      <section className="landing-section" aria-labelledby="iot-title"><div className="landing-device-intro"><p className="eyebrow">THERMAL EXPOSURE & RENAL MONITORING ASSISTANT</p><h2 id="iot-title">Tiga perangkat. Satu rencana personal.</h2><p>Data panas per zona, kunjungan ke tempat minum, dan band bergilir untuk pekerja paling berisiko. TERMA menghubungkannya dengan persetujuan HSE dan tindak lanjut klinik. Spesifikasi berikut adalah rancangan proposal; integrasi langsung masih dikembangkan.</p></div><DeviceEcosystem /><Link href="/perangkat" className="panel-link mt-5">Jelajahi ekosistem IoT<ArrowRight size={16} /></Link></section>
       <section id="peran" className="landing-section" aria-labelledby="roles-title">
         <div className="landing-section-heading">
           <h2 id="roles-title">Setiap peran tahu langkah berikutnya.</h2>

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Search } from "lucide-react"
+import { MagnifyingGlassIcon as Search } from "@phosphor-icons/react"
 import { NextStep, PageHeader, WorkflowEmpty } from "@/components/app-shell"
 import { RoleHint } from "@/components/role-hint"
 import { LifecycleBadge } from "@/components/status"
@@ -40,7 +40,7 @@ export default function TindakanPage() {
     <RoleHint peran={user?.role === "HSE" ? ["HSE"] : ["MANDOR"]} />
 
     {daftar.length === 0 ? <WorkflowEmpty title="Belum ada tindakan untuk shift ini" href="/rencana" label="Buka rencana & persetujuan">Tindakan dibuat saat HSE menyetujui rencana. Setelah instruksi diakui, mandor dapat mencatat pelaksanaannya.</WorkflowEmpty> : <>
-      <section className="accent-summary mb-6 rounded-xl bg-[image:var(--panel-accent)] p-6" aria-label="Ringkasan tindak lanjut">
+      <section data-guide="execution" className="accent-summary mb-6 rounded-xl bg-[image:var(--panel-accent)] p-6" aria-label="Ringkasan tindak lanjut">
         <dl className="grid grid-cols-3 gap-4">
           {[["Seluruh tindakan", daftar.length], ["Perlu verifikasi", daftar.filter((t) => kelompok(t) === "VERIFIKASI").length], ["Terverifikasi", daftar.filter((t) => kelompok(t) === "TERVERIFIKASI").length]].map(([label, value]) => <div key={label}><dt className="text-xs text-muted-foreground">{label}</dt><dd className="mt-2 font-heading text-3xl font-medium tabular-nums">{value}</dd></div>)}
         </dl>
@@ -85,7 +85,7 @@ export default function TindakanPage() {
         </CardContent>
       </Card>
     </>}
-    <NextStep href="/laporan" label="Laporan & audit" />
+    <NextStep />
   </>
 }
 

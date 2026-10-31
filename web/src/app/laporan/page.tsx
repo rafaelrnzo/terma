@@ -1,6 +1,6 @@
 "use client"
 
-import { Printer } from "lucide-react"
+import { PrinterIcon as Printer } from "@phosphor-icons/react"
 import { PageHeader } from "@/components/app-shell"
 import { OriginBadge, QualityBadge, StatusChip } from "@/components/status"
 import { Stat } from "@/components/stat"
@@ -41,7 +41,7 @@ export default function LaporanPage() {
       <PageHeader no="7" title="Laporan & audit" peran="HSE" summary="Rekap rencana, tindak lanjut, dan kekosongan data dalam satu laporan shift.">
         Laporan menampilkan sumber data dan kekosongannya, bukan hanya persentase kepatuhan. Penyebut setiap persentase ditulis jelas.
       </PageHeader>
-      <div className="no-print mb-6">
+      <div data-guide="report" className="no-print mb-6">
         <p className="mb-3 text-sm text-muted-foreground">Lingkup laporan: {user.role === "MANDOR" ? `regu ${user.reguKode}. Jejak audit lintas regu dan hasil impor hanya tersedia untuk HSE atau petugas data.` : "seluruh regu pada lokasi ini."}</p>
         <Button variant="outline" onClick={() => window.print()}><Printer /> Cetak laporan</Button>
       </div>

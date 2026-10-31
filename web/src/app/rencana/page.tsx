@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { useState } from "react"
-import { AlertTriangle, ArrowRight, Calculator } from "lucide-react"
+import { WarningIcon as AlertTriangle, ArrowRightIcon as ArrowRight, CalculatorIcon as Calculator } from "@phosphor-icons/react"
 import { NextStep, PageHeader, WorkflowEmpty } from "@/components/app-shell"
 import { RoleHint } from "@/components/role-hint"
 import { QualityBadge, StatusChip } from "@/components/status"
@@ -94,7 +94,7 @@ export default function RencanaPage() {
           )}
 
           <p role="status" className="mb-3 text-sm text-muted-foreground">{daftar.length} rencana ditampilkan · batas dan alasan lengkap tersedia pada rincian pekerja.</p>
-          <div className="divide-y rounded-xl bg-card px-4 sm:px-6">
+          <div data-guide="plans" className="divide-y rounded-xl bg-card px-4 sm:px-6">
             {daftar.length === 0 && <div className="py-6"><p className="text-muted-foreground">Tidak ada rencana yang cocok dengan filter.</p><Button variant="outline" className="mt-3" onClick={() => { setRegu("SEMUA"); setPersetujuan("SEMUA") }}>Reset filter</Button></div>}
             {daftar.map(r => {
               const p = state.pekerja.find(p => p.kode === r.pekerjaKode)!
@@ -108,7 +108,7 @@ export default function RencanaPage() {
         </>
       )}
 
-      <NextStep href="/instruksi" label="Instruksi mandor" />
+      <NextStep />
     </>
   )
 }

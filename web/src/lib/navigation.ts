@@ -1,9 +1,9 @@
 export const NAV_GROUPS = [
   { label: "Dashboard", href: "/ringkasan", routes: [{ href: "/ringkasan", label: "Dashboard" }] },
-  { label: "Data lapangan", href: "/impor", routes: [{ href: "/impor", label: "Pekerja & penugasan" }, { href: "/paparan", label: "Adaptasi pekerja" }, { href: "/pengukuran", label: "Pengukuran panas" }] },
+  { label: "Data lapangan", href: "/impor", routes: [{ href: "/impor", label: "Pekerja & penugasan" }, { href: "/paparan", label: "Adaptasi pekerja" }, { href: "/pengukuran", label: "Pengukuran panas" }, { href: "/perangkat", label: "Perangkat IoT" }] },
   { label: "Rencana kerja", href: "/rencana", routes: [{ href: "/rencana", label: "Rencana kerja" }, { href: "/insight", label: "Insight individu" }] },
   { label: "Tindak lanjut", href: "/tindakan", routes: [{ href: "/instruksi", label: "Instruksi mandor" }, { href: "/tindakan", label: "Pelaksanaan & verifikasi" }] },
-  { label: "Laporan", href: "/laporan", routes: [{ href: "/laporan", label: "Laporan shift" }] },
+  { label: "Laporan", href: "/laporan", routes: [{ href: "/laporan", label: "Laporan shift" }, { href: "/kesehatan", label: "Paparan & rujukan klinik" }] },
 ]
 
 export function navigationGroup(path: string) {

@@ -4,6 +4,8 @@ import type { AppState } from "./store"
 import type { User } from "./types"
 
 export const SURFACES = [
+  { href: "/perangkat", label: "Perangkat IoT", detail: "TERMA Station, smart water station RFID, TERMA Band BLE" },
+  { href: "/kesehatan", label: "Paparan & rujukan klinik", detail: "Akumulasi paparan terverifikasi, kesiapan rujukan pemeriksaan ginjal" },
   { href: "/", label: "Tentang TERMA", detail: "Pengantar aplikasi dan alur HSE–mandor" },
   { href: "/ringkasan", label: "Dashboard", detail: "Hari ini: ringkasan pekerjaan, peta zona, kondisi panas, dan prioritas shift" },
   { href: "/impor", label: "Pekerja & data", detail: "Direktori pekerja, penugasan, dan impor CSV" },
@@ -14,7 +16,7 @@ export const SURFACES = [
   { href: "/instruksi", label: "Instruksi mandor", detail: "Pembagian dan penerimaan rencana per regu" },
   { href: "/tindakan", label: "Tindakan & verifikasi", detail: "Pelaksanaan, laporan mandor, dan pemeriksaan HSE" },
   { href: "/laporan", label: "Laporan & audit", detail: "Rekap shift dan jejak aktivitas" },
-  { href: "/panduan", label: "Panduan ruang demo", detail: "Alur kerja, peran, istilah, dan batas simulasi" },
+  { href: "/panduan", label: "Panduan alur shift", detail: "Empat tahap, tanggung jawab peran, serah terima dan panduan interaktif" },
 ]
 
 export const STEP_OUTCOMES: Record<string, string> = {

@@ -2,7 +2,7 @@
 
 import { use } from "react"
 import Link from "next/link"
-import { ShieldAlert } from "lucide-react"
+import { ShieldWarningIcon as ShieldAlert } from "@phosphor-icons/react"
 import { PageHeader, WorkflowEmpty } from "@/components/app-shell"
 import { RencanaCard } from "@/components/rencana-card"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"

@@ -1,9 +1,10 @@
 "use client"
 
 import { useState } from "react"
+import { HeatMonitor } from "@/components/heat-monitor"
 import { NextStep, PageHeader } from "@/components/app-shell"
 import { CsvImporter } from "@/components/csv-importer"
-import { Thermometer } from "lucide-react"
+import { ThermometerIcon as Thermometer } from "@phosphor-icons/react"
 import { OriginBadge, QualityBadge } from "@/components/status"
 import { RoleHint } from "@/components/role-hint"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
@@ -266,7 +267,8 @@ export default function PengukuranPage() {
         </CardContent>
       </Card>
 
-      <NextStep href="/rencana" label="Rencana & persetujuan" />
+      <section className="mt-8"><h2 className="mb-4 text-lg font-semibold">Zona & interval lapangan</h2><HeatMonitor /></section>
+      <NextStep />
     </>
   )
 }

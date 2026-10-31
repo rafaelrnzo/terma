@@ -1,7 +1,7 @@
 "use client"
 
 import { useRef, useState } from "react"
-import { Copy, MessageSquare, Send, XCircle } from "lucide-react"
+import { CopyIcon as Copy, ChatTextIcon as MessageSquare, PaperPlaneTiltIcon as Send, XCircleIcon as XCircle } from "@phosphor-icons/react"
 import { toast } from "sonner"
 import { NextStep, PageHeader, WorkflowEmpty } from "@/components/app-shell"
 import { RoleHint } from "@/components/role-hint"
@@ -39,13 +39,13 @@ export default function InstruksiPage() {
       </PageHeader>
       <RoleHint peran={user?.role === "MANDOR" ? ["MANDOR"] : ["HSE"]} />
 
-      <div className="grid items-start gap-6">
+      <div data-guide="instructions" className="grid items-start gap-6">
         {reguTerlihat.map((g) => (
           <KartuRegu key={g.kode} reguKode={g.kode} />
         ))}
       </div>
 
-      <NextStep href="/tindakan" label="Tindakan & verifikasi" />
+      <NextStep />
     </>
   )
 }

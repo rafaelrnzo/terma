@@ -1,6 +1,6 @@
 "use client"
 
-import { Database } from "lucide-react"
+import { DatabaseIcon as Database } from "@phosphor-icons/react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { bisaMuatDemo } from "@/lib/seed-data"

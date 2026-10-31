@@ -1,8 +1,9 @@
 "use client"
 
 import { use } from "react"
+import { ShiftFocusCard } from "@/components/shift-navigator"
 import Link from "next/link"
-import { ArrowLeft, ArrowRight, HeartPulse } from "lucide-react"
+import { ArrowLeftIcon as ArrowLeft, ArrowRightIcon as ArrowRight, HeartbeatIcon as HeartPulse } from "@phosphor-icons/react"
 import { PageHeader, WorkflowEmpty } from "@/components/app-shell"
 import { LifecycleBadge, OriginBadge } from "@/components/status"
 import { RencanaCard } from "@/components/rencana-card"
@@ -40,6 +41,7 @@ export default function PekerjaPage({ params }: { params: Promise<{ kode: string
       <Card><CardHeader><CardTitle>Riwayat adaptasi</CardTitle></CardHeader><CardContent className="space-y-3 text-sm"><p>{candidate.keterangan}</p><p className="text-muted-foreground">{confirmation ? `Dikonfirmasi ${confirmation.dikonfirmasiOleh} · ${confirmation.profil === "NORMAL" ? "Profil normal" : "Adaptasi hari ke-" + confirmation.hariAdaptasi}` : "Belum ada konfirmasi riwayat oleh HSE."}</p><p>{attendance.filter(a => a.status === "HADIR").length} hadir dari {attendance.length} catatan terakhir.</p><p className="text-xs text-muted-foreground">Kehadiran bukan bukti durasi paparan panas.</p><Button asChild variant="outline"><Link href="/paparan">Tinjau adaptasi<ArrowRight aria-hidden /></Link></Button></CardContent></Card>
     </div>
     <section id="rencana" className="scroll-mt-6" aria-label="Rencana pekerja"><div className="mb-4 flex flex-wrap items-center justify-between gap-3"><h2 className="font-heading text-xl font-semibold">Rencana pada {tanggalLabel(state.tanggal)}</h2><Link href="/rencana" className="text-sm underline underline-offset-4">Kembali ke daftar rencana</Link></div>{plan ? <RencanaCard r={plan} mode={user.role === "MANDOR" ? "mandor" : "hse"} /> : <WorkflowEmpty title="Belum ada rencana pada tanggal ini" href="/rencana" label="Buka rencana kerja">Periksa tanggal aktif dan kelengkapan data sebelum menghitung rencana.</WorkflowEmpty>}</section>
+    <div className="mt-6"><ShiftFocusCard compact /></div>
     <Card className="mt-6"><CardHeader><CardTitle>Tindak lanjut pekerja</CardTitle></CardHeader><CardContent className="space-y-4">{actions.length ? actions.map(t => <div key={t.id} className="flex flex-wrap items-center justify-between gap-3 text-sm"><p className="max-w-prose">{t.deskripsi}</p><LifecycleBadge status={t.status} /></div>) : <p className="text-sm text-muted-foreground">Tindakan dibuat setelah rencana disetujui dan instruksi dibagikan.</p>}<Button asChild variant="outline"><Link href="/tindakan">Buka tindakan & verifikasi<ArrowRight aria-hidden /></Link></Button></CardContent></Card>
   </>
 }
