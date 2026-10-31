@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { DeviceReadingsButton } from "@/components/device-readings-button"
 import { HeatMonitor } from "@/components/heat-monitor"
 import { NextStep, PageHeader } from "@/components/app-shell"
 import { CsvImporter } from "@/components/csv-importer"
@@ -46,6 +47,7 @@ export default function PengukuranPage() {
       </PageHeader>
       <RoleHint peran={["PETUGAS_DATA", "HSE"]} />
 
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-4 rounded-md border bg-card p-5"><div><h2 className="text-sm font-semibold">Bacaan TERMA Station</h2><p className="mt-1 text-xs text-muted-foreground">Ambil bacaan perangkat untuk melengkapi interval kosong pada shift ini.</p></div><DeviceReadingsButton /></div>
       <Card>
         <CardHeader>
           <CardTitle>Bacaan per zona</CardTitle>

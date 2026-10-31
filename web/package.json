@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "figure:build": "node scripts/anatomy/build.mjs",
+    "figure:audit": "node scripts/anatomy/build.mjs --audit",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",

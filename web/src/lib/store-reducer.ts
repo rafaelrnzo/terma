@@ -1,6 +1,7 @@
 import { isManagementAction, currentShift, checkpointShift, ensureManagement, isClosedShift, mutableShiftAction, managementOf } from "./management-state"
 import { manageWorker } from "./worker-management"
 import { shiftActionError } from "./shift-action-validation"
+import { ingestStationReadings } from "./device-ingestion"
 import { manageShift, openShift } from "./shift-management"
 import { AksesDitolak, wajib, type Aksi } from "./access"
 import { ATURAN_FIXTURE } from "./config"
@@ -28,6 +29,7 @@ const IZIN_AKSI: Partial<Record<Action["type"], Aksi>> = {
   IMPOR_PENGUKURAN: "INPUT_PENGUKURAN",
   IMPOR_PRAKIRAAN: "INPUT_PENGUKURAN",
   INPUT_BACAAN: "INPUT_PENGUKURAN",
+  AMBIL_BACAAN_PERANGKAT: "INPUT_PENGUKURAN",
   KONFIRMASI: "KONFIRMASI_PAPARAN",
   HITUNG_RENCANA: "HITUNG_RENCANA",
   SETUJUI: "SETUJUI_RENCANA",
@@ -47,6 +49,7 @@ function reguDari(s: AppState, a: Action): string | undefined {
 
 function inner(s: AppState, a: Exclude<Action, import("./management-types").ManagementAction>): AppState {
   switch (a.type) {
+    case "AMBIL_BACAAN_PERANGKAT": return ingestStationReadings(s)
     case "MUAT_DEMO":
       if (!bisaMuatDemo(s)) return notice(s, "info", "Seed tidak dijalankan: ruang kerja sudah berisi data. Tidak ada data yang ditimpa.")
       if (!tanggalValid(s.tanggal)) return notice(s, "error", "Tanggal rencana tidak valid.")

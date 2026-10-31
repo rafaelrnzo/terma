@@ -9,6 +9,8 @@ Inspected upstream: `rafaelrnzo/terma`, main `bfd7b31` (2026-10-31).
 | Worker catalogue and shift snapshots | web/src/lib/worker-management.ts, shift-management.ts, management-state.ts | store-state.ts, access.ts, workflow.ts |
 | Browser persistence and reducer boundary | web/src/lib/store.tsx, store-reducer.ts, management-validation.ts | store-imports.ts, store-plans.ts, shift-action-validation.ts |
 | Versioned heat plans and verification | web/src/lib/rules.ts, workflow.ts | config.ts, workspace records |
+| Interactive IoT instrument bench | web/src/components/figures/terma, web/scripts/anatomy | MIT Anatomy kit, device-telemetry.ts, scoped Summon theme, ref-based animation |
+| Device reading ingestion | web/src/lib/device-ingestion.ts, components/device-readings-button.tsx | selected shift, existing input permission, REPLAY provenance, recompute/checkpoint |
 | Bklit chart composition | web/src/components/wbgt-chart.tsx, heat-trend.tsx, acclimatisation-chart.tsx | heat-series.ts, vendored components/charts |
 | Monthly exposure review | web/src/lib/exposure-review.ts, app/kesehatan/page.tsx | verified actions, versioned plans, scoped workers |
 | Zone observations | web/src/lib/overview.ts | scoped workers, measured/replay/forecast quality |
@@ -20,3 +22,5 @@ Task: inspect source + proposal -> Summon theme / Bklit installation -> dashboar
 Keep writes to the existing reducer and clinical information sequential. The app persists locally without a backend, identity provider, live telemetry or trained AI. Interface copy uses operational terminology; this is not evidence of those integrations. No production deployment is authorized. Use only verified Raya46 credentials for repository operations. The active contribution target is rafaelrnzo/terma, not a personal repository.
 
 Current flow: catalogue CRUD -> dated DRAFT snapshot -> preparation -> approval -> publish ACTIVE -> sharing/acknowledgement/report -> verification -> explicit CLOSED. Primary surfaces: /ringkasan, /impor, /shift/[id]; analytics separated at /analitik. Closed snapshots cannot be changed by master edits. 111 tests/14 files and production build pass; see docs/crud-shift-flow.md for browser evidence.
+
+IoT extension: /perangkat now renders a 103-solid Anatomy instrument bench with Station/RFID/Band/gateway readouts, selection zoom and controls. A LOCAL adapter supplies presentation telemetry. The explicit reading action fills only missing intervals and preserves manual/closed data. Geometry audit and line-end checks pass; developer provenance in docs/anatomy-provenance.md and behavior in docs/iot-visualization.md.
