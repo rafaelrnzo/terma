@@ -1,6 +1,5 @@
 import { currentShift, managementOf } from "./management-state"
 import { shiftJourney } from "./shift-journey"
-import { workflow } from "./workflow"
 import type { AppState } from "./store-state"
 import type { User } from "./types"
 
@@ -23,19 +22,4 @@ export function managedJourney(s: AppState, user: User) {
     focus = { ...focus, state: user.role === "HSE" ? "action" : "waiting", owner: "HSE", title: "Semua tindakan terverifikasi. Tutup shift.", description: "HSE menutup shift untuk mengunci catatan dan menetapkan laporan akhir. Membuka laporan saja belum menutup shift.", href: hub, cta: "Tutup shift" }
   }
   return { ...legacy, focus, command, hub, shift }
-}
-
-export function managedStages(s: AppState, user: User) {
-  const steps = workflow(s, user)
-  const shift = currentShift(s)
-  const active = shift?.status === "ACTIVE" || shift?.status === "CLOSED"
-  const currentIds = new Set(s.rencana.filter(plan => plan.tanggal === s.tanggal && !plan.digantikan).map(plan => plan.id))
-  const actions = s.tindakan.filter(action => currentIds.has(action.rencanaId))
-  return [
-    { title: "Siapkan peserta", owner: "HSE", href: `/shift/${shift?.id}#persiapan`, done: steps[0].selesai && steps[1].selesai },
-    { title: "Isi bacaan panas", owner: "Petugas data · HSE", href: "/pengukuran", done: steps[2].selesai },
-    { title: "Setujui & terbitkan", owner: "HSE", href: "/rencana", done: steps[3].selesai && active },
-    { title: "Jalankan & laporkan", owner: "HSE → Mandor", href: steps[4].selesai ? "/tindakan" : "/instruksi", done: steps[4].selesai && actions.length > 0 && actions.every(action => action.status === "TINDAKAN_DILAPORKAN" || action.status === "TERVERIFIKASI") },
-    { title: "Verifikasi & tutup", owner: "HSE", href: steps[5].selesai ? `/shift/${shift?.id}#penutupan` : "/tindakan", done: shift?.status === "CLOSED" },
-  ]
 }
