@@ -27,3 +27,15 @@ Use the installed MIT Anatomy kit from wheresryan22/anatomy. Only build tooling 
 Anatomy audit passes with 103 solids, zero unsupported/sunk solids, and zero depth errors. Line-end checks report zero floating ends. The figure and joints were visually reviewed at 1× and 4×. No WebGL shader, external device connection or community gallery publication was introduced.
 
 Final production build passes with zero type/lint errors (the same eight upstream Bklit lint warnings). A fresh production browser has zero console errors/warnings. The Band LED changed across five sampled animation values; RFID taps updated the readout, zone selection changed the Station reading, pause/reduced motion settled, and the final mobile view had no overflow. Driver.js next/Escape worked on the device guide. Final screenshots are retained locally under `web/output/playwright/terma-iot-final-*.png` (ignored).
+
+## Visible activity and motion controls
+
+The first rendering relied on small LED/RF changes that were easy to miss. It also showed a pause control while a reduced-motion preference had already stopped the scene; the final QA browser had been left with that emulated preference enabled. The active preview is now restored to normal motion after verification.
+
+The instrument overlay adds five visible packets travelling between the Station, RFID point, Band and gateway; a projected RFID sweep across the real card plane; a Station LCD bar; and rolling pulse traces on the Band display and readouts. Receiver/heartbeat halos share the telemetry clock. Auto RFID scans complete after two seconds and recur every twelve seconds; the same completion adds the visit to the model, while manual taps trigger their own scan immediately. Solid geometry remains unchanged and its 103-solid audit still passes.
+
+Reduced motion stays still by default and is labelled Gerakan dikurangi. An explicit Aktifkan animasi button enables this figure's movement, after which Jeda/Lanjutkan works normally. A subsequent system preference change reapplies the preference. Offscreen/hidden work remains stopped; updates use refs rather than React renders each frame.
+
+Verification: 120 tests/16 files pass, including packet endpoints, RFID/model timing, manual scan triggering and pulse periodicity. Browser sampled 24 distinct packet positions, trace paths and scan positions; reduced motion and pause yielded one stable position, while explicit opt-in yielded 15 moving positions. Large Band trace renders on selection, mobile has no overflow, and the preview is restored to no-preference motion after the test.
+
+Final motion build/type checks pass, with no lint errors and the same eight upstream Bklit warnings. Production browser sampled 20 moving packet positions, manual scan opacity was visible, normal motion was restored, and console errors/warnings were zero. The Anatomy line-end check remains zero floating ends.
