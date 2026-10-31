@@ -1,4 +1,5 @@
 import { k, P, slab, cylinder, sphere, cuff, screws, slotted, line, BENCH } from "./parts.mjs";
+import { wetBulb } from "./station-wet-bulb.mjs";
 
 export function bench() {
   k.corners(BENCH, 22).forEach(([x,y], i) => cylinder("bench", `stand.foot-${i}`, x, y, 7, -17, 7));
@@ -31,6 +32,7 @@ export function station() {
   const panel={x:x-33,y:y-48,w:52,d:27,r:2};
   slab("station", "station.solar-frame",panel,42,2);
   for(let i=0;i<6;i++) slab("station",`station.solar-cell-${i}`,{x:panel.x+3+(i%3)*16,y:panel.y+3+Math.floor(i/3)*11,w:14,d:9,r:.3},44,.3,{className:"iot-solar"});
+  wetBulb();
 }
 
 export function water() {

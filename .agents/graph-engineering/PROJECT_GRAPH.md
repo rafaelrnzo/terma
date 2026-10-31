@@ -1,6 +1,6 @@
 # TERMA project graph
 
-Inspected upstream: `rafaelrnzo/terma`, merged motion contribution `82e1308` (2026-10-31).
+Inspected upstream: `rafaelrnzo/terma`, merged focused workflow contribution `db4e064` (2026-10-31).
 
 | Owner | Source | Depends on |
 | --- | --- | --- |
@@ -25,8 +25,10 @@ Keep writes to the existing reducer and clinical information sequential. The app
 
 Current flow: catalogue CRUD -> dated DRAFT snapshot -> preparation -> approval -> publish ACTIVE -> sharing/acknowledgement/report -> verification -> explicit CLOSED. Primary surfaces: /ringkasan, /impor, /shift/[id]; analytics separated at /analitik. Closed snapshots cannot be changed by master edits. 124 tests/17 files and production build pass; see docs/crud-shift-flow.md for browser evidence.
 
-IoT extension: /perangkat now renders a 103-solid Anatomy instrument bench with Station/RFID/Band/gateway readouts, selection zoom and controls. A LOCAL adapter supplies presentation telemetry. The explicit reading action fills only missing intervals and preserves manual/closed data. Geometry audit and line-end checks pass; developer provenance in docs/anatomy-provenance.md and behavior in docs/iot-visualization.md.
+IoT extension: /perangkat now renders a 118-solid Anatomy instrument bench with Station/RFID/Band/gateway readouts, selection zoom and controls. A LOCAL adapter supplies presentation telemetry. The explicit reading action fills only missing intervals and preserves manual/closed data. Geometry audit and line-end checks pass; developer provenance in docs/anatomy-provenance.md and behavior in docs/iot-visualization.md.
 
 Motion ownership: figures/terma/instrument-motion.ts supplies pure activity paths; paint-activity.ts applies them to ref-owned SVG overlays. use-instrument-loop.ts owns one visible/hidden/reduced/paused clock and explicit opt-in. The RFID visit and scanner completion share device-telemetry.ts constants. Browser fixtures must restore reduced-motion emulation after testing.
 
 Focused flow: /shift/[id] is one operational surface with six tasks and explicit next controls. Page client opens the requested snapshot before mounting, and role changes remount at that user’s pending task. Task completeness derives from canonical workflow/scoped records; no new write path or automatic role change. Monitoring /perangkat returns to the selected shift. Shared adaptation/report/verification forms serve both inline tasks and existing detail routes. See docs/focused-shift-flow.md for acceptance evidence.
+
+Station anatomy: scripts/anatomy/station-wet-bulb.mjs owns the true sectioned vessel/water/continuous wick geometry; generated-view.ts supplies a tighter wetbulb camera. StationAnatomy/WetBulbInspection explain the mechanism outside the drawing and use the existing ref-based camera loop. Inspection is view state only and never writes operational records.

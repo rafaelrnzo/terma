@@ -22,7 +22,7 @@ Use **Panduan penggunaan** or the header help button for Driver.js guidance. The
 
 ## Interactive IoT instruments
 
-Open **Perangkat IoT** to inspect the Anatomy isometric bench: WBGT Station, RFID water point, upper-arm Band and gateway. Select a device to zoom in, tap a worker card, or pause the instrument activity. The **Sensor** task embeds a focused Station view and owns **Simpan bacaan untuk shift**, which fills missing shift intervals. The monitoring page points back to the selected shift. The local telemetry adapter is replaceable; generated readings retain recorded provenance and do not overwrite manual observations or closed history. See [implementation and checks](docs/iot-visualization.md) and [Anatomy provenance](docs/anatomy-provenance.md).
+Open **Perangkat IoT** to inspect the Anatomy isometric bench: WBGT Station, RFID water point, upper-arm Band and gateway. Select a device to zoom in, tap a worker card, or pause the instrument activity. Under Station, **Perbesar wet bulb** exposes the sectioned reservoir, water level and immersed wick; the globe and air sensor remain dry. The **Sensor** task embeds a focused Station view and owns **Simpan bacaan untuk shift**, which fills missing shift intervals. The monitoring page points back to the selected shift. The local telemetry adapter is replaceable; generated readings retain recorded provenance and do not overwrite manual observations or closed history. See [implementation and checks](docs/iot-visualization.md) and [Anatomy provenance](docs/anatomy-provenance.md).
 
 ## Proposal alignment
 
