@@ -14,15 +14,15 @@ The current application stores its workspace in the browser. Server authenticati
 
 ## Guided shift workflow
 
-Start at **Shift kerja**. Add workers through **Data pekerja**, then create a dated draft and select participants. Inside the shift: prepare participants and WBGT readings, approve plans, publish, record instruction receipt and execution, verify, then explicitly close the shift. Publication requires approved plans; closure requires every current action verified. Closed shifts remain readable as final reports.
+Start at **Shift kerja**. Add workers through **Data pekerja**, then create a dated draft and select participants. Inside `/shift/[id]`, one task panel is open at a time: participants → sensors → plans → instructions → execution → verification and closure. Adaptation and plan review advance one worker at a time. Forms and decisions stay on this page; completed tasks can be reviewed, future tasks remain locked, and **Lanjut** appears when the current task is complete. Explicit role handoffs retain the same shift URL. Returned reports reopen execution for correction. Publication requires approved plans; closure requires every current action verified. Closed shifts remain readable as final reports.
 
-Worker forms support create/edit/delete for unused records and archive/restore for workers with shift history. Each shift stores its own participant and assignment snapshot. Master edits affect future shifts; they do not rewrite existing history. Drafts can be edited or deleted before approvals. See [CRUD lifecycle and boundaries](docs/crud-shift-flow.md).
+Worker forms support create/edit/delete for unused records and archive/restore for workers with shift history. Each shift stores its own participant and assignment snapshot. Master edits affect future shifts; they do not rewrite existing history. Drafts can be edited or deleted before approvals. See [focused shift flow and checks](docs/focused-shift-flow.md) and [CRUD lifecycle and boundaries](docs/crud-shift-flow.md).
 
-Use **Panduan alur shift** for a role-specific Driver.js journey, or the header's help button for the current page. The HSE journey includes the worker plan review; the foreman journey covers receipt and reporting. Tours navigate and explain without submitting data or switching roles. Close, previous and next controls work across route changes.
+Use **Panduan penggunaan** or the header help button for Driver.js guidance. The shift tour explains the task rail, active form, role handoff and next button on the same page. Tours explain without submitting data or switching roles.
 
 ## Interactive IoT instruments
 
-Open **Perangkat IoT** to inspect the Anatomy isometric bench: WBGT Station, RFID water point, upper-arm Band and gateway. Select a device to zoom in, tap a worker card, or pause the instrument activity. Station readings can fill missing shift intervals through **Ambil bacaan perangkat**. The local telemetry adapter is replaceable; generated readings retain recorded provenance and do not overwrite manual observations or closed history. See [implementation and checks](docs/iot-visualization.md) and [Anatomy provenance](docs/anatomy-provenance.md).
+Open **Perangkat IoT** to inspect the Anatomy isometric bench: WBGT Station, RFID water point, upper-arm Band and gateway. Select a device to zoom in, tap a worker card, or pause the instrument activity. The **Sensor** task embeds a focused Station view and owns **Simpan bacaan untuk shift**, which fills missing shift intervals. The monitoring page points back to the selected shift. The local telemetry adapter is replaceable; generated readings retain recorded provenance and do not overwrite manual observations or closed history. See [implementation and checks](docs/iot-visualization.md) and [Anatomy provenance](docs/anatomy-provenance.md).
 
 ## Proposal alignment
 

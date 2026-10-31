@@ -11,6 +11,7 @@
 @import "./styles/management.css";
 @import "./styles/anatomy-kit.css";
 @import "./styles/iot-bench.css";
+@import "./styles/shift-wizard.css";
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {

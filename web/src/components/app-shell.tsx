@@ -14,7 +14,7 @@ import { Toaster } from "@/components/ui/sonner"
 import { LABEL_PERAN } from "@/lib/access"
 import { ATURAN_FIXTURE, LOKASI, REGU, USERS } from "@/lib/config"
 import { useApp } from "@/lib/store"
-import { shiftJourney } from "@/lib/shift-journey"
+import { shiftTaskFlow } from "@/lib/shift-task-flow"
 import { cn } from "@/lib/utils"
 import { Navigation } from "@/components/workspace-navigation"
 import { GuideButton } from "@/components/workflow-guide"
@@ -55,7 +55,8 @@ export function AppShell({ children }: { children: ReactNode }) {
   }, [state.notice])
   // The introduction is readable without entering the operational workspace or waiting for storage.
   if (path === "/") return <>{children}</>
-  const step = user ? shiftJourney(state, user).focus : undefined
+  const flow = user && shift ? shiftTaskFlow(state,user) : null
+  const step = flow?.steps[flow.current]
   const group = navigationGroup(path)
   return (
     <div className="app-frame">
