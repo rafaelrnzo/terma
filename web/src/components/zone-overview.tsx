@@ -1,10 +1,12 @@
 "use client"
 
 import Link from "next/link"
-import { useEffect, useRef, useState } from "react"
-import { ArrowUpRight, ArrowRight, MapPin, Thermometer, UsersRound } from "lucide-react"
+import { ArrowUpRightIcon as ArrowUpRight, MapPinIcon as MapPin, ThermometerIcon as Thermometer, UsersThreeIcon as UsersRound } from "@phosphor-icons/react"
 import { Button } from "@/components/ui/button"
 import { QualityBadge } from "@/components/status"
+import { WbgtChart } from "@/components/wbgt-chart"
+import { heatSeries } from "@/lib/heat-series"
+import { useApp } from "@/lib/store"
 import { JAM_SHIFT } from "@/lib/config"
 import { jam, rentangJam } from "@/lib/rules"
 import type { OverviewZone } from "@/lib/overview"
@@ -31,31 +33,7 @@ export function ZoneOverview({ zones, selected, onZone, hour, onHour }: { zones:
   </section>
 }
 
-export function ExposureChart({ zone, hour }: { zone: OverviewZone; hour: number }) {
-  const svg = useRef<SVGSVGElement>(null)
-  const [width, setWidth] = useState(900)
-  const values = zone.series.flatMap((p) => p.reading ? [p.reading.isbb] : [])
-  const hasValues = values.length > 0
-  useEffect(() => {
-    if (!svg.current) return
-    const observer = new ResizeObserver(([entry]) => setWidth(Math.max(540, entry.contentRect.width)))
-    observer.observe(svg.current)
-    return () => observer.disconnect()
-  }, [hasValues])
-  if (!values.length) return <div className="flex min-h-48 flex-col items-start justify-center gap-3"><p className="max-w-prose text-sm leading-relaxed text-muted-foreground">Belum ada bacaan WBGT untuk zona ini pada tanggal yang dipilih. Grafik akan muncul setelah pengukuran ditambahkan.</p><Button asChild variant="outline"><Link href="/pengukuran">Tambah pengukuran<ArrowRight aria-hidden /></Link></Button></div>
-  const min = Math.floor(Math.min(...values) - 1)
-  const max = Math.ceil(Math.max(...values) + 1)
-  const x = (i: number) => 42 + i * ((width - 78) / Math.max(1, zone.series.length - 1))
-  const y = (v: number) => 162 - ((v - min) / (max - min)) * 130
-  return <svg ref={svg} className="data-chart" viewBox={`0 0 ${width} 208`} role="img" aria-label={`Bacaan WBGT ${zone.nama}: ${zone.series.map((p) => `${jam(p.hour)} ${p.reading ? fmt(p.reading.isbb) + ' derajat Celsius' : 'tidak tersedia'}`).join('; ')}`}>
-    {[min, (min + max) / 2, max].map((v) => <g key={v}><line x1="42" x2={width - 36} y1={y(v)} y2={y(v)} stroke="var(--border)" strokeDasharray="3 5" /><text x="2" y={y(v) + 4}>{fmt(v)}°</text></g>)}
-    {zone.series.map((p, i) => {
-      const next = zone.series[i + 1]
-      return <g key={p.hour}>
-        {p.reading && next?.reading && <line x1={x(i)} y1={y(p.reading.isbb)} x2={x(i + 1)} y2={y(next.reading.isbb)} stroke="var(--primary)" strokeWidth="2" />}
-        {p.reading && <circle cx={x(i)} cy={y(p.reading.isbb)} r={p.hour === hour ? 6 : 3.5} fill={p.kualitas === "KEDALUWARSA" ? "var(--destructive)" : "var(--primary)"} stroke="var(--card)" strokeWidth="2"><title>{jam(p.hour)} · {fmt(p.reading.isbb)} °C · {p.kualitas}</title></circle>}
-        <text x={x(i)} y="193" textAnchor="middle">{jam(p.hour)}</text>
-      </g>
-    })}
-  </svg>
+export function ExposureChart({ zone }: { zone: OverviewZone; hour: number }) {
+  const { state } = useApp()
+  return <WbgtChart points={heatSeries(zone, state.tanggal)} />
 }

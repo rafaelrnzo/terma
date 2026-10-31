@@ -1,4 +1,30 @@
-# TERMA — Arsitektur Sistem
+# TERMA - Thermal Exposure & Renal Monitoring Assistant
+
+Personal copy of [rafaelrnzo/terma](https://github.com/rafaelrnzo/terma), preserving its Git history. Enhanced under the Raya46 account using the Summon design system, Phosphor icons and upstream Bklit animated charts.
+
+## Run
+
+```sh
+cd web
+npm ci
+npm run dev
+```
+
+The app is a local interactive demo. It has no production authentication, cloud database, live sensor ingest, trained AI model or clinical data integration. Existing rule-driven plans and HSE/foreman workflows persist in the browser.
+
+## Proposal alignment
+
+The 2026 DeveloperDay proposal is the product direction: site WBGT stations, RFID/QR water points, rotating upper-arm bands, individual daily plans, HSE approval, foreman execution and monthly clinic handoff. The dashboard and device / exposure-review pages reflect that scope without labelling planned integrations as live. See [scope and verification](docs/proposal-alignment.md).
+
+- `web/src/app/globals.css`: canonical app tokens adapted from Summon; shared component recipes in `styles/summon.css`.
+- `web/src/components/charts`: upstream Bklit registry source (vendored); see `docs/bklit-provenance.md`.
+- `web/src/lib/exposure-review.ts`: monthly verified exposure, crew-scoped and deduplicated per worker/day.
+
+The following original architecture describes the earlier PRD and must be read as historical context where it differs from the proposal.
+
+---
+
+# Earlier architecture
 
 **TERMA** (Thermal Exposure Risk Management Assistant) adalah asisten pengelolaan paparan panas kerja untuk pekerja lapangan. Sistem mengubah data penugasan, kehadiran, status aklimatisasi, dan pengukuran panas lokasi (WBGT/ISBB) menjadi **rencana kerja yang bisa ditindaklanjuti mandor dan ditinjau HSE**.
 

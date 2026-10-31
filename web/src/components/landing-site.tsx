@@ -3,7 +3,7 @@
 import { useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { ArrowRight, Check } from "lucide-react"
+import { ArrowRightIcon as ArrowRight, CheckIcon as Check } from "@phosphor-icons/react"
 import project from "../../public/images/terma-project-diorama-blue.png"
 
 const areas = [

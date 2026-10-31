@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { Check, ClipboardCheck, Pause, Play, RadioTower, Send } from "lucide-react"
+import { CheckIcon as Check, ClipboardTextIcon as ClipboardCheck, PauseIcon as Pause, PlayIcon as Play, BroadcastIcon as RadioTower, PaperPlaneTiltIcon as Send } from "@phosphor-icons/react"
 
 const steps = [
   { title: "Bacaan zona", description: "Periksa sumber dan jam bacaan sebelum menyusun rencana.", label: "Kualitas bacaan", value: "REPLAY", detail: "Rekaman contoh dibedakan dari pengukuran langsung.", icon: RadioTower },

@@ -1,7 +1,7 @@
 "use client"
 
 import { useRef, useState } from "react"
-import { Download, Upload } from "lucide-react"
+import { DownloadSimpleIcon as Download, UploadSimpleIcon as Upload } from "@phosphor-icons/react"
 import { HasilImpor } from "@/components/hasil-impor"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Button } from "@/components/ui/button"

@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { useState } from "react"
-import { AlertTriangle, ArrowRight, Calculator } from "lucide-react"
+import { WarningIcon as AlertTriangle, ArrowRightIcon as ArrowRight, CalculatorIcon as Calculator } from "@phosphor-icons/react"
 import { NextStep, PageHeader, WorkflowEmpty } from "@/components/app-shell"
 import { RoleHint } from "@/components/role-hint"
 import { QualityBadge, StatusChip } from "@/components/status"

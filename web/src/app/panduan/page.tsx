@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { ArrowRight, CheckCircle2 } from "lucide-react"
+import { ArrowRightIcon as ArrowRight, CheckCircleIcon as CheckCircle2 } from "@phosphor-icons/react"
 import { PageHeader } from "@/components/app-shell"
 import { Button } from "@/components/ui/button"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"

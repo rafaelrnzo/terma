@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { CircleHelp } from "lucide-react"
+import { QuestionIcon as CircleHelp } from "@phosphor-icons/react"
 import type { Driver } from "driver.js"
 import "driver.js/dist/driver.css"
 import { Button } from "@/components/ui/button"
@@ -34,8 +34,8 @@ export function DashboardTour() {
           { element: visible("role", "role-mobile"), popover: { title: "Pilih peran simulasi", description: "Coba sebagai HSE, mandor, atau petugas data. Pekerjaan dan lingkup pekerja mengikuti peran yang dipilih; ini bukan login." } },
           { element: "#tanggal", popover: { title: "Periksa tanggal kerja", description: "Bacaan, rencana, dan laporan mengikuti tanggal ini. Jika kosong, gunakan Kembali ke tanggal demo. Hanya peran yang berwenang dapat mengganti tanggal." } },
           { element: visible("navigation", "navigation-mobile"), popover: { title: "Temukan langkah kerja", description: "Dashboard untuk orientasi, Data lapangan untuk pekerja dan pengukuran, lalu Rencana kerja, Tindak lanjut, dan Laporan." } },
-          { element: "[data-tour=map]", popover: { title: "Pilih zona kerja", description: "Klik zona pada skema atau daftar. Bacaan WBGT dan grafik mengikuti pilihan. Posisi ilustratif, bukan pelacakan langsung; warna hanya identitas zona." } },
-          { element: "[data-tour=interval]", popover: { title: "Baca interval dan sumber", description: "Pilih jam kerja untuk melihat WBGT beserta kualitas sumber. Belum diukur bukan berarti aman. Keputusan tetap melalui rencana HSE." } },
+          { element: "[data-tour=zones]", popover: { title: "Pilih zona kerja", description: "Pilih zona untuk melihat profil WBGT selama shift. Grafik memakai bacaan replay pada tanggal terpilih." } },
+          { element: "[data-tour=reading]", popover: { title: "Baca interval dan sumber", description: "Baca nilai puncak dan kualitas sumber. Zona tanpa pengukuran tetap kosong. Batas kerja mengikuti rencana HSE, bukan warna grafik." } },
           { element: "[data-tour=priority]", popover: { title: "Lanjutkan pekerjaan Anda", description: "Tombol ini membuka langkah berikutnya sesuai peran. Tutup panduan untuk mulai; Anda dapat mengulangnya kapan saja dari Panduan dashboard." } },
         ],
         onPopoverRender: (popover) => { popover.closeButton.textContent = "Lewati"; popover.closeButton.setAttribute("aria-label", "Lewati panduan") },

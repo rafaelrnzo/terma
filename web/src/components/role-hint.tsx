@@ -1,6 +1,6 @@
 "use client"
 
-import { Info } from "lucide-react"
+import { InfoIcon as Info } from "@phosphor-icons/react"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { LABEL_PERAN } from "@/lib/access"
 import { useApp } from "@/lib/store"

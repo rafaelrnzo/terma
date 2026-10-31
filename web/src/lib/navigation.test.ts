@@ -12,8 +12,8 @@ describe("task-based navigation", () => {
   })
   it("keeps every daily workflow reachable", () => {
     const routes = NAV_GROUPS.flatMap(g => g.routes.map(r => r.href))
-    expect(new Set(routes).size).toBe(9)
-    for (const path of ["/impor", "/paparan", "/pengukuran", "/rencana", "/insight", "/instruksi", "/tindakan", "/laporan"]) expect(routes).toContain(path)
+    expect(new Set(routes).size).toBe(11)
+    for (const path of ["/impor", "/paparan", "/pengukuran", "/rencana", "/insight", "/instruksi", "/tindakan", "/laporan", "/perangkat", "/kesehatan"]) expect(routes).toContain(path)
   })
   it("keeps worker and crew details inside field data", () => {
     expect(navigationGroup("/pekerja/DEMO001")?.label).toBe("Data lapangan")

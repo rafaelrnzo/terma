@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { Pause, Play, RotateCcw } from "lucide-react"
+import { PauseIcon as Pause, PlayIcon as Play, ArrowCounterClockwiseIcon as RotateCcw } from "@phosphor-icons/react"
 import { Button } from "@/components/ui/button"
 
 const steps = [

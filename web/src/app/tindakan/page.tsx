@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Search } from "lucide-react"
+import { MagnifyingGlassIcon as Search } from "@phosphor-icons/react"
 import { NextStep, PageHeader, WorkflowEmpty } from "@/components/app-shell"
 import { RoleHint } from "@/components/role-hint"
 import { LifecycleBadge } from "@/components/status"

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { AlertTriangle, ArrowRightLeft, CheckCircle2 } from "lucide-react"
+import { WarningIcon as AlertTriangle, ArrowsLeftRightIcon as ArrowRightLeft, CheckCircleIcon as CheckCircle2 } from "@phosphor-icons/react"
 import { QualityBadge, StatusChip } from "@/components/status"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"

@@ -10,11 +10,16 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@number-flow/react": "^0.6.2",
+    "@phosphor-icons/react": "^2.1.10",
     "class-variance-authority": "^0.7.1",
     "clsx": "2.1.1",
+    "d3-array": "^3.2.4",
+    "d3-scale": "^4.0.2",
+    "d3-shape": "^3.2.0",
     "driver.js": "^1.10.2",
-    "lucide-react": "^1.61.0",
     "mapbox-gl": "^3.33.0",
+    "motion": "^14.9.0",
     "next": "15.5.28",
     "next-themes": "^0.4.6",
     "radix-ui": "^1.8.1",
@@ -28,6 +33,9 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
+    "@types/d3-array": "^3.2.2",
+    "@types/d3-scale": "^4.0.9",
+    "@types/d3-shape": "^3.2.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

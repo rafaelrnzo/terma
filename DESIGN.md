@@ -1,3 +1,5 @@
+> Current enhancement (2026-10-31): the application uses the Summon design system, Phosphor icons, Geist, and Bklit charts. Canonical app tokens are in `web/src/app/globals.css`; shared recipes are in `web/src/app/styles/summon.css`. See `docs/proposal-alignment.md`. The Atmosphere specification below is retained as the original design reference.
+
 ---
 name: "TERMA Atmosphere"
 description: "Ruang kerja paparan panas dengan layout presisi, permukaan netral, dan aksen biru."

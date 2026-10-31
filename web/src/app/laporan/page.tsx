@@ -1,6 +1,6 @@
 "use client"
 
-import { Printer } from "lucide-react"
+import { PrinterIcon as Printer } from "@phosphor-icons/react"
 import { PageHeader } from "@/components/app-shell"
 import { OriginBadge, QualityBadge, StatusChip } from "@/components/status"
 import { Stat } from "@/components/stat"

@@ -4,6 +4,8 @@ import type { AppState } from "./store"
 import type { User } from "./types"
 
 export const SURFACES = [
+  { href: "/perangkat", label: "Perangkat IoT", detail: "TERMA Station, smart water station RFID, TERMA Band BLE" },
+  { href: "/kesehatan", label: "Paparan & rujukan klinik", detail: "Akumulasi paparan terverifikasi, kesiapan rujukan pemeriksaan ginjal" },
   { href: "/", label: "Tentang TERMA", detail: "Pengantar aplikasi dan alur HSE–mandor" },
   { href: "/ringkasan", label: "Dashboard", detail: "Hari ini: ringkasan pekerjaan, peta zona, kondisi panas, dan prioritas shift" },
   { href: "/impor", label: "Pekerja & data", detail: "Direktori pekerja, penugasan, dan impor CSV" },

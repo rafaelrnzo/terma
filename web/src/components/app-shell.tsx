@@ -4,7 +4,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useEffect, useState, type ReactNode } from "react"
 import { toast } from "sonner"
-import { ArrowRight, Menu, LayoutDashboard, ClipboardList, CalendarCheck, ListChecks, FileText, BookOpen, ArrowUpRight } from "lucide-react"
+import { ArrowRightIcon as ArrowRight, ListIcon as Menu, BookOpenIcon as BookOpen, ArrowUpRightIcon as ArrowUpRight } from "@phosphor-icons/react"
 import { Button } from "@/components/ui/button"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -17,26 +17,13 @@ import { ATURAN_FIXTURE, LOKASI, REGU, USERS } from "@/lib/config"
 import { useApp, useIzin } from "@/lib/store"
 import { nextWorkflowStep, workflow } from "@/lib/workflow"
 import { cn } from "@/lib/utils"
+import { Navigation } from "@/components/workspace-navigation"
+import { DashboardSkeleton } from "@/components/dashboard-skeleton"
+import { ThemeToggle } from "@/components/ui-provider"
 import { WorkspaceTools } from "@/components/workspace-tools"
 import { StepContext } from "@/components/shift-context"
 import { Wordmark } from "@/components/wordmark"
-import { NAV_GROUPS, navigationGroup } from "@/lib/navigation"
-
-function Navigation({ mobile, onNavigate }: { mobile?: boolean; onNavigate?: () => void }) {
-  const path = usePathname()
-  const group = navigationGroup(path)
-  return (
-    <nav aria-label="Alur kerja" className={mobile ? "workspace-navigation overflow-y-auto p-4" : "workspace-navigation"}>
-      {NAV_GROUPS.map((item, index) => {
-        const active = group === item
-        const Icon = [LayoutDashboard, ClipboardList, CalendarCheck, ListChecks, FileText][index]
-        return <div key={item.href}><Link href={item.href} onClick={onNavigate} aria-current={path === item.href ? "page" : undefined} className={cn("nav-item gap-3", active && "nav-item-active")}>
-          <Icon className="size-4 shrink-0" aria-hidden />{item.label}
-        </Link>{(mobile || active) && item.routes.length > 1 && <div className="sidebar-subroutes">{item.routes.map(route => <Link key={route.href} href={route.href} onClick={onNavigate} className="nav-item" aria-current={path === route.href ? "page" : undefined}>{route.label}</Link>)}</div>}</div>
-      })}
-    </nav>
-  )
-}
+import { navigationGroup } from "@/lib/navigation"
 
 function UserSelect({ mobile = false }: { mobile?: boolean }) {
   const { user, dispatch } = useApp()
@@ -64,24 +51,23 @@ export function AppShell({ children }: { children: ReactNode }) {
   }, [state.notice])
   // The introduction is readable without entering the operational workspace or waiting for storage.
   if (path === "/") return <>{children}</>
-  if (!ready) return <p role="status" className="app-loading p-8 text-muted-foreground">Memuat ruang kerja TERMA…</p>
   const step = user ? workflow(state, user).find((s) => path.startsWith(s.href)) ?? nextWorkflowStep(state, user) : undefined
   const group = navigationGroup(path)
   return (
     <div className="app-frame">
       <a href="#konten-utama" className="skip-link no-print">Lewati navigasi ke konten utama</a>
       <aside className="app-sidebar no-print" aria-label="Navigasi ruang kerja" data-tour="navigation">
-        <div className="sidebar-brand"><Wordmark /><p>Ruang kerja HSE</p></div>
+        <div className="sidebar-brand"><Wordmark /><p>THERMAL & RENAL MONITORING</p></div><div className="sidebar-site"><span className="site-avatar">K</span><span><strong>Lokasi konstruksi</strong><small>Workspace demo · Indonesia</small></span></div><p className="nav-section-label">RUANG KERJA</p>
         <Navigation />
         <div className="sidebar-support"><Link href="/panduan" className="nav-item gap-3" aria-current={path === "/panduan" ? "page" : undefined}><BookOpen className="size-4" aria-hidden />Panduan penggunaan</Link><Link href="/" className="nav-item gap-3"><ArrowUpRight className="size-4" aria-hidden />Tentang TERMA</Link><p>Mode simulasi<br /><span>Data contoh, bukan pemantauan langsung.</span></p></div>
       </aside>
       <div className="app-workspace">
-      <header className="app-header no-print">
+      <header className="app-header no-print" data-page-chrome>
         <div className="flex min-w-0 items-center justify-between gap-4">
           <div className="lg:hidden"><Wordmark /></div>
           <p className="workspace-breadcrumb hidden text-sm lg:flex"><span>{LOKASI}</span><span aria-hidden>/</span><span className="font-semibold text-foreground">{group?.label ?? "Ruang kerja"}</span></p>
           <div className="flex min-w-0 items-center gap-2">
-            <WorkspaceTools />
+            <WorkspaceTools /><ThemeToggle />
             <UserSelect />
             <Dialog open={menuOpen} onOpenChange={setMenuOpen}>
               <DialogTrigger asChild><Button variant="secondary" size="icon" aria-label="Buka navigasi" className="lg:hidden" data-tour="navigation-mobile"><Menu /></Button></DialogTrigger>
@@ -108,7 +94,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         {group && group.routes.length > 1 && <nav aria-label={group.label} className="no-print mb-6 flex flex-wrap gap-2 border-b pb-3 lg:hidden">{group.routes.map(route => <Link key={route.href} href={route.href} aria-current={path === route.href ? "page" : undefined} className={cn("nav-item", path === route.href && "nav-item-active")}>{route.label}</Link>)}</nav>}
         {storageError && <div role="alert" className="mb-6 rounded-md border border-destructive p-4 text-sm"><p>{storageError}</p><Button className="mt-3" variant="outline" onClick={retryStorage}>Coba simpan lagi</Button></div>}
         {state.demo && state.tanggal !== state.demo.tanggal && <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-md bg-secondary p-4 text-sm"><p>Contoh data tersedia pada {state.demo.tanggal}. Tanggal ini dapat belum memiliki bacaan atau rencana.</p><Button variant="outline" disabled={!izin("ATUR_TANGGAL")} onClick={() => dispatch({ type: "SET_TANGGAL", tanggal: state.demo!.tanggal })}>Kembali ke tanggal demo</Button></div>}
-        {children}
+        <div key={path} className="page-enter">{ready ? children : <DashboardSkeleton />}</div>
       </main>
       <footer className="no-print app-footer"><Link className="underline underline-offset-4" href="/">Tentang TERMA</Link><Link className="underline underline-offset-4" href="/panduan">Panduan & batas penggunaan</Link><span>Aturan {ATURAN_FIXTURE.versi}{ATURAN_FIXTURE.isFixture && " · belum disahkan HSE"}</span></footer>
       </div>

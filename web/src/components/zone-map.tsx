@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic"
 import { useState, type CSSProperties } from "react"
-import { Check, Layers3 } from "lucide-react"
+import { CheckIcon as Check, StackIcon as Layers3 } from "@phosphor-icons/react"
 import { Button } from "@/components/ui/button"
 import { DEMO_ZONE_POSITIONS } from "@/lib/zone-map"
 import type { OverviewZone } from "@/lib/overview"

@@ -2,7 +2,7 @@
 
 import { use } from "react"
 import Link from "next/link"
-import { ArrowLeft, ArrowRight, HeartPulse } from "lucide-react"
+import { ArrowLeftIcon as ArrowLeft, ArrowRightIcon as ArrowRight, HeartbeatIcon as HeartPulse } from "@phosphor-icons/react"
 import { PageHeader, WorkflowEmpty } from "@/components/app-shell"
 import { LifecycleBadge, OriginBadge } from "@/components/status"
 import { RencanaCard } from "@/components/rencana-card"

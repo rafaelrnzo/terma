@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { useEffect, useState } from "react"
-import { Activity, ArrowRight, ArrowRightLeft, ClipboardCheck, Info, ShieldAlert } from "lucide-react"
+import { PulseIcon as Activity, ArrowRightIcon as ArrowRight, ArrowsLeftRightIcon as ArrowRightLeft, ClipboardTextIcon as ClipboardCheck, InfoIcon as Info, ShieldWarningIcon as ShieldAlert } from "@phosphor-icons/react"
 import { PageHeader, WorkflowEmpty } from "@/components/app-shell"
 import { OriginBadge, QualityBadge, StatusChip } from "@/components/status"
 import { Button } from "@/components/ui/button"
