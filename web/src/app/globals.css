@@ -8,6 +8,7 @@
 @import "./styles/summon.css";
 @import "./styles/dashboard.css";
 @import "./styles/shift-flow.css";
+@import "./styles/management.css";
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {

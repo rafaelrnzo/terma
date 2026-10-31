@@ -17,12 +17,12 @@ export function ZoneMap({ zones, selected, onZone }: ZoneMapProps) {
   const [error, setError] = useState(false)
   return <div className="zone-map" data-tour="map">
     <div className="map-toolbar">
-      <div><h2 className="font-heading text-base font-semibold">Peta zona kerja</h2><p className="mt-1 text-xs text-muted-foreground">{geographic ? "Koordinat contoh" : "Skema simulasi"} · bukan posisi lapangan nyata</p></div>
+      <div><h2 className="font-heading text-base font-semibold">Peta zona kerja</h2><p className="mt-1 text-xs text-muted-foreground">{geographic ? "Koordinat contoh" : "Denah zona"} · posisi ilustratif</p></div>
       {!geographic && <span className="map-view-label"><Layers3 className="size-3.5" aria-hidden />Isometrik</span>}
       {token && <div className="flex gap-1" role="group" aria-label="Tampilan peta"><Button size="sm" variant="ghost" aria-pressed={!geographic} onClick={() => setGeographic(false)}>Skema</Button><Button size="sm" variant="ghost" aria-pressed={geographic} onClick={() => { setError(false); setGeographic(true) }}>Mapbox</Button></div>}
     </div>
     {error && <p className="map-error" role="status">Peta geografis tidak dapat dimuat. Skema tetap dapat digunakan. Pilih Mapbox untuk mencoba lagi.</p>}
-    {geographic && token ? <MapboxCanvas zones={zones} selected={selected} onZone={onZone} token={token} onFailure={() => { setGeographic(false); setError(true) }} /> : <div className="zone-scheme" role="group" aria-label="Skema zona simulasi, pilih zona untuk melihat bacaan">
+    {geographic && token ? <MapboxCanvas zones={zones} selected={selected} onZone={onZone} token={token} onFailure={() => { setGeographic(false); setError(true) }} /> : <div className="zone-scheme" role="group" aria-label="Denah zona, pilih zona untuk melihat bacaan">
       <svg className="scheme-paths" viewBox="0 0 600 340" preserveAspectRatio="none" aria-hidden="true"><path d="M150 100 L300 170 L450 100 M300 170 V255" fill="none" stroke="var(--border)" strokeWidth="1.5" strokeDasharray="4 5" /><circle cx="300" cy="170" r="4" fill="var(--card)" stroke="var(--input)" /></svg>
       {zones.map(z => {
         const position = DEMO_ZONE_POSITIONS[z.kode]

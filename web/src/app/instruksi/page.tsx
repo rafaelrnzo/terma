@@ -105,7 +105,7 @@ function KartuRegu({ reguKode }: { reguKode: string }) {
               >
                 <Copy /> Salin pesan
               </Button>
-              {state.demo ? <Dialog><DialogTrigger asChild><Button variant="outline"><Send />Pratinjau WhatsApp</Button></DialogTrigger><DialogContent className="sm:max-w-xl"><DialogHeader><DialogTitle>Pratinjau pesan · {g.nama}</DialogTitle><DialogDescription>Simulasi saja. Tidak ada WhatsApp yang dibuka atau pesan yang dikirim. Gunakan Salin pesan untuk menyalin contoh secara manual.</DialogDescription></DialogHeader><div className="max-h-80 overflow-y-auto whitespace-pre-wrap rounded-md bg-muted p-4 text-sm leading-relaxed">{teks}</div></DialogContent></Dialog> : <Button variant="outline" asChild>
+              {state.demo ? <Dialog><DialogTrigger asChild><Button variant="outline"><Send />Pratinjau WhatsApp</Button></DialogTrigger><DialogContent className="sm:max-w-xl"><DialogHeader><DialogTitle>Pratinjau pesan · {g.nama}</DialogTitle><DialogDescription>Periksa isi instruksi sebelum membagikannya. Gunakan Salin pesan, bagikan melalui kanal regu, lalu catat pembagian di TERMA.</DialogDescription></DialogHeader><div className="max-h-80 overflow-y-auto whitespace-pre-wrap rounded-md bg-muted p-4 text-sm leading-relaxed">{teks}</div></DialogContent></Dialog> : <Button variant="outline" asChild>
                 <a href={`https://wa.me/?text=${encodeURIComponent(teks)}`} target="_blank" rel="noopener noreferrer">
                   <Send /> Buka di WhatsApp
                 </a>

@@ -8,13 +8,12 @@ import { ArrowRightIcon as ArrowRight, ListIcon as Menu, BookOpenIcon as BookOpe
 import { Button } from "@/components/ui/button"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Toaster } from "@/components/ui/sonner"
 import { LABEL_PERAN } from "@/lib/access"
 import { ATURAN_FIXTURE, LOKASI, REGU, USERS } from "@/lib/config"
-import { useApp, useIzin } from "@/lib/store"
+import { useApp } from "@/lib/store"
 import { shiftJourney } from "@/lib/shift-journey"
 import { cn } from "@/lib/utils"
 import { Navigation } from "@/components/workspace-navigation"
@@ -25,7 +24,8 @@ import { ThemeToggle } from "@/components/ui-provider"
 import { WorkspaceTools } from "@/components/workspace-tools"
 import { StepContext } from "@/components/shift-context"
 import { Wordmark } from "@/components/wordmark"
-import { navigationGroup } from "@/lib/navigation"
+import { navigationGroup, isShiftRoute } from "@/lib/navigation"
+import { currentShift } from "@/lib/management-state"
 
 function UserSelect({ mobile = false }: { mobile?: boolean }) {
   const { user, dispatch } = useApp()
@@ -40,9 +40,11 @@ function UserSelect({ mobile = false }: { mobile?: boolean }) {
 }
 
 export function AppShell({ children }: { children: ReactNode }) {
-  const { state, dispatch, user, ready, storageError, retryStorage } = useApp()
-  const izin = useIzin()
+  const { state, user, ready, storageError, retryStorage } = useApp()
   const path = usePathname()
+  const shift = currentShift(state)
+  const needsShift = isShiftRoute(path) || ["/laporan", "/analitik", "/insight"].includes(path)
+  const blockedExecution = shift?.status === "DRAFT" && ["/instruksi", "/tindakan"].includes(path)
   const [menuOpen, setMenuOpen] = useState(false)
   useEffect(() => {
     const n = state.notice
@@ -59,9 +61,9 @@ export function AppShell({ children }: { children: ReactNode }) {
     <div className="app-frame">
       <a href="#konten-utama" className="skip-link no-print">Lewati navigasi ke konten utama</a>
       <aside className="app-sidebar no-print" aria-label="Navigasi ruang kerja" data-tour="navigation">
-        <div className="sidebar-brand"><Wordmark /><p>THERMAL & RENAL MONITORING</p></div><div className="sidebar-site"><span className="site-avatar">K</span><span><strong>Lokasi konstruksi</strong><small>Workspace demo · Indonesia</small></span></div><p className="nav-section-label">RUANG KERJA</p>
+        <div className="sidebar-brand"><Wordmark /><p>THERMAL & RENAL MONITORING</p></div><div className="sidebar-site"><span className="site-avatar">K</span><span><strong>Lokasi konstruksi</strong><small>Lokasi 1 · Indonesia</small></span></div><p className="nav-section-label">RUANG KERJA</p>
         <Navigation />
-        <div className="sidebar-support"><Link href="/panduan" className="nav-item gap-3" aria-current={path === "/panduan" ? "page" : undefined}><BookOpen className="size-4" aria-hidden />Panduan penggunaan</Link><Link href="/" className="nav-item gap-3"><ArrowUpRight className="size-4" aria-hidden />Tentang TERMA</Link><p>Mode simulasi<br /><span>Data contoh, bukan pemantauan langsung.</span></p></div>
+        <div className="sidebar-support"><Link href="/panduan" className="nav-item gap-3" aria-current={path === "/panduan" ? "page" : undefined}><BookOpen className="size-4" aria-hidden />Panduan penggunaan</Link><Link href="/" className="nav-item gap-3"><ArrowUpRight className="size-4" aria-hidden />Tentang TERMA</Link><p>TERMA<br /><span>Koordinasi keselamatan kerja.</span></p></div>
       </aside>
       <div className="app-workspace">
       <header className="app-header no-print" data-page-chrome>
@@ -86,20 +88,17 @@ export function AppShell({ children }: { children: ReactNode }) {
           <p className="hidden text-sm text-muted-foreground sm:block">{group?.label ?? "Ruang kerja"} <span aria-hidden> / </span> {LABEL_PERAN[user?.role ?? "HSE"]}</p>
           <UserSelect mobile />
           <div className="flex min-w-0 items-center gap-3">
-            <label htmlFor="tanggal" className="hidden text-xs text-muted-foreground sm:block">Tanggal rencana</label>
-            <Input id="tanggal" type="date" className="w-full bg-card sm:w-44" value={state.tanggal} disabled={!izin("ATUR_TANGGAL")} onChange={(e) => e.target.value && dispatch({ type: "SET_TANGGAL", tanggal: e.target.value })} aria-label="Tanggal rencana" />
+            <Link href={shift ? `/shift/${shift.id}` : "/ringkasan"} className="text-sm font-medium underline-offset-4 hover:underline">{shift ? `${shift.nama} · ${shift.tanggal}` : "Belum ada shift dibuka"}</Link>
           </div>
         </div>
       </header>
       <main id="konten-utama" tabIndex={-1} className="app-main outline-none">
-        {state.demo && <p className="workspace-demo-note" role="note">Data simulasi · bukan untuk keputusan operasional. <Link className="underline underline-offset-4" href="/panduan">Tentang demo</Link></p>}
         {group && group.routes.length > 1 && <nav aria-label={group.label} className="no-print mb-6 flex flex-wrap gap-2 border-b pb-3 lg:hidden">{group.routes.map(route => <Link key={route.href} href={route.href} aria-current={path === route.href ? "page" : undefined} className={cn("nav-item", path === route.href && "nav-item-active")}>{route.label}</Link>)}</nav>}
         {storageError && <div role="alert" className="mb-6 rounded-md border border-destructive p-4 text-sm"><p>{storageError}</p><Button className="mt-3" variant="outline" onClick={retryStorage}>Coba simpan lagi</Button></div>}
-        {state.demo && state.tanggal !== state.demo.tanggal && <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-md bg-secondary p-4 text-sm"><p>Contoh data tersedia pada {state.demo.tanggal}. Tanggal ini dapat belum memiliki bacaan atau rencana.</p><Button variant="outline" disabled={!izin("ATUR_TANGGAL")} onClick={() => dispatch({ type: "SET_TANGGAL", tanggal: state.demo!.tanggal })}>Kembali ke tanggal demo</Button></div>}
         {ready && <ShiftRouteContext />}
-        <div key={path} className="page-enter">{ready ? children : <DashboardSkeleton />}</div>
+        <div key={path} className="page-enter">{ready ? needsShift && !shift ? <WorkflowEmpty title="Buka shift terlebih dahulu" href="/ringkasan" label="Ke daftar shift">Pekerjaan dan laporan terkait dengan satu shift. Buat draft atau buka shift dari daftar untuk melanjutkan.</WorkflowEmpty> : blockedExecution ? <WorkflowEmpty title="Terbitkan shift sebelum pelaksanaan" href={`/shift/${shift!.id}`} label="Kembali ke alur shift">Tinjau dan setujui semua rencana, lalu terbitkan shift. Setelah itu instruksi dapat dibagikan dan pelaksanaan dicatat.</WorkflowEmpty> : <>{shift?.status === "CLOSED" && needsShift && <p role="status" className="mb-5 rounded-md border bg-secondary p-4 text-sm">Shift sudah ditutup. Catatan berikut hanya dapat dibaca.</p>}{children}</> : <DashboardSkeleton />}</div>
       </main>
-      <footer className="no-print app-footer"><Link className="underline underline-offset-4" href="/">Tentang TERMA</Link><Link className="underline underline-offset-4" href="/panduan">Panduan & batas penggunaan</Link><span>Aturan {ATURAN_FIXTURE.versi}{ATURAN_FIXTURE.isFixture && " · belum disahkan HSE"}</span></footer>
+      <footer className="no-print app-footer"><Link className="underline underline-offset-4" href="/">Tentang TERMA</Link><Link className="underline underline-offset-4" href="/panduan">Panduan penggunaan</Link><span>Aturan {ATURAN_FIXTURE.versi}{ATURAN_FIXTURE.isFixture && " · belum disahkan HSE"}</span></footer>
       </div>
       <Toaster position="bottom-right" />
     </div>

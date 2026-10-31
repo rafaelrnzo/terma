@@ -55,6 +55,6 @@ export function LandingHeroFlow() {
       <div className="hero-flow-output-body" key={active}><div><p>{current.label}</p><strong>{current.value}</strong><span>{current.detail}</span></div><div className="hero-flow-mini" aria-hidden><i /><i /><i /></div></div>
       <p className="hero-flow-description">{current.description}</p>
     </div>
-    <div className="hero-flow-controls"><span>Ilustrasi · tidak mengubah data demo</span>{ready && !reduced && <button type="button" onClick={() => { started.current = true; if (playing) setPlaying(false); else { setActive(0); setPlaying(true) } }}>{playing ? <><Pause size={14} aria-hidden />Jeda</> : <><Play size={14} aria-hidden />Putar ulang</>}</button>}</div>
+    <div className="hero-flow-controls"><span>Alur koordinasi keselamatan kerja</span>{ready && !reduced && <button type="button" onClick={() => { started.current = true; if (playing) setPlaying(false); else { setActive(0); setPlaying(true) } }}>{playing ? <><Pause size={14} aria-hidden />Jeda</> : <><Play size={14} aria-hidden />Putar ulang</>}</button>}</div>
   </div>
 }

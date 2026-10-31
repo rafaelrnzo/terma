@@ -42,9 +42,9 @@ describe("demo seed", () => {
   it("includes clearly labelled simulated delivery, acknowledgement, reporting and verification", () => {
     const s = seed()
     expect(s.pengiriman).toHaveLength(2)
-    expect(s.pengiriman.every((p) => p.status === "DIBAGIKAN_MANUAL" && p.isi.startsWith("DATA DEMO / SIMULASI"))).toBe(true)
-    expect(isiPesan(s, "COR").teks).toContain("bukan instruksi operasional")
-    expect(s.audit.every((a) => a.detail.startsWith("[SIMULASI]"))).toBe(true)
+    expect(s.pengiriman.every((p) => p.status === "DIBAGIKAN_MANUAL" && p.isi.startsWith("SUMBER: DATA CONTOH HISTORIS"))).toBe(true)
+    expect(isiPesan(s, "COR").teks).toContain("DATA CONTOH HISTORIS")
+    expect(s.audit.every((a) => a.detail.startsWith("[DATA CONTOH]"))).toBe(true)
     expect(s.tindakan).toHaveLength(5)
     expect(new Set(s.tindakan.map((t) => t.status))).toEqual(new Set(["TERVERIFIKASI", "TINDAKAN_DILAPORKAN", "DIAKUI", "DISAMPAIKAN"]))
     const t = s.tindakan.find((t) => t.pekerjaKode === "DEMO001")!

@@ -1,6 +1,7 @@
 import { lingkupPekerja } from "./access"
 import { REGU } from "./config"
-import { isiPesan, rencanaAktif, type AppState } from "./store"
+import { isiPesan, rencanaAktif } from "./store-plans"
+import type { AppState } from "./store-state"
 import { workflow } from "./workflow"
 import type { Role, User } from "./types"
 
@@ -37,7 +38,7 @@ export function shiftJourney(state: AppState, user: User) {
   const needsReport = actions.filter(action => action.status === "DIAKUI" || action.status === "BELUM_SELESAI")
   const needsVerification = actions.filter(action => action.status === "TINDAKAN_DILAPORKAN")
   const verified = actions.filter(action => action.status === "TERVERIFIKASI").length
-  const isClosed = steps[3].selesai && actions.length === approved.length && actions.length > 0 && verified === actions.length
+  const isClosed = steps[5].selesai
   const focus = (): ShiftFocus => {
     if (user.role === "MANDOR") {
       if (deliveries.some(item => item.delivery && !item.delivery.diakui)) return { href: "/instruksi", title: "Akui instruksi untuk regu Anda", description: "Baca jadwal yang sudah disetujui HSE, lalu akui penerimaan. Pengakuan belum berarti pekerjaan terlaksana.", cta: "Baca & akui instruksi", state: "action", owner: "MANDOR", stage: 3 }

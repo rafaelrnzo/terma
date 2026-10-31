@@ -1,45 +1,38 @@
 "use client"
 
-import Link from "next/link"
 import { useState } from "react"
-import { ArrowUpRightIcon as ArrowUpRight } from "@phosphor-icons/react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import Link from "next/link"
+import { WorkerForm } from "@/components/worker-form"
+import { ConfirmAction } from "@/components/confirm-action"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { StatusChip } from "@/components/status"
 import { lingkupPekerja } from "@/lib/access"
 import { REGU, TUGAS, ZONA } from "@/lib/config"
-import { rencanaAktif, useApp } from "@/lib/store"
+import { managementOf } from "@/lib/management-state"
+import { useApp, useIzin } from "@/lib/store"
+import { workerUsage } from "@/lib/worker-management"
 
 export function WorkerDirectory() {
-  const { state, user } = useApp()
+  const { state, user, dispatch } = useApp()
+  const izin = useIzin()
   const [query, setQuery] = useState("")
-  const [crew, setCrew] = useState("SEMUA")
+  const [showArchived, setShowArchived] = useState(false)
   if (!user) return null
-  const workers = lingkupPekerja(user, state.pekerja)
-  const terms = query.toLocaleLowerCase("id-ID").trim().split(/\s+/)
-  const filtered = workers.filter(p => (crew === "SEMUA" || p.reguKode === crew) && terms.every(t => `${p.nama} ${p.kode}`.toLocaleLowerCase("id-ID").includes(t)))
-  const plans = rencanaAktif(state)
-  return <Card className="mb-6">
-    <CardHeader><div className="flex flex-wrap items-start justify-between gap-4"><div><CardTitle>Direktori pekerja</CardTitle><CardDescription className="mt-2">{workers.length} pekerja dalam lingkup Anda. Buka profil untuk melihat penugasan, adaptasi, dan tindak lanjut.</CardDescription></div><Button asChild variant="outline"><a href="#impor-data">Kelola data CSV<ArrowUpRight aria-hidden /></a></Button></div></CardHeader>
-    <CardContent>
-      <div className="mb-5 grid items-end gap-3 sm:grid-cols-[1fr_220px]">
-        <div className="space-y-2"><Label htmlFor="worker-search">Cari pekerja</Label><Input id="worker-search" value={query} onChange={e => setQuery(e.target.value)} placeholder="Nama atau ID pekerja" /></div>
-        <div className="space-y-2"><Label htmlFor="worker-crew">Regu</Label><Select value={crew} onValueChange={setCrew}><SelectTrigger id="worker-crew" className="w-full"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="SEMUA">Semua regu dalam lingkup</SelectItem>{REGU.filter(g => user.role !== "MANDOR" || g.kode === user.reguKode).map(g => <SelectItem value={g.kode} key={g.kode}>{g.nama}</SelectItem>)}</SelectContent></Select></div>
-      </div>
-      <p className="mb-2 text-xs text-muted-foreground" role="status">Menampilkan {filtered.length} dari {workers.length} pekerja · tanggal rencana {state.tanggal}</p>
-      <div className="divide-y">{filtered.map(p => {
-        const assignment = state.penugasan.find(a => a.pekerjaKode === p.kode)
-        const plan = plans.find(r => r.pekerjaKode === p.kode)
-        return <Link href={`/pekerja/${p.kode}`} key={p.kode} className="group grid items-center gap-3 rounded-md px-2 py-4 hover:bg-muted sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto]">
-          <div className="flex items-center gap-3"><span className="flex size-10 shrink-0 items-center justify-center rounded-md bg-secondary text-sm font-medium" aria-hidden>{p.nama.slice(0, 2).toUpperCase()}</span><span><span className="block font-medium group-hover:text-primary">{p.nama}</span><span className="mt-1 block text-xs text-muted-foreground">{p.kode} · {REGU.find(g => g.kode === p.reguKode)?.nama}</span></span></div>
-          <div className="text-sm"><p>{TUGAS.find(t => t.kode === assignment?.tugasKode)?.nama ?? "Belum ditugaskan"}</p><p className="mt-1 text-xs text-muted-foreground">{ZONA.find(z => z.kode === assignment?.zonaKode)?.nama ?? "Zona belum dipilih"}</p></div>
-          <div className="flex items-center justify-between gap-3">{plan ? <StatusChip status={plan.status} /> : <span className="text-xs text-muted-foreground">Belum ada rencana</span>}<ArrowUpRight className="size-4 shrink-0" aria-hidden /></div>
-        </Link>
-      })}</div>
-      {!filtered.length && <div className="py-8"><h3 className="font-medium">Tidak ada pekerja yang cocok</h3><p className="mt-2 text-sm text-muted-foreground">Coba nama lain atau tampilkan semua regu. Jika belum ada data, tambahkan data contoh di bagian impor.</p><Button className="mt-4" variant="outline" onClick={() => { setCrew("SEMUA"); setQuery("") }}>Reset pencarian & filter</Button></div>}
-    </CardContent>
-  </Card>
+  const management = managementOf(state)
+  const workers = lingkupPekerja(user, management.workers)
+  const filtered = workers.filter(worker => (!!worker.diarsipkan === showArchived) && `${worker.nama} ${worker.kode}`.toLocaleLowerCase("id-ID").includes(query.toLocaleLowerCase("id-ID").trim()))
+  return <section className="summon-panel mb-6" data-guide="worker-list">
+    <div className="panel-heading flex-wrap gap-3"><div><h2>Data pekerja</h2><p className="mt-1 text-xs text-muted-foreground">{workers.filter(worker => !worker.diarsipkan).length} aktif · {workers.filter(worker => worker.diarsipkan).length} diarsipkan</p></div><WorkerForm /></div>
+    <div className="flex flex-wrap items-end gap-4 border-b p-5"><div className="min-w-0 flex-1 space-y-2"><Label htmlFor="worker-search">Cari nama atau ID</Label><Input id="worker-search" value={query} onChange={event => setQuery(event.target.value)} placeholder="Cari pekerja…" /></div><Button variant="outline" onClick={() => setShowArchived(value => !value)}>{showArchived ? "Lihat pekerja aktif" : "Lihat arsip"}</Button></div>
+    <div className="divide-y">{filtered.map(worker => {
+      const assignment = management.assignments.find(item => item.pekerjaKode === worker.kode)
+      const usage = workerUsage(state, worker.kode)
+      return <article key={worker.kode} className="worker-master-row" aria-label={`Pekerja ${worker.nama}`}><div><h3 className="font-medium">{worker.nama}</h3><p className="mt-1 text-xs text-muted-foreground">{worker.kode} · {REGU.find(row => row.kode === worker.reguKode)?.nama}</p></div><div className="text-sm"><p>{TUGAS.find(row => row.kode === assignment?.tugasKode)?.nama}</p><p className="mt-1 text-xs text-muted-foreground">{ZONA.find(row => row.kode === assignment?.zonaKode)?.nama} · {usage} shift</p></div><div className="flex flex-wrap gap-2"><WorkerForm worker={worker} />
+        {showArchived ? <Button variant="outline" disabled={!izin("KELOLA_PEKERJA")} onClick={() => dispatch({ type: "ARSIP_PEKERJA", kode: worker.kode, archived: false, expectedRevision: worker.revision ?? 1 })}>Aktifkan kembali</Button> : <ConfirmAction disabled={!izin("KELOLA_PEKERJA")} label={usage ? "Arsipkan" : "Hapus"} title={`${usage ? "Arsipkan" : "Hapus"} ${worker.nama}?`} description={usage ? "Pekerja tidak akan muncul saat membuat shift baru. Riwayat shift yang sudah ada tetap tersimpan." : "Data pekerja ini belum dipakai oleh shift. Identitas dan penugasan awalnya akan dihapus."} onConfirm={() => dispatch(usage ? { type: "ARSIP_PEKERJA", kode: worker.kode, archived: true, expectedRevision: worker.revision ?? 1 } : { type: "HAPUS_PEKERJA", kode: worker.kode, expectedRevision: worker.revision ?? 1 })} />}
+      </div></article>
+    })}</div>
+    {!filtered.length && <div className="p-8"><h3 className="font-medium">{workers.length ? "Tidak ada pekerja yang cocok" : "Mulai dengan menambahkan pekerja"}</h3><p className="mt-2 text-sm text-muted-foreground">{workers.length ? "Periksa pencarian atau daftar arsip." : "Isi identitas, regu, dan penugasan awal lewat tombol Tambah pekerja."}</p></div>}
+    {workers.some(worker => !worker.diarsipkan) && <div className="flex flex-wrap items-center justify-between gap-3 border-t p-5"><p className="text-sm text-muted-foreground">Data siap. Berikutnya pilih peserta dan buat draft shift.</p><Button asChild><Link href="/ringkasan?buat=1">Lanjut: buat shift</Link></Button></div>}
+  </section>
 }

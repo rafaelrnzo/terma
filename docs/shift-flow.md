@@ -1,5 +1,7 @@
 # Guided shift workflow
 
+This document records the first navigation/tour iteration. The current CRUD and explicit shift lifecycle supersedes its four-stage model: see [Worker CRUD and shift lifecycle](crud-shift-flow.md).
+
 Baseline:039d86e. User requests clearer flow and Driver.js guidance, retaining the accepted Summon UI. Source of truth for writes remains lib/store.tsx and access.ts.
 
 Problem: static Next buttons invite moving on before work is ready. Instruction sharing, foreman acknowledgment, actual reporting and HSE verification are different events owned by different roles. The old dashboard tour explains chrome rather than the operational handoff.

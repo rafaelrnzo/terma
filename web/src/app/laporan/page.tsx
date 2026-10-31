@@ -12,6 +12,8 @@ import { ATURAN_FIXTURE, JAM_SHIFT, LOKASI, ZONA } from "@/lib/config"
 import { kualitasBacaan, rentangJam } from "@/lib/rules"
 import { kandidatUntuk, rencanaAktif, rencanaTanggal, useApp } from "@/lib/store"
 import type { ActionStatus } from "@/lib/types"
+import { currentShift, shiftLabel } from "@/lib/management-state"
+import { ShiftFocusCard } from "@/components/shift-navigator"
 import { scopedWorkspace } from "@/lib/workspace"
 
 const STATUSES: ActionStatus[] = ["RENCANA_TERSEDIA", "ADAPTASI_DIPERLUKAN", "TINJAU_HSE", "BATASI_ATAU_PINDAHKAN"]
@@ -20,6 +22,7 @@ export default function LaporanPage() {
   const { state: workspace, user } = useApp()
   if (!user) return null
   const state = scopedWorkspace(workspace, user)
+  const shift = currentShift(workspace)
   const aktif = rencanaAktif(state)
   const idsTanggal = new Set(rencanaTanggal(state).map((r) => r.id))
   const tindakanTanggal = state.tindakan.filter((t) => idsTanggal.has(t.rencanaId))
@@ -41,11 +44,13 @@ export default function LaporanPage() {
       <PageHeader no="7" title="Laporan & audit" peran="HSE" summary="Rekap rencana, tindak lanjut, dan kekosongan data dalam satu laporan shift.">
         Laporan menampilkan sumber data dan kekosongannya, bukan hanya persentase kepatuhan. Penyebut setiap persentase ditulis jelas.
       </PageHeader>
+      {shift && <p className="mb-5 rounded-md border p-4 text-sm">{shift.nama} · {shiftLabel(shift.status)}{shift.status === "CLOSED" ? ` · Ditutup ${shift.ditutupOleh}, ${new Date(shift.ditutupPada!).toLocaleString("id-ID")}` : " · Laporan sementara, shift belum ditutup"}</p>}
       <div data-guide="report" className="no-print mb-6">
         <p className="mb-3 text-sm text-muted-foreground">Lingkup laporan: {user.role === "MANDOR" ? `regu ${user.reguKode}. Jejak audit lintas regu dan hasil impor hanya tersedia untuk HSE atau petugas data.` : "seluruh regu pada lokasi ini."}</p>
         <Button variant="outline" onClick={() => window.print()}><Printer /> Cetak laporan</Button>
       </div>
 
+      <div className="no-print mb-6"><ShiftFocusCard compact /></div>
       <div className="space-y-6">
         <Card className="accent-summary report-summary border-0 bg-[image:var(--panel-accent)]">
           <CardHeader>

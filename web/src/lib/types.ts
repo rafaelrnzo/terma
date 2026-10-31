@@ -62,6 +62,8 @@ export interface Pekerja {
   tanggalMulai: string // ISO date
   source: string
   origin: DataOrigin
+  revision?: number
+  diarsipkan?: boolean
 }
 
 export interface Kehadiran {

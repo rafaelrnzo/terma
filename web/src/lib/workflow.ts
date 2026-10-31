@@ -1,7 +1,8 @@
 import { lingkupPekerja } from "./access"
 import { JAM_SHIFT, ZONA } from "./config"
 import { kualitasBacaan } from "./rules"
-import { kandidatUntuk, rencanaAktif, type AppState } from "./store"
+import { kandidatUntuk, rencanaAktif } from "./store-plans"
+import type { AppState } from "./store-state"
 import type { Role, User } from "./types"
 
 export interface WorkflowStep {

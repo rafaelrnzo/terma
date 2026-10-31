@@ -4,6 +4,8 @@
 import type { Pekerja, Role, User } from "./types"
 
 export type Aksi =
+  | "KELOLA_PEKERJA"
+  | "KELOLA_SHIFT"
   | "MUAT_DEMO"
   | "IMPOR"
   | "KONFIRMASI_PAPARAN"
@@ -18,6 +20,8 @@ export type Aksi =
   | "VERIFIKASI"
 
 const IZIN: Record<Aksi, Role[]> = {
+  KELOLA_PEKERJA: ["HSE", "PETUGAS_DATA"],
+  KELOLA_SHIFT: ["HSE"],
   MUAT_DEMO: ["HSE"],
   IMPOR: ["PETUGAS_DATA", "HSE"],
   KONFIRMASI_PAPARAN: ["HSE"],

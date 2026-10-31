@@ -1,11 +1,11 @@
 import { JAM_SHIFT } from "./config"
-import type { AppState } from "./store"
+import type { AppState } from "./store-state"
 
 export const DEMO_VERSION = "demo-v1"
 
 /** Never merge a demo into an existing workspace, including measurement-only workspaces. */
 export function bisaMuatDemo(s: AppState): boolean {
-  return !s.demo && !s.rencanaDihitung && [s.pekerja, s.penugasan, s.kehadiran, s.konfirmasi,
+  return (!s.demo || s.demo.versi === "workspace-v3") && !(s.management?.workers.length || s.management?.shifts.length) && !s.rencanaDihitung && [s.pekerja, s.penugasan, s.kehadiran, s.konfirmasi,
     s.bacaan, s.prakiraan, s.rencana, s.tindakan, s.pengiriman, s.imporLog].every((rows) => rows.length === 0)
 }
 

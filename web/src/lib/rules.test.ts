@@ -51,6 +51,14 @@ function run(p: Pekerja, pn: Penugasan, keh: Kehadiran[], k?: KonfirmasiPaparan,
 }
 
 describe("NIOSH acclimatization schedule", () => {
+  it("does not treat today's roster or future attendance as a new worker's prior history", () => {
+    const worker = pekerja("NEW", T_TANGGAL)
+    const records: Kehadiran[] = [T_TANGGAL, "2026-10-25"].map(tanggal => ({ pekerjaKode: worker.kode, tanggal, status: "HADIR", source: "Roster" }))
+    const candidate = deteksiKandidat(worker, records, T_TANGGAL)
+    expect(candidate.pemicu).toBe("PEKERJA_BARU")
+    expect(candidate.saranProfil).toBe("PEKERJA_BARU")
+    expect(candidate.catatanKehadiran).toBe(0)
+  })
   it("new worker: 20% then +20 points per day", () => {
     expect([1, 2, 3, 4, 5].map((d) => persenAdaptasi("PEKERJA_BARU", d))).toEqual([20, 40, 60, 80, 100])
   })

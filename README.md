@@ -10,11 +10,13 @@ npm ci
 npm run dev
 ```
 
-The app is a local interactive demo. It has no production authentication, cloud database, live sensor ingest, trained AI model or clinical data integration. Existing rule-driven plans and HSE/foreman workflows persist in the browser.
+The current application stores its workspace in the browser. Server authentication, cloud persistence, live sensor ingest, trained AI and clinical integration remain future integration work.
 
 ## Guided shift workflow
 
-The dashboard starts with the active role and four stages: prepare data, approve plans, run the shift, verify and report. Guidance distinguishes work the current user can do, a handoff waiting for another role, and verified completion. Bottom-of-page guidance follows current records instead of sending everyone to the next menu.
+Start at **Shift kerja**. Add workers through **Data pekerja**, then create a dated draft and select participants. Inside the shift: prepare participants and WBGT readings, approve plans, publish, record instruction receipt and execution, verify, then explicitly close the shift. Publication requires approved plans; closure requires every current action verified. Closed shifts remain readable as final reports.
+
+Worker forms support create/edit/delete for unused records and archive/restore for workers with shift history. Each shift stores its own participant and assignment snapshot. Master edits affect future shifts; they do not rewrite existing history. Drafts can be edited or deleted before approvals. See [CRUD lifecycle and boundaries](docs/crud-shift-flow.md).
 
 Use **Panduan alur shift** for a role-specific Driver.js journey, or the header's help button for the current page. The HSE journey includes the worker plan review; the foreman journey covers receipt and reporting. Tours navigate and explain without submitting data or switching roles. Close, previous and next controls work across route changes.
 

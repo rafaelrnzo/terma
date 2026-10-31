@@ -73,7 +73,7 @@ export default function TindakanPage() {
                     {[["Dirancang", t.menitDirencanakan], ["Dilaporkan", t.menitDilaporkan], ["Diverifikasi", t.menitDiverifikasi]].map(([label, value]) => <div key={label}><dt className="text-xs text-muted-foreground">{label}</dt><dd className={`mt-1 font-heading font-medium tabular-nums ${value !== undefined ? "text-xl" : "text-sm"}`}>{value ?? "Belum tersedia"}<span className="ml-1 text-xs font-normal text-muted-foreground">{value !== undefined ? "mnt" : ""}</span></dd></div>)}
                   </dl>
                   <div className="no-print flex flex-wrap items-center gap-2 xl:justify-end">
-                    {izin("LAPOR_TINDAKAN", t.reguKode) && ["DIAKUI", "TINDAKAN_DILAPORKAN"].includes(t.status) && !dibatalkan.has(t.rencanaId) && <LaporDialog t={t} />}
+                    {izin("LAPOR_TINDAKAN", t.reguKode) && ["DIAKUI", "TINDAKAN_DILAPORKAN", "BELUM_SELESAI"].includes(t.status) && !dibatalkan.has(t.rencanaId) && <LaporDialog t={t} />}
                     {izin("VERIFIKASI") && t.status === "TINDAKAN_DILAPORKAN" && !dibatalkan.has(t.rencanaId) && <VerifikasiDialog t={t} />}
                     {t.status === "DIBUAT" && !dibatalkan.has(t.rencanaId) && <span className="text-xs text-muted-foreground">Menunggu pesan</span>}
                     {t.status === "DISAMPAIKAN" && !dibatalkan.has(t.rencanaId) && <span className="text-xs text-muted-foreground">Menunggu pengakuan</span>}
@@ -100,7 +100,7 @@ function LaporDialog({ t }: { t: Tindakan }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size="sm">{t.status === "TINDAKAN_DILAPORKAN" ? "Perbarui laporan" : "Catat tindakan"}</Button>
+        <Button size="sm">{t.status === "BELUM_SELESAI" ? "Perbaiki laporan" : t.status === "TINDAKAN_DILAPORKAN" ? "Perbarui laporan" : "Catat tindakan"}</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

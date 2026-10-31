@@ -1,23 +1,18 @@
 import { describe, expect, it } from "vitest"
-import { NAV_GROUPS, navigationGroup } from "./navigation"
-import { SURFACES } from "./workspace"
+import { NAV_GROUPS, SHIFT_ROUTES, navigationGroup } from "./navigation"
 
-describe("task-based navigation", () => {
-  it("separates the introduction from five operational groups", () => {
-    expect(NAV_GROUPS).toHaveLength(5)
+describe("shift-oriented navigation", () => {
+  it("provides five entry points and makes shifts the primary workspace", () => {
+    expect(NAV_GROUPS.map(group => group.label)).toEqual(["Shift kerja", "Data pekerja", "Analitik", "Perangkat IoT", "Laporan"])
     expect(navigationGroup("/")).toBeUndefined()
-    expect(navigationGroup("/ringkasan")?.label).toBe("Dashboard")
-    expect(SURFACES.some(s => s.href === "/")).toBe(true)
-    expect(SURFACES.some(s => s.href === "/ringkasan")).toBe(true)
   })
-  it("keeps every daily workflow reachable", () => {
-    const routes = NAV_GROUPS.flatMap(g => g.routes.map(r => r.href))
-    expect(new Set(routes).size).toBe(11)
-    for (const path of ["/impor", "/paparan", "/pengukuran", "/rencana", "/insight", "/instruksi", "/tindakan", "/laporan", "/perangkat", "/kesehatan"]) expect(routes).toContain(path)
+  it("keeps all operational pages inside the shift context", () => {
+    for (const route of [...SHIFT_ROUTES, "/shift/2026-10-31", "/pekerja/PK01", "/regu/cor"]) expect(navigationGroup(route)).toBe(NAV_GROUPS[0])
+    expect(NAV_GROUPS[0].routes).toHaveLength(1)
   })
-  it("keeps worker and crew details inside field data", () => {
-    expect(navigationGroup("/pekerja/DEMO001")?.label).toBe("Data lapangan")
-    expect(navigationGroup("/regu/cor")?.label).toBe("Data lapangan")
-    expect(navigationGroup("/instruksi")?.label).toBe("Tindak lanjut")
+  it("separates reusable workers and cross-shift analysis from execution", () => {
+    expect(navigationGroup("/impor")).toBe(NAV_GROUPS[1])
+    expect(navigationGroup("/analitik")).toBe(NAV_GROUPS[2])
+    expect(navigationGroup("/laporan")).toBe(NAV_GROUPS[4])
   })
 })
