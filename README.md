@@ -20,6 +20,10 @@ Worker forms support create/edit/delete for unused records and archive/restore f
 
 Use **Panduan alur shift** for a role-specific Driver.js journey, or the header's help button for the current page. The HSE journey includes the worker plan review; the foreman journey covers receipt and reporting. Tours navigate and explain without submitting data or switching roles. Close, previous and next controls work across route changes.
 
+## Interactive IoT instruments
+
+Open **Perangkat IoT** to inspect the Anatomy isometric bench: WBGT Station, RFID water point, upper-arm Band and gateway. Select a device to zoom in, tap a worker card, or pause the instrument activity. Station readings can fill missing shift intervals through **Ambil bacaan perangkat**. The local telemetry adapter is replaceable; generated readings retain recorded provenance and do not overwrite manual observations or closed history. See [implementation and checks](docs/iot-visualization.md) and [Anatomy provenance](docs/anatomy-provenance.md).
+
 ## Proposal alignment
 
 The 2026 DeveloperDay proposal is the product direction: site WBGT stations, RFID/QR water points, rotating upper-arm bands, individual daily plans, HSE approval, foreman execution and monthly clinic handoff. The dashboard and device / exposure-review pages reflect that scope without labelling planned integrations as live. See [scope and verification](docs/proposal-alignment.md).

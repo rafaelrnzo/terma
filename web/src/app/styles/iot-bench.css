@@ -1,0 +1,56 @@
+.iot-workbench.iso {
+  --anatomy-paper: var(--card); --anatomy-face: var(--card); --anatomy-top: var(--card);
+  --anatomy-shade-0: #c4c8ce; --anatomy-shade-1: #d8dce1; --anatomy-shade-2: #e6e9ed; --anatomy-shade-3: #f0f2f5;
+  --anatomy-hi: #303744; --anatomy-mid: #828c9d; --anatomy-lo: #abb3c0; --anatomy-faint: #d0d5de;
+  --anatomy-lit: var(--primary); --anatomy-lit-top: var(--primary); --anatomy-lit-shade: var(--primary);
+  --anatomy-weight: .65px; --anatomy-dot: var(--muted-foreground);
+  overflow: hidden; margin-bottom: 1.5rem;
+}
+.dark .iot-workbench.iso { --anatomy-shade-0:#111317; --anatomy-shade-1:#1c1f25; --anatomy-shade-2:#272b33; --anatomy-shade-3:#313640; --anatomy-top:#393f49; --anatomy-hi:#cbd1dc; --anatomy-mid:#808b9c; --anatomy-lo:#555e6d; --anatomy-faint:#383e48; }
+.iot-bench-heading { display:flex; align-items:flex-start; justify-content:space-between; flex-wrap:wrap; gap:1rem; padding:1.5rem; }
+.iot-bench-heading h2 { margin-top:.65rem; font-size:1.4rem; letter-spacing:-.035em; font-weight:600; }
+.iot-bench-heading p:last-child { margin-top:.6rem; color:var(--muted-foreground); font-size:.8125rem; line-height:1.7; max-width:39rem; }
+.iot-controls { display:flex; flex-wrap:wrap; gap:.5rem; padding:0 1.5rem 1.25rem; }
+.iot-controls button { display:inline-flex; align-items:center; gap:.5rem; padding:.55rem .8rem; min-height:40px; border:1px solid var(--border); border-radius:var(--radius-md); font-size:.75rem; color:var(--muted-foreground); cursor:pointer; transition:background-color .15s,color .15s; }
+.iot-controls button[aria-pressed=true] { background:var(--accent); border-color:var(--primary); color:var(--accent-foreground); }
+.iot-controls button:focus-visible, .iot-summary-strip button:focus-visible, .iot-figure-bottom button:focus-visible { outline:2px solid var(--ring); outline-offset:3px; }
+.iot-bench-layout { display:grid; grid-template-columns:minmax(0,1fr) 290px; border-top:1px solid var(--border); }
+.iot-figure { display:flex; flex-direction:column; justify-content:space-between; min-width:0; margin:0; padding:1.25rem; background:var(--background); }
+.iot-figure-top,.iot-figure-bottom { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:.75rem; font-family:var(--font-mono); font-size:.625rem; letter-spacing:.06em; color:var(--muted-foreground); }
+.iot-figure .iso-svg { width:100%; min-height:350px; max-height:470px; overflow:hidden; }
+.iot-figure-bottom { letter-spacing:0; font-family:inherit; font-size:.6875rem; }
+.iot-figure-bottom button { display:flex; align-items:center; gap:.375rem; min-height:36px; padding:0 .5rem; cursor:pointer; }
+.iot-figure-bottom > div { display:flex; align-items:center; flex-wrap:wrap; gap:.75rem; }
+.iot-figure-bottom output { color:var(--foreground); font-variant-numeric:tabular-nums; }
+.iot-detail { padding:1.5rem; border-left:1px solid var(--border); min-width:0; }
+.iot-detail-title h3 { margin-top:.65rem; font-size:1rem; font-weight:600; letter-spacing:-.025em; }
+.iot-detail-title > p:last-child { color:var(--muted-foreground); font-size:.6875rem; line-height:1.65; margin-top:.5rem; }
+.iot-metric { padding:1rem 0; }
+.iot-metric dt { font-size:.6875rem; color:var(--muted-foreground); }
+.iot-metric dd { display:flex; align-items:baseline; flex-wrap:wrap; gap:.35rem; font-size:1.35rem; font-weight:500; letter-spacing:-.03em; font-variant-numeric:tabular-nums; margin-top:.3rem; }
+.iot-metric dd > span { color:var(--muted-foreground); font-size:.6875rem; font-weight:400; letter-spacing:0; }
+.iot-metric-hero { padding:1.5rem 0 1.1rem; }
+.iot-metric-hero dd { font-size:3.25rem; line-height:1.15; }
+.iot-metric-pair { display:grid; grid-template-columns:1fr 1fr; gap:1rem; border-top:1px solid var(--border); border-bottom:1px solid var(--border); }
+.iot-zone-label { display:block; margin:.9rem 0 .5rem; font-size:.6875rem; color:var(--muted-foreground); }
+.iot-detail-copy { font-size:.75rem; line-height:1.8; color:var(--muted-foreground); margin:1rem 0; }
+.iot-detail-footnote { font-size:.6875rem; color:var(--muted-foreground); margin-top:.8rem; line-height:1.7; }
+.iot-last-update { display:flex; align-items:center; flex-wrap:wrap; gap:.4rem; border-top:1px solid var(--border); margin-top:1.3rem; padding-top:.9rem; font-size:.625rem; color:var(--muted-foreground); font-variant-numeric:tabular-nums; }
+.iot-last-update > span:last-child { margin-left:auto; font-family:var(--font-mono); }
+.iot-summary-strip { display:flex; align-items:center; flex-wrap:wrap; gap:1rem 1.5rem; padding:1rem 1.5rem; border-top:1px solid var(--border); font-size:.6875rem; }
+.iot-summary-strip button { display:flex; align-items:center; gap:.5rem; min-height:36px; text-align:left; cursor:pointer; }
+.iot-summary-strip button > span { color:var(--muted-foreground); }
+.iot-summary-strip strong { display:block; margin-top:.15rem; color:var(--foreground); font-weight:500; }
+.iot-summary-strip a { margin-left:auto; display:inline-flex; align-items:center; gap:.5rem; min-height:36px; }
+.iot-radio-rings circle { fill:none; stroke:var(--primary); stroke-width:.7; vector-effect:non-scaling-stroke; }
+.iot-globe { --anatomy-top:#343941; --anatomy-paper:#11151c; --anatomy-shade-0:#0c0e12; --anatomy-shade-1:#151a21; --anatomy-shade-2:#222831; --anatomy-shade-3:#2d3540; --anatomy-mid:#737c89; }
+.iot-solar,.iot-display { --anatomy-top:#304360; --anatomy-paper:#192738; --anatomy-shade-0:#111c2b; --anatomy-shade-1:#192738; --anatomy-shade-2:#24374f; --anatomy-shade-3:#304360; }
+.iot-rubber { --anatomy-top:#3b4048; --anatomy-paper:#252a31; --anatomy-shade-0:#171b21; --anatomy-shade-1:#242a32; --anatomy-shade-2:#333b46; --anatomy-shade-3:#434c58; }
+.iot-reservoir { --anatomy-top:#e5edf4; --anatomy-shade-0:#a9bacb; --anatomy-shade-1:#c0cedb; --anatomy-shade-2:#d2dee8; --anatomy-shade-3:#e1eaf1; }
+.dark .iot-reservoir { --anatomy-top:#455567; --anatomy-shade-0:#222d3a; --anatomy-shade-1:#293849; --anatomy-shade-2:#35485d; --anatomy-shade-3:#3c5268; }
+.iot-recess { --anatomy-top:var(--anatomy-shade-0); }
+.iot-workbench[data-selected=station] [data-device=station] .iso-edge,.iot-workbench[data-selected=water] [data-device=water] .iso-edge,.iot-workbench[data-selected=band] [data-device=band] .iso-edge,.iot-workbench[data-selected=gateway] [data-device=gateway] .iso-edge { stroke:var(--primary); }
+@media(max-width:1150px) { .iot-bench-layout { grid-template-columns:minmax(0,1fr) 260px; } .iot-detail { padding:1.25rem; } }
+@media(max-width:900px) { .iot-bench-layout { grid-template-columns:minmax(0,1fr); } .iot-detail { border-left:0; border-top:1px solid var(--border); } .iot-detail .iot-metric-pair { max-width:26rem; } .iot-metric-hero dd { font-size:2.75rem; } }
+@media(max-width:600px) { .iot-bench-heading,.iot-detail { padding:1.125rem; } .iot-controls { padding:0 1.125rem 1rem; gap:.4rem; } .iot-controls button { padding:.5rem .65rem; } .iot-figure { padding:1rem .65rem; } .iot-figure .iso-svg { min-height:250px; height:270px; } .iot-figure-top,.iot-figure-bottom { padding:0 .4rem; } .iot-summary-strip { padding:1rem; gap:.75rem 1.25rem; } .iot-summary-strip a { margin-left:0; } }
+@media(prefers-reduced-motion:reduce) { .iot-controls button { transition:none; } }
