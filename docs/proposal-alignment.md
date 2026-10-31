@@ -16,7 +16,7 @@ References: locally installed summon-design-system skill (2026-10-18 token snaps
 
 Checks: TypeScript, ESLint, existing domain tests plus monthly exposure/gap tests; browser navigation, role scope, changed date, dark/light at 1440/820/390, reduced motion, chart interaction and overflow. Local development timing is directional, not production performance evidence.
 
-Repository destination: Raya46 only. Preserve upstream history and provenance; do not modify the source repository or deploy the existing site.
+Contribution target: `rafaelrnzo/terma`. Preserve upstream history and use a contribution branch. No production deployment is part of this change.
 
 ## Verification observed 2026-10-31
 

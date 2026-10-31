@@ -268,7 +268,7 @@ export default function PengukuranPage() {
       </Card>
 
       <section className="mt-8"><h2 className="mb-4 text-lg font-semibold">Zona & interval lapangan</h2><HeatMonitor /></section>
-      <NextStep href="/rencana" label="Rencana & persetujuan" />
+      <NextStep />
     </>
   )
 }

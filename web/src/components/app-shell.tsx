@@ -15,9 +15,11 @@ import { Toaster } from "@/components/ui/sonner"
 import { LABEL_PERAN } from "@/lib/access"
 import { ATURAN_FIXTURE, LOKASI, REGU, USERS } from "@/lib/config"
 import { useApp, useIzin } from "@/lib/store"
-import { nextWorkflowStep, workflow } from "@/lib/workflow"
+import { shiftJourney } from "@/lib/shift-journey"
 import { cn } from "@/lib/utils"
 import { Navigation } from "@/components/workspace-navigation"
+import { GuideButton } from "@/components/workflow-guide"
+import { ShiftRouteContext, ShiftFocusCard } from "@/components/shift-navigator"
 import { DashboardSkeleton } from "@/components/dashboard-skeleton"
 import { ThemeToggle } from "@/components/ui-provider"
 import { WorkspaceTools } from "@/components/workspace-tools"
@@ -31,7 +33,7 @@ function UserSelect({ mobile = false }: { mobile?: boolean }) {
   return <div data-tour={mobile ? "role-mobile" : "role"} className={mobile ? "min-w-0 sm:hidden" : "hidden sm:block"}>
     <label htmlFor={id} className="sr-only">Pengguna</label>
     <Select value={user?.id} onValueChange={(v) => dispatch({ type: "LOGIN", userId: v })}>
-      <SelectTrigger id={id} className={mobile ? "w-full bg-card" : "w-48 border-transparent bg-card"}><SelectValue /></SelectTrigger>
+      <SelectTrigger id={id} className={mobile ? "w-full bg-card" : "w-48 border-transparent bg-card"}><SelectValue>{user ? `${user.nama} · ${LABEL_PERAN[user.role]}` : undefined}</SelectValue></SelectTrigger>
       <SelectContent position="popper">{USERS.map((u) => <SelectItem key={u.id} value={u.id}>{u.nama} · {LABEL_PERAN[u.role]}{u.reguKode ? " " + REGU.find((g) => g.kode === u.reguKode)?.nama : ""}</SelectItem>)}</SelectContent>
     </Select>
   </div>
@@ -51,7 +53,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   }, [state.notice])
   // The introduction is readable without entering the operational workspace or waiting for storage.
   if (path === "/") return <>{children}</>
-  const step = user ? workflow(state, user).find((s) => path.startsWith(s.href)) ?? nextWorkflowStep(state, user) : undefined
+  const step = user ? shiftJourney(state, user).focus : undefined
   const group = navigationGroup(path)
   return (
     <div className="app-frame">
@@ -67,7 +69,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           <div className="lg:hidden"><Wordmark /></div>
           <p className="workspace-breadcrumb hidden text-sm lg:flex"><span>{LOKASI}</span><span aria-hidden>/</span><span className="font-semibold text-foreground">{group?.label ?? "Ruang kerja"}</span></p>
           <div className="flex min-w-0 items-center gap-2">
-            <WorkspaceTools /><ThemeToggle />
+            <WorkspaceTools /><GuideButton compact /><ThemeToggle />
             <UserSelect />
             <Dialog open={menuOpen} onOpenChange={setMenuOpen}>
               <DialogTrigger asChild><Button variant="secondary" size="icon" aria-label="Buka navigasi" className="lg:hidden" data-tour="navigation-mobile"><Menu /></Button></DialogTrigger>
@@ -75,7 +77,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                 <DialogHeader className="shrink-0 border-b p-6 pr-16"><DialogTitle>TERMA</DialogTitle><DialogDescription>Ruang kerja paparan panas</DialogDescription></DialogHeader>
                 <Navigation mobile onNavigate={() => setMenuOpen(false)} />
                 <Link href="/panduan" onClick={() => setMenuOpen(false)} className="mx-4 nav-item">Panduan penggunaan</Link>
-                {step && <div className="mt-auto border-t p-6"><p className="text-sm font-medium">{step.label}</p><p className="mt-2 text-xs leading-relaxed text-muted-foreground">{step.progress}</p></div>}
+                {step && <div className="mt-auto border-t p-6"><p className="text-sm font-medium">{step.title}</p><p className="mt-2 text-xs leading-relaxed text-muted-foreground">{step.description}</p></div>}
               </DialogContent>
             </Dialog>
           </div>
@@ -94,6 +96,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         {group && group.routes.length > 1 && <nav aria-label={group.label} className="no-print mb-6 flex flex-wrap gap-2 border-b pb-3 lg:hidden">{group.routes.map(route => <Link key={route.href} href={route.href} aria-current={path === route.href ? "page" : undefined} className={cn("nav-item", path === route.href && "nav-item-active")}>{route.label}</Link>)}</nav>}
         {storageError && <div role="alert" className="mb-6 rounded-md border border-destructive p-4 text-sm"><p>{storageError}</p><Button className="mt-3" variant="outline" onClick={retryStorage}>Coba simpan lagi</Button></div>}
         {state.demo && state.tanggal !== state.demo.tanggal && <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-md bg-secondary p-4 text-sm"><p>Contoh data tersedia pada {state.demo.tanggal}. Tanggal ini dapat belum memiliki bacaan atau rencana.</p><Button variant="outline" disabled={!izin("ATUR_TANGGAL")} onClick={() => dispatch({ type: "SET_TANGGAL", tanggal: state.demo!.tanggal })}>Kembali ke tanggal demo</Button></div>}
+        {ready && <ShiftRouteContext />}
         <div key={path} className="page-enter">{ready ? children : <DashboardSkeleton />}</div>
       </main>
       <footer className="no-print app-footer"><Link className="underline underline-offset-4" href="/">Tentang TERMA</Link><Link className="underline underline-offset-4" href="/panduan">Panduan & batas penggunaan</Link><span>Aturan {ATURAN_FIXTURE.versi}{ATURAN_FIXTURE.isFixture && " · belum disahkan HSE"}</span></footer>
@@ -104,7 +107,7 @@ export function AppShell({ children }: { children: ReactNode }) {
 }
 
 export function PageHeader({ no, title, children, peran, summary }: { no?: string; title: string; children?: ReactNode; peran?: string; summary?: string }) {
-  return <div className="page-heading">
+  return <div className="page-heading" data-guide="page-heading">
     <h1>{title}</h1>
     {summary && <p className="mt-3 max-w-prose text-base leading-relaxed text-muted-foreground">{summary}</p>}
     {children && (summary ? <Accordion type="single" collapsible className="mt-1 max-w-prose"><AccordionItem value="panduan"><AccordionTrigger className="justify-start gap-2 text-sm text-muted-foreground **:data-[slot=accordion-trigger-icon]:ml-0">Cara kerja{peran ? " · " + peran : " halaman ini"}</AccordionTrigger><AccordionContent className="pt-1 text-sm leading-relaxed text-muted-foreground">{children}</AccordionContent></AccordionItem></Accordion> : <div className="mt-3 max-w-prose text-base leading-relaxed text-muted-foreground">{children}</div>)}
@@ -112,8 +115,8 @@ export function PageHeader({ no, title, children, peran, summary }: { no?: strin
   </div>
 }
 
-export function NextStep({ href, label }: { href: string; label: string }) {
-  return <div className="no-print mt-8 flex justify-end border-t pt-6"><Button asChild variant="outline"><Link href={href}>Lanjut: {label}<ArrowRight aria-hidden /></Link></Button></div>
+export function NextStep() {
+  return <div className="no-print mt-8 border-t pt-6" aria-label="Arahan setelah halaman ini"><ShiftFocusCard compact /></div>
 }
 
 export function WorkflowEmpty({ title, children, href, label }: { title: string; children: ReactNode; href: string; label: string }) {

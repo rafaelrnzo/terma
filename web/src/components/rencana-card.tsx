@@ -141,7 +141,7 @@ export function RencanaCard({ r, mode = "hse" }: { r: Rencana; mode?: "hse" | "m
           {mode === "hse" && (
             <div className="no-print flex flex-wrap gap-2">
               {izin("UBAH_PENUGASAN") && <UbahPenugasan pekerjaKode={r.pekerjaKode} zonaAwal={r.zonaKode} tugasAwal={r.tugasKode} />}
-              {!r.disetujuiOleh && <Button disabled={!izin("SETUJUI_RENCANA")} onClick={() => dispatch({ type: "SETUJUI", rencanaId: r.id })}>
+              {!r.disetujuiOleh && <Button data-guide="approval" disabled={!izin("SETUJUI_RENCANA")} onClick={() => dispatch({ type: "SETUJUI", rencanaId: r.id })}>
                 {r.version > 1 ? "Setujui ulang" : "Setujui rencana"}
               </Button>}
             </div>

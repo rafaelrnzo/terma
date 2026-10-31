@@ -25,6 +25,6 @@ export default function ImporPage() {
         <CsvImporter id="kehadiran" title="Riwayat kehadiran" description="Kolom: kode_pekerja, tanggal, status (HADIR, CUTI, SAKIT, ALFA). Sertakan 14 hari terakhir. Kehadiran bukan bukti paparan sepanjang shift." template={TEMPLATE.kehadiran} result={state.imporLog.find(l => l.jenis === "kehadiran")} disabled={!bolehImpor || !state.pekerja.length} disabledReason={!state.pekerja.length ? "Impor pekerja terlebih dahulu." : undefined} onImport={(csv, source) => dispatch({ type: "IMPOR_KEHADIRAN", csv, source })} />
       </div>
     </section>
-    <NextStep href="/paparan" label="Riwayat paparan & adaptasi" />
+    <NextStep />
   </>
 }

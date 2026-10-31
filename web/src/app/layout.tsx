@@ -3,6 +3,7 @@ import { Geist } from "next/font/google"
 import "./globals.css"
 import { AppShell } from "@/components/app-shell"
 import { AppProvider } from "@/lib/store"
+import { WorkflowGuideProvider } from "@/components/workflow-guide"
 import { UiProvider } from "@/components/ui-provider"
 
 const geist = Geist({ variable: "--font-geist", subsets: ["latin"], display: "swap" })
@@ -17,7 +18,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="id" className={geist.variable} suppressHydrationWarning>
       <body className="antialiased">
         <UiProvider><AppProvider>
-          <AppShell>{children}</AppShell>
+          <WorkflowGuideProvider><AppShell>{children}</AppShell></WorkflowGuideProvider>
         </AppProvider></UiProvider>
       </body>
     </html>

@@ -54,7 +54,7 @@ export default function PaparanPage() {
 
       <div className="mb-4 flex flex-wrap items-baseline justify-between gap-2"><h2 className="font-heading text-lg font-semibold">Kandidat adaptasi <span className="font-normal text-muted-foreground">({kandidat.length})</span></h2><p className="text-sm text-muted-foreground">{kandidat.filter((p) => !sudahKonfirmasi.has(p.kode)).length} belum dikonfirmasi · ditampilkan lebih dulu</p></div>
       <p className="mb-4 text-xs leading-relaxed text-muted-foreground">Kalender absensi: H = hadir · C = cuti · S = sakit · A = alfa · ? = tidak ada catatan. Kehadiran bukan bukti paparan panas.</p>
-      <div className="grid gap-4">
+      <div data-guide="adaptation" className="grid gap-4">
         {kandidat.length === 0 && <p className="rounded-xl bg-card p-6 text-sm text-muted-foreground">Tidak ada kandidat adaptasi dari riwayat saat ini. Data tanpa pemicu ditampilkan di bawah.</p>}
         {kandidat.map((p) => (
           <KartuKandidat key={p.kode} p={p} />
@@ -77,7 +77,7 @@ export default function PaparanPage() {
         </CardContent>
       </Card>
 
-      <NextStep href="/pengukuran" label="Pengukuran WBGT" />
+      <NextStep />
     </>
   )
 }

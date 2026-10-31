@@ -1,6 +1,6 @@
 # TERMA - Thermal Exposure & Renal Monitoring Assistant
 
-Personal copy of [rafaelrnzo/terma](https://github.com/rafaelrnzo/terma), preserving its Git history. Enhanced under the Raya46 account using the Summon design system, Phosphor icons and upstream Bklit animated charts.
+DeveloperDay prototype from [rafaelrnzo/terma](https://github.com/rafaelrnzo/terma), enhanced with the Summon design system, Phosphor icons and upstream Bklit animated charts. Contributions are prepared with the Raya46 account directly for the Rafael repository.
 
 ## Run
 
@@ -11,6 +11,12 @@ npm run dev
 ```
 
 The app is a local interactive demo. It has no production authentication, cloud database, live sensor ingest, trained AI model or clinical data integration. Existing rule-driven plans and HSE/foreman workflows persist in the browser.
+
+## Guided shift workflow
+
+The dashboard starts with the active role and four stages: prepare data, approve plans, run the shift, verify and report. Guidance distinguishes work the current user can do, a handoff waiting for another role, and verified completion. Bottom-of-page guidance follows current records instead of sending everyone to the next menu.
+
+Use **Panduan alur shift** for a role-specific Driver.js journey, or the header's help button for the current page. The HSE journey includes the worker plan review; the foreman journey covers receipt and reporting. Tours navigate and explain without submitting data or switching roles. Close, previous and next controls work across route changes.
 
 ## Proposal alignment
 
