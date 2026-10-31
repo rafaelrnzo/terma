@@ -10,16 +10,17 @@ const anchors = {
   station: at([-106,3,28]), water: at([13,45,8]),
   band: at([104,42.5,60.5]), gateway: at([96,-35,20]),
 };
-function crop(plan, top) {
+function crop(plan, top, pad = 60) {
  const points=k.boxCorners(plan,0,top).map(point=>at(point));
  const xs=points.map(point=>point[0]),ys=points.map(point=>point[1]);
  const cx=(Math.min(...xs)+Math.max(...xs))/2,cy=(Math.min(...ys)+Math.max(...ys))/2;
- const height=Math.max(Math.max(...ys)-Math.min(...ys)+60,(Math.max(...xs)-Math.min(...xs)+60)*.6);
+ const height=Math.max(Math.max(...ys)-Math.min(...ys)+pad,(Math.max(...xs)-Math.min(...xs)+pad)*.6);
  return [cx-height/1.2,cy-height/2,height/.6,height];
 }
 const focus = {
  all:[0,0,900,540],
- station:crop({x:-151,y:-70,w:78,d:87},123),
+ station:crop({x:-151,y:-70,w:78,d:110},123),
+ wetbulb:crop({x:-133,y:8,w:34,d:33},59,12),
  water:crop({x:-46,y:2,w:66,d:56},90),
  band:crop({x:80,y:6,w:48,d:56},61),
  gateway:crop({x:67,y:-71,w:68,d:40},50),

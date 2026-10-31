@@ -61,6 +61,18 @@
 .iot-rubber { --anatomy-top:#3b4048; --anatomy-paper:#252a31; --anatomy-shade-0:#171b21; --anatomy-shade-1:#242a32; --anatomy-shade-2:#333b46; --anatomy-shade-3:#434c58; }
 .iot-reservoir { --anatomy-top:#e5edf4; --anatomy-shade-0:#a9bacb; --anatomy-shade-1:#c0cedb; --anatomy-shade-2:#d2dee8; --anatomy-shade-3:#e1eaf1; }
 .dark .iot-reservoir { --anatomy-top:#455567; --anatomy-shade-0:#222d3a; --anatomy-shade-1:#293849; --anatomy-shade-2:#35485d; --anatomy-shade-3:#3c5268; }
+.iot-wet-water { --anatomy-top:color-mix(in oklab,var(--primary) 24%,var(--card)); --anatomy-shade-0:color-mix(in oklab,var(--primary) 48%,var(--card)); --anatomy-shade-1:color-mix(in oklab,var(--primary) 40%,var(--card)); --anatomy-shade-2:color-mix(in oklab,var(--primary) 32%,var(--card)); --anatomy-shade-3:color-mix(in oklab,var(--primary) 24%,var(--card)); }
+.iot-wick { --anatomy-top:var(--primary-foreground); --anatomy-shade-0:color-mix(in oklab,var(--primary-foreground) 65%,var(--primary)); --anatomy-shade-1:color-mix(in oklab,var(--primary-foreground) 78%,var(--primary)); --anatomy-shade-2:color-mix(in oklab,var(--primary-foreground) 88%,var(--primary)); --anatomy-shade-3:var(--primary-foreground); }
+.iot-wick-immersed { --anatomy-top:color-mix(in oklab,var(--primary-foreground) 78%,var(--primary)); --anatomy-shade-0:color-mix(in oklab,var(--primary-foreground) 40%,var(--primary)); --anatomy-shade-1:color-mix(in oklab,var(--primary-foreground) 55%,var(--primary)); --anatomy-shade-2:color-mix(in oklab,var(--primary-foreground) 65%,var(--primary)); --anatomy-shade-3:color-mix(in oklab,var(--primary-foreground) 78%,var(--primary)); }
+.iot-station-anatomy { margin-top:1.25rem; padding-top:1rem; border-top:1px solid var(--border); }
+.iot-station-anatomy h4 { font-size:.8125rem; font-weight:600; }
+.iot-station-anatomy dl { display:grid; gap:.75rem; margin:1rem 0; }
+.iot-station-anatomy dt { font-size:.75rem; font-weight:500; }
+.iot-station-anatomy dd,.iot-cutaway-note,.iot-cutaway-caption { font-size:.75rem; line-height:1.7; color:var(--muted-foreground); }
+.iot-station-anatomy dd { margin-top:.25rem; }
+.iot-cutaway-note { display:flex; align-items:flex-start; gap:.5rem; margin-top:.75rem; }
+.iot-cutaway-note svg { flex:none; margin-top:.2rem; color:var(--primary); }
+.iot-cutaway-caption { margin-top:1rem; padding-top:1rem; border-top:1px solid var(--border); }
 .iot-recess { --anatomy-top:var(--anatomy-shade-0); }
 .iot-workbench[data-selected=station] [data-device=station] .iso-edge,.iot-workbench[data-selected=water] [data-device=water] .iso-edge,.iot-workbench[data-selected=band] [data-device=band] .iso-edge,.iot-workbench[data-selected=gateway] [data-device=gateway] .iso-edge { stroke:var(--primary); }
 @media(max-width:1150px) { .iot-bench-layout { grid-template-columns:minmax(0,1fr) 260px; } .iot-detail { padding:1.25rem; } }
