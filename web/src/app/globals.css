@@ -13,6 +13,7 @@
 @import "./styles/iot-bench.css";
 @import "./styles/shift-wizard.css";
 @import "./styles/role-workspace.css";
+@import "./styles/kiosk-entry.css";
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {

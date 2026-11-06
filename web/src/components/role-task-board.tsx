@@ -18,11 +18,11 @@ export function RoleTaskBoard({ shift, workerCount }: { shift?: ShiftRecord; wor
     const readings = shift?.workspace.bacaan.filter(reading => reading.tanggal === shift.tanggal && zones.has(reading.zonaKode)).length ?? 0
     const forecasts = shift?.workspace.prakiraan.filter(forecast => forecast.tanggal === shift.tanggal).length ?? 0
     const items = [
-      { title: "Master pekerja", detail: `${workerCount} pekerja aktif. Lengkapi regu dan penugasan awal.`, icon: UsersThreeIcon, href: "/impor", cta: "Kelola pekerja" },
+      { title: "Master pekerja", detail: `${workerCount} pekerja aktif. Data perusahaan tersedia untuk dipilih sebagai peserta shift.`, icon: UsersThreeIcon, href: "/impor", cta: "Kelola pekerja" },
       { title: "Bacaan panas shift", detail: shift ? `${readings} dari ${zones.size * JAM_SHIFT.length} interval zona terisi. HSE meninjau kualitasnya.` : "Menunggu HSE membuat draft shift untuk pengisian bacaan.", icon: ThermometerIcon, href, cta: shift ? "Buka tugas Sensor" : "Lihat status shift" },
       { title: "Absensi & kondisi awal", detail: shift ? `${shift.readiness?.checkins.length ?? 0} dari ${shift.workspace.pekerja.length} peserta sudah mengisi check-in. HSE meninjau jawaban kondisi tubuh.` : "Buka draft shift untuk memulai absen pekerja.", icon: UsersThreeIcon, href: "/absensi", cta: "Periksa absensi" },
       { title: "Dokumen kesehatan perusahaan", detail: "Periksa kelengkapan ringkasan pemeriksaan. HSE mencatat kesimpulan serta pembatasan kerja.", icon: ClipboardTextIcon, href: "/kesehatan-awal", cta: "Cek kelengkapan" },
-      { title: "Data prakiraan", detail: `${forecasts} periode tersedia pada tanggal shift. Lengkapi lokasi dan waktu produksi.`, icon: CloudSunIcon, href: "/forecasting", cta: "Lengkapi prakiraan" },
+      { title: "Data prakiraan", detail: `${forecasts} periode tersedia pada tanggal shift. BMKG diperbarui otomatis sesuai lokasi acuan proyek.`, icon: CloudSunIcon, href: "/forecasting", cta: "Lihat cuaca BMKG" },
     ]
     return <section className="role-board summon-panel" aria-labelledby="data-board-title"><div className="panel-heading"><div><h2 id="data-board-title">Meja kerja petugas data</h2><p>Keluaran Anda: data lengkap untuk ditinjau HSE.</p></div></div><div className="data-checklist">{items.map(item => <Link key={item.title} href={item.href}><item.icon size={23} /><div><strong>{item.title}</strong><p>{item.detail}</p></div><span>{item.cta}<ArrowRightIcon size={15} /></span></Link>)}</div></section>
   }

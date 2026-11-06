@@ -24,7 +24,7 @@ See [role workspaces, health check-in, and source boundaries](docs/role-workspac
 
 ## Interactive IoT instruments
 
-Open **Perangkat IoT** to inspect the Anatomy isometric bench: WBGT Station, RFID water point, upper-arm Band and gateway. Select a device to zoom in, tap a worker card, or pause the instrument activity. Under Station, **Perbesar wet bulb** exposes the sectioned reservoir, water level and immersed wick; the globe and air sensor remain dry. The **Sensor** task embeds a focused Station view and owns **Simpan bacaan untuk shift**, which fills missing shift intervals. The monitoring page points back to the selected shift. The local telemetry adapter is replaceable; generated readings retain recorded provenance and do not overwrite manual observations or closed history. See [implementation and checks](docs/iot-visualization.md) and [Anatomy provenance](docs/anatomy-provenance.md).
+Open **Perangkat IoT** to inspect the Anatomy isometric bench: WBGT Station, RFID water point, upper-arm Band and gateway. Select a device to zoom in, tap a worker card, or pause the instrument activity. Under Station, **Perbesar wet bulb** exposes the sectioned reservoir, water level and immersed wick; the globe and air sensor remain dry. The **Sensor** task embeds a focused Station view and owns automatic reading synchronization, which fills missing shift intervals. The monitoring page points back to the selected shift. The local telemetry adapter is replaceable; generated readings retain recorded provenance and do not overwrite manual observations or closed history. See [implementation and checks](docs/iot-visualization.md) and [Anatomy provenance](docs/anatomy-provenance.md).
 
 ## Proposal alignment
 
@@ -251,7 +251,7 @@ Yang **mengikat** tetap batasan arsitektur di Bagian 1. Stack boleh diganti hany
 
 ## 7a. Menjalankan frontend
 
-Frontend ada di `web/` (Next.js 15 + shadcn/ui + token Atmosphere). Aplikasi langsung membuka ruang demo berisi data fiktif. Data simulasi dapat diperbarui lewat impor CSV atau input manual; jangan masukkan data operasional nyata. Master data lokasi (regu, zona, tugas, akun, aturan NAB) ada di `web/src/lib/config.ts`. Mesin aturan di `web/src/lib/rules.ts` mengikuti bagian 4 dokumen ini.
+Frontend ada di `web/` (Next.js 15 + shadcn/ui + token Atmosphere). Aplikasi membuka ruang role dengan Company Data Hub referensi lokal. Formulir impor telah dihapus; BMKG JSON dan peta OpenStreetMap terhubung langsung. Alur absen menyediakan kamera dengan efek termal atau tap kartu, lalu pertanyaan kondisi tubuh. Data perusahaan/perangkat tetap memakai adaptor lokal; jangan masukkan data operasional nyata. Lihat `web/README.md` untuk perilaku runtime terbaru. Master data lokasi (regu, zona, tugas, akun, aturan NAB) ada di `web/src/lib/config.ts`. Mesin aturan di `web/src/lib/rules.ts` mengikuti bagian 4 dokumen ini.
 
 ```bash
 cd web

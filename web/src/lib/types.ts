@@ -106,6 +106,8 @@ export interface PengukuranWBGT {
 
 /** BMKG forecast, kept at its native 3-hour interval (F-ENV-01). */
 export interface PrakiraanCuaca {
+  kondisi?: string
+  sumber?: "BMKG"
   tanggal: string
   lokasi: string
   jamMulai: number

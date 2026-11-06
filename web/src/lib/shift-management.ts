@@ -14,7 +14,7 @@ function shiftWorkspace(s: AppState, tanggal: string, workerCodes: string[]): Sh
     pekerja: management.workers.filter(worker => selected.has(worker.kode)).map(worker => ({ ...worker })),
     penugasan: management.assignments.filter(assignment => selected.has(assignment.pekerjaKode)).map(assignment => ({ ...assignment })),
     kehadiran,
-    konfirmasi: [], bacaan: [], prakiraan: [], rencana: [], rencanaDihitung: false, tindakan: [], pengiriman: [],
+    konfirmasi: [], bacaan: [], prakiraan: s.weather?.data?.records.map(record => ({ ...record })) ?? [], rencana: [], rencanaDihitung: false, tindakan: [], pengiriman: [],
   }
 }
 

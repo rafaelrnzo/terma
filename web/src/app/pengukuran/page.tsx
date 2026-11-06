@@ -1,10 +1,11 @@
 "use client"
 
+import Link from "next/link"
+import { WeatherConnection } from "@/components/weather-connection"
 import { useState } from "react"
 import { DeviceReadingsButton } from "@/components/device-readings-button"
 import { HeatMonitor } from "@/components/heat-monitor"
 import { NextStep, PageHeader } from "@/components/app-shell"
-import { CsvImporter } from "@/components/csv-importer"
 import { ThermometerIcon as Thermometer } from "@phosphor-icons/react"
 import { OriginBadge, QualityBadge } from "@/components/status"
 import { RoleHint } from "@/components/role-hint"
@@ -18,7 +19,6 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { AMBANG_USIA_BACAAN_MENIT, ATURAN_FIXTURE, JAM_SHIFT, ZONA } from "@/lib/config"
 import { jam, kualitasBacaan, rentangJam, usiaBacaanMenit } from "@/lib/rules"
 import { useApp, useIzin } from "@/lib/store"
-import { TEMPLATE } from "@/lib/templates"
 import type { Workload } from "@/lib/types"
 
 const fmt = (n: number) => n.toFixed(1).replace(".", ",")
@@ -36,7 +36,6 @@ export default function PengukuranPage() {
   const [error, setError] = useState("")
 
   const bacaanHariIni = state.bacaan.filter((b) => b.tanggal === state.tanggal)
-  const prakiraanHariIni = state.prakiraan.filter((p) => p.tanggal === state.tanggal).sort((a, b) => a.jamMulai - b.jamMulai)
   const sumberAlat = [...new Set(bacaanHariIni.map((b) => `${b.zonaKode}|${b.idAlat}`))]
 
   return (
@@ -56,12 +55,12 @@ export default function PengukuranPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {bacaanHariIni.length === 0 && prakiraanHariIni.length === 0 ? (
+          {bacaanHariIni.length === 0 ? (
             <div className="flex flex-col items-start gap-4 border-t pt-5 sm:flex-row sm:items-center">
               <Thermometer className="size-8 shrink-0 text-muted-foreground" aria-hidden />
               <div className="flex-1">
                 <h3 className="font-medium">Perlu pengukuran di lokasi</h3>
-                <p className="mt-1 max-w-prose text-sm leading-relaxed text-muted-foreground">Belum ada bacaan untuk {ZONA.length} zona dan {JAM_SHIFT.length} interval. Catat bacaan manual atau impor CSV sebelum menyusun rencana.</p>
+                <p className="mt-1 max-w-prose text-sm leading-relaxed text-muted-foreground">Belum ada bacaan untuk {ZONA.length} zona dan {JAM_SHIFT.length} interval. Bacaan dari Station masuk melalui sinkronisasi perangkat pada alur shift.</p>
               </div>
               <Button asChild variant="outline"><a href="#input-pengukuran">Tambah bacaan</a></Button>
             </div>
@@ -118,18 +117,9 @@ export default function PengukuranPage() {
 
       <div id="input-pengukuran" className="mt-8 scroll-mt-6">
         <h2 className="text-lg font-semibold">Tambah pengukuran</h2>
-        <p className="mt-1 text-sm text-muted-foreground">Impor banyak bacaan sekaligus, atau catat satu bacaan dari alat.</p>
+        <p className="mt-1 text-sm text-muted-foreground">Bacaan utama berasal dari Station. Catatan manual tersedia untuk alat pengukuran tambahan.</p>
       </div>
       <div className="mt-4 grid items-start gap-6 xl:grid-cols-2">
-        <CsvImporter
-          id="wbgt"
-          title="Impor pengukuran WBGT"
-          description="Kolom: zona, tanggal, jam_mulai, isbb, id_alat, pencatat, kalibrasi, jenis (TERUKUR atau REPLAY), waktu_catat. Satu bacaan per zona per jam; impor ulang memperbarui, tidak menggandakan."
-          template={TEMPLATE.pengukuran}
-          result={state.imporLog.find((l) => l.jenis === "pengukuran")}
-          disabled={!boleh}
-          onImport={(csv, source) => dispatch({ type: "IMPOR_PENGUKURAN", csv, source })}
-        />
 
         <Card>
           <CardHeader>
@@ -181,54 +171,7 @@ export default function PengukuranPage() {
           </CardContent>
         </Card>
       </div>
-      <div className="mt-8 border-t pt-6">
-        <h2 className="text-lg font-semibold">Konteks cuaca</h2>
-        <p className="mt-1 text-sm text-muted-foreground">Prakiraan BMKG adalah konteks saja dan tidak pernah menghasilkan status siap.</p>
-      </div>
-      <div className="mt-4 grid items-start gap-6 xl:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>Prakiraan BMKG · {state.tanggal}</CardTitle>
-            <CardDescription>Konteks saja, bukan pengukuran lokasi. Tidak pernah menghasilkan status siap.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {prakiraanHariIni.length === 0 ? (
-              <p className="text-sm text-muted-foreground">Belum ada prakiraan untuk tanggal ini.</p>
-            ) : (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Periode</TableHead>
-                    <TableHead>Suhu</TableHead>
-                    <TableHead>Kelembapan</TableHead>
-                    <TableHead>Diproduksi</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {prakiraanHariIni.map((f) => (
-                    <TableRow key={f.jamMulai}>
-                      <TableCell>{jam(f.jamMulai)}–{jam(f.jamMulai + f.intervalJam)}</TableCell>
-                      <TableCell>{f.suhu}°C</TableCell>
-                      <TableCell>{f.kelembapan}%</TableCell>
-                      <TableCell className="text-xs text-muted-foreground">{new Date(f.waktuProduksi).toLocaleString("id-ID")}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            )}
-          </CardContent>
-        </Card>
-
-        <CsvImporter
-          id="bmkg"
-          title="Impor prakiraan BMKG"
-          description="Kolom: tanggal, lokasi, jam_mulai, interval_jam, suhu, kelembapan, waktu_produksi. Interval asli (biasanya 3 jam) dipertahankan."
-          template={TEMPLATE.prakiraan}
-          result={state.imporLog.find((l) => l.jenis === "prakiraan")}
-          disabled={!boleh}
-          onImport={(csv, source) => dispatch({ type: "IMPOR_PRAKIRAAN", csv, source })}
-        />
-      </div>
+      <div className="mt-8"><WeatherConnection /><Button asChild variant="outline"><Link href="/forecasting">Buka peta prakiraan BMKG</Link></Button></div>
 
       <Card className="mt-6">
         <CardHeader>

@@ -15,7 +15,7 @@ export default function PaparanPage() {
     return (
       <>
         <PageHeader no="2" title="Riwayat paparan & adaptasi" />
-        <WorkflowEmpty title="Siapkan data pekerja" href="/impor" label="Impor data pekerja">Data pekerja dan riwayat kehadiran diperlukan untuk meninjau kandidat adaptasi.</WorkflowEmpty>
+        <WorkflowEmpty title="Siapkan data pekerja" href="/impor" label="Buka data perusahaan">Data pekerja dan riwayat kehadiran diperlukan untuk meninjau kandidat adaptasi.</WorkflowEmpty>
       </>
     )
 

@@ -6,23 +6,22 @@ import { CheckIcon as Check, StackIcon as Layers3 } from "@phosphor-icons/react"
 import { Button } from "@/components/ui/button"
 import { DEMO_ZONE_POSITIONS } from "@/lib/zone-map"
 
-const MapboxCanvas = dynamic(() => import("./zone-mapbox"), { ssr: false, loading: () => <div className="map-loading" role="status">Memuat peta Mapbox…</div> })
-const token = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN?.trim()
+const GeographicMap = dynamic(() => import("./zone-openstreetmap"), { ssr: false, loading: () => <div className="map-loading" role="status">Memuat peta OpenStreetMap…</div> })
 
 export type MapZone = { kode: string; nama: string; value: string }
-export type ZoneMapProps = { zones: MapZone[]; selected: string; onZone: (code: string) => void; title?: string; caption?: string }
+export type ZoneMapProps = { zones: MapZone[]; selected: string; onZone: (code: string) => void; title?: string; caption?: string; center?: [number, number] }
 
-export function ZoneMap({ zones, selected, onZone, title = "Peta zona kerja", caption = "Pilih area untuk melihat bacaan. Warna membedakan zona, bukan tingkat risiko." }: ZoneMapProps) {
-  const [geographic, setGeographic] = useState(false)
+export function ZoneMap({ zones, selected, onZone, center, title = "Peta zona kerja", caption = "Pilih area untuk melihat bacaan. Warna membedakan zona, bukan tingkat risiko." }: ZoneMapProps) {
+  const [geographic, setGeographic] = useState(true)
   const [error, setError] = useState(false)
   return <div className="zone-map" data-tour="map">
     <div className="map-toolbar">
-      <div><h2 className="font-heading text-base font-semibold">{title}</h2><p className="mt-1 text-xs text-muted-foreground">{geographic ? "Koordinat contoh" : "Denah zona"} · posisi ilustratif</p></div>
+      <div><h2 className="font-heading text-base font-semibold">{title}</h2><p className="mt-1 text-xs text-muted-foreground">{geographic ? "OpenStreetMap" : "Denah zona"} · posisi ilustratif</p></div>
       {!geographic && <span className="map-view-label"><Layers3 className="size-3.5" aria-hidden />Isometrik</span>}
-      {token && <div className="flex gap-1" role="group" aria-label="Tampilan peta"><Button size="sm" variant="ghost" aria-pressed={!geographic} onClick={() => setGeographic(false)}>Skema</Button><Button size="sm" variant="ghost" aria-pressed={geographic} onClick={() => { setError(false); setGeographic(true) }}>Mapbox</Button></div>}
+      <div className="flex gap-1" role="group" aria-label="Tampilan peta"><Button size="sm" variant="ghost" aria-pressed={!geographic} onClick={() => setGeographic(false)}>Skema</Button><Button size="sm" variant="ghost" aria-pressed={geographic} onClick={() => { setError(false); setGeographic(true) }}>OpenStreetMap</Button></div>
     </div>
-    {error && <p className="map-error" role="status">Peta geografis tidak dapat dimuat. Skema tetap dapat digunakan. Pilih Mapbox untuk mencoba lagi.</p>}
-    {geographic && token ? <MapboxCanvas zones={zones} selected={selected} onZone={onZone} token={token} onFailure={() => { setGeographic(false); setError(true) }} /> : <div className="zone-scheme" role="group" aria-label="Denah zona, pilih zona untuk melihat bacaan">
+    {error && <p className="map-error" role="status">Peta geografis tidak dapat dimuat. Denah tetap dapat digunakan. Pilih OpenStreetMap untuk mencoba lagi.</p>}
+    {geographic ? <GeographicMap zones={zones} selected={selected} onZone={onZone} center={center} onFailure={() => { setGeographic(false); setError(true) }} /> : <div className="zone-scheme" role="group" aria-label="Denah zona, pilih zona untuk melihat bacaan">
       <svg className="scheme-paths" viewBox="0 0 600 340" preserveAspectRatio="none" aria-hidden="true"><path d="M150 100 L300 170 L450 100 M300 170 V255" fill="none" stroke="var(--border)" strokeWidth="1.5" strokeDasharray="4 5" /><circle cx="300" cy="170" r="4" fill="var(--card)" stroke="var(--input)" /></svg>
       {zones.map(z => {
         const position = DEMO_ZONE_POSITIONS[z.kode]
@@ -42,6 +41,6 @@ export function ZoneMap({ zones, selected, onZone, title = "Peta zona kerja", ca
         </button>
       })}
     </div>}
-    <div className="map-caption"><p>{caption}</p><details><summary>Tentang peta</summary><p>Posisi seluruh zona bersifat ilustratif, tanpa pelacakan pekerja. {token ? "Tampilan Mapbox memuat peta dari layanan eksternal dengan koordinat contoh; bukan lokasi proyek sebenarnya." : "Denah dapat digunakan tanpa layanan peta eksternal. Koordinat proyek sebenarnya belum ditetapkan."}</p></details></div>
+    <div className="map-caption"><p>{caption}</p><details><summary>Tentang peta</summary><p>Posisi seluruh zona bersifat ilustratif, tanpa pelacakan pekerja. Peta geografis menggunakan OpenStreetMap. Marker zona bersifat ilustratif di sekitar lokasi acuan, bukan koordinat sensor atau pelacakan pekerja.</p></details></div>
   </div>
 }

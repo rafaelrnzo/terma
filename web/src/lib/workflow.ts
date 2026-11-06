@@ -34,7 +34,7 @@ export function workflow(s: AppState, user: User): WorkflowStep[] {
   const verified = tindakan.filter((t) => t.status === "TERVERIFIKASI").length
   const semuaTindakan = semuaDisetujui && rencana.every((r) => tindakan.some((t) => t.rencanaId === r.id))
   return [
-    { href: "/impor", no: "1", label: "Impor & validasi", peran: ["PETUGAS_DATA", "HSE"], selesai: pekerja.length > 0 && lengkap === pekerja.length, progress: pekerja.length ? `${lengkap}/${pekerja.length} pekerja dengan data awal` : "Belum ada data pekerja" },
+    { href: "/impor", no: "1", label: "Data perusahaan", peran: ["PETUGAS_DATA", "HSE"], selesai: pekerja.length > 0 && lengkap === pekerja.length, progress: pekerja.length ? `${lengkap}/${pekerja.length} pekerja dengan data awal` : "Belum ada data pekerja" },
     { href: "/paparan", no: "2", label: "Paparan & adaptasi", peran: ["HSE"], selesai: pekerja.length > 0 && dikonfirmasi === kandidat.length, progress: kandidat.length ? `${dikonfirmasi}/${kandidat.length} pekerja dikonfirmasi` : pekerja.length ? "Tidak ada kandidat adaptasi" : "Menunggu data pekerja" },
     { href: "/pengukuran", no: "3", label: "Pengukuran WBGT", peran: ["PETUGAS_DATA", "HSE"], selesai: valid === kualitas.length, progress: `${valid}/${kualitas.length} interval dengan bacaan valid` },
     { href: "/rencana", no: "4", label: "Rencana & persetujuan", peran: ["HSE"], selesai: semuaDisetujui, progress: pekerja.length ? `${disetujui}/${pekerja.length} rencana disetujui` : "Menunggu data pekerja" },

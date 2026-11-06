@@ -133,3 +133,16 @@
 .kiosk-page footer { display: flex; max-width: 46rem; margin: 1.5rem auto; flex-wrap: wrap; justify-content: space-between; gap: 1rem; font-size: .75rem; color: var(--muted-foreground); }
 .kiosk-page footer a { text-decoration: underline; text-underline-offset: 3px; }
 @media (max-width: 640px) { .health-evidence-grid { grid-template-columns: minmax(0, 1fr); } .health-review { padding: 1rem; } .kiosk-card { padding: 1.25rem; } .kiosk-card h1 { font-size: 1.5rem; } .condition-options { grid-template-columns: minmax(0, 1fr); } .condition-options label { padding-right: 3rem; gap: .5rem; } }
+.geographic-map { min-width: 0; height: 390px; width: 100%; isolation: isolate; z-index: 0; font-family: inherit; background: var(--secondary); }
+.osm-zone-marker { background: transparent; border: 0; }
+.osm-zone-button { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: .3rem; width: 150px; min-height: 58px; border: 1px solid var(--border); border-left: 4px solid var(--zone-fill); background: var(--card); color: var(--foreground); border-radius: var(--radius-md); box-shadow: var(--shadow-raised); padding: .65rem .75rem; cursor: pointer; transition: border-color 150ms, background-color 150ms; }
+.osm-zone-button[aria-pressed=true] { border-color: var(--primary); background: var(--accent); color: var(--primary); }
+.osm-zone-button:focus-visible { outline: 2px solid var(--ring); outline-offset: 3px; }
+.osm-zone-name { font-size: .875rem; font-weight: 600; }
+.osm-zone-name::before { content: ""; display: inline-block; width: .4rem; height: .4rem; background: var(--zone-fill); border-radius: 50%; margin-right: .4rem; }
+.osm-zone-button[aria-pressed=true] .osm-zone-name::before { background: var(--primary); }
+.osm-zone-value { font-size: .75rem; line-height: 1.5; color: var(--muted-foreground); }
+.geographic-map .leaflet-control-zoom a { background: var(--card); color: var(--foreground); border-color: var(--border); }
+.geographic-map .leaflet-control-attribution { font-family: inherit; font-size: .75rem; background: var(--card); color: var(--muted-foreground); }
+.geographic-map .leaflet-control-attribution a { color: var(--primary); }
+@media (max-width: 640px) { .geographic-map { height: 360px; } }

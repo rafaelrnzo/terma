@@ -8,6 +8,7 @@ import { stateAwal, type AppState, type Action } from "./store-state"
 import { userById, tanggalValid } from "./store-utils"
 import { reducer } from "./store-reducer"
 import { validateManagement } from "./management-validation"
+import { useBmkgSync } from "./use-bmkg-sync"
 import type { User } from "./types"
 
 export { stateAwal, PENGGUNA_AWAL, type AppState, type Action } from "./store-state"
@@ -31,9 +32,9 @@ export function readDemoState(raw: string): AppState {
     if (!Array.isArray(parsed[key]) || parsed[key].some(item => !item || typeof item !== "object")) throw new Error("Invalid demo collection")
   }
   validateManagement(parsed)
-  return { ...parsed, notice: undefined }
+  return { ...parsed, weather: undefined, notice: undefined }
 }
-const Ctx = createContext<{ state: AppState; dispatch: (a: Action) => void; user: User | null; ready: boolean; storageError: string; retryStorage: () => void } | null>(null)
+const Ctx = createContext<{ state: AppState; dispatch: (a: Action) => void; user: User | null; ready: boolean; storageError: string; retryStorage: () => void; refreshWeather: () => Promise<void> } | null>(null)
 
 export function AppProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reducer, undefined, () => stateAwal())
@@ -41,6 +42,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [storageError, setStorageError] = useState("")
   const [storageBlocked, setStorageBlocked] = useState(false)
   const [saveAttempt, setSaveAttempt] = useState(0)
+  const refreshWeather = useBmkgSync(ready, dispatch)
 
   useEffect(() => {
     try {
@@ -56,16 +58,20 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, [])
 
   useEffect(() => {
+    if (ready && !state.management?.companySync) dispatch({ type: "SINKRON_PERUSAHAAN" })
+  }, [ready, state.management?.companySync])
+
+  useEffect(() => {
     if (!ready || storageBlocked) return
     try {
-      localStorage.setItem(DEMO_STORAGE_KEY, JSON.stringify({ ...state, notice: undefined }))
+      localStorage.setItem(DEMO_STORAGE_KEY, JSON.stringify({ ...state, weather: undefined, notice: undefined }))
       setStorageError("")
     } catch {
       setStorageError("Perubahan belum tersimpan di browser. Izinkan penyimpanan situs atau kosongkan ruang perangkat, lalu coba simpan lagi. Jangan tutup halaman sebelum tersimpan.")
     }
   }, [state, ready, storageBlocked, saveAttempt])
 
-  const value = useMemo(() => ({ state, dispatch, user: userById(state.sesi?.userId), ready, storageError, retryStorage: () => {
+  const value = useMemo(() => ({ state, dispatch, refreshWeather, user: userById(state.sesi?.userId), ready, storageError, retryStorage: () => {
     if (storageBlocked) {
       try {
         const raw = localStorage.getItem(DEMO_STORAGE_KEY)
@@ -73,7 +79,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         setStorageError("Data tersimpan dilindungi. Muat ulang halaman setelah masalah penyimpanan diperbaiki.")
       } catch { setStorageError("Penyimpanan masih tidak dapat dibaca. Gunakan jendela privat; data lama tetap tidak ditimpa.") }
     } else setSaveAttempt(n => n + 1)
-  } }), [state, ready, storageError, storageBlocked])
+  } }), [state, ready, storageError, storageBlocked, refreshWeather])
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>
 }
 

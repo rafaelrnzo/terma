@@ -6,3 +6,9 @@ export const DEMO_ZONE_POSITIONS: Record<string, { point: [number, number]; x: n
 }
 
 export const DEMO_MAP_CENTER: [number, number] = [106.829, -6.1775]
+
+/** Move illustrative zone offsets around the supplied weather/site reference, not tracked GPS. */
+export function zonePoint(code: string, center: [number, number]): [number, number] | null {
+  const position = DEMO_ZONE_POSITIONS[code]
+  return position ? [center[0] + position.point[0] - DEMO_MAP_CENTER[0], center[1] + position.point[1] - DEMO_MAP_CENTER[1]] : null
+}

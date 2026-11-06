@@ -9,7 +9,7 @@ Diperbarui 6 November 2026. Acuan: proposal DeveloperDay2026, [Google Docs kebut
 | Petugas data | `/admin` | Master pekerja, kelengkapan dokumen/absensi, bacaan WBGT, prakiraan |
 | HSE | `/hse` | Baseline ringkasan kerja, tinjauan kondisi/adaptasi, rencana, terbitkan, bagikan instruksi, verifikasi, tutup |
 | Mandor | `/mandor` | Instruksi, pengakuan, monitoring, dan laporan untuk regu sendiri |
-| Pekerja di kios | `/kiosk` | Masukkan ID, laporkan kondisi tubuh, catat kehadiran |
+| Pekerja di kios | `/kiosk` | Pilih kamera/kartu, konfirmasi identitas, isi kondisi tubuh, catat kehadiran |
 
 `/ringkasan` mengarahkan ke beranda sesuai akun. Memasukkan URL beranda role lain mengarahkan kembali ke role aktif, tanpa mengganti akun. Pergantian akun dari header mengubah identitas, lingkup, beranda, dan URL. Di halaman shift, URL dipertahankan untuk serah terima.
 
@@ -19,7 +19,7 @@ Master dan ringkasan pemeriksaan perusahaan → HSE membuat draft → pekerja ab
 
 Baseline perusahaan dapat dipakai untuk persiapan sebelum pekerja hadir. Gambar referensi menempatkan check-in setelah rencana awal; implementasi ini menempatkan check-in dan tinjauan kondisi sebelum persetujuan final/penerbitan. Dengan demikian laporan kondisi pagi tidak dilepas menjadi instruksi tanpa tinjauan. Waktu pada gambar tidak dijadikan scheduler otomatis.
 
-Forecasting berada di `/forecasting` untuk persiapan: peta ilustratif yang sama dengan monitoring, tanggal, interval asli sumber, suhu udara, kelembapan, lokasi, waktu produksi, dan perbandingan periode. Satu prakiraan lokasi menjadi konteks seluruh zona; tidak dibuat estimasi WBGT atau tingkat risiko per zona. Periode tanpa data tetap kosong. Impor memakai reducer/validator prakiraan yang sama.
+Forecasting berada di `/forecasting` untuk persiapan: peta ilustratif yang sama dengan monitoring, tanggal, interval asli sumber, suhu udara, kelembapan, lokasi, waktu produksi, dan perbandingan periode. Satu prakiraan lokasi menjadi konteks seluruh zona; tidak dibuat estimasi WBGT atau tingkat risiko per zona. Prakiraan berasal langsung dari JSON BMKG Kemayoran melalui `/api/weather`; interval asli sumber dipertahankan. Peta OpenStreetMap menjadi tampilan utama dengan zoom, geser, dan marker zona ilustratif.
 
 Monitoring berada di `/monitoring`: shift dan tanggal terpilih, progres tindakan, peta zona, interval WBGT, kualitas sumber, riwayat, dan tautan kembali ke tugas. `/perangkat` tetap tersedia sebagai rincian ekosistem alat. Laporan, analitik, insight, dan rekap paparan dikelompokkan dalam Laporan & evaluasi.
 
@@ -33,9 +33,21 @@ Master baseline disalin ke shift. Perubahan setelah rencana disetujui, pada shif
 
 ## Batas runtime
 
-Akun masih pemilihan role di klien, penyimpanan masih localStorage browser yang sama. Kios belum memakai token perangkat, pembaca kartu fisik, autentikasi pekerja, atau sinkronisasi lintas perangkat. Ringkasan kesehatan dalam prototype bukan pemisahan keamanan server. Prakiraan diimpor, bukan BMKG live; sensor memakai adaptor lokal dengan provenance; WhatsApp tetap dibagikan manual. Tidak ada diagnosis atau prediksi penyakit baru.
+Akun masih pemilihan role di klien, penyimpanan masih localStorage browser yang sama. Kios belum memakai token perangkat, pembaca kartu fisik, autentikasi pekerja, atau sinkronisasi lintas perangkat. Ringkasan kesehatan dalam prototype bukan pemisahan keamanan server. BMKG JSON dan ubin OpenStreetMap terhubung langsung. Company Data Hub menyediakan delapan master/baseline referensi hanya pada ruang kosong, tanpa menimpa pekerjaan lama. Sensor memakai adaptor lokal dengan provenance dan sinkron otomatis pada tugas Sensor. Instruksi dikirim ke kotak masuk mandor di TERMA. Tidak ada formulir impor CSV. Tidak ada diagnosis atau prediksi penyakit baru.
 
-## Pemeriksaan
+## Kamera dan kartu
+
+Kios membuka kamera hanya setelah tombol ditekan. Efek termal adalah visualisasi; kamera biasa tidak mengukur suhu. Identitas dipilih dan dikonfirmasi pekerja, tanpa pengenalan wajah. Metode kamera, pratinjau tanpa kamera, atau tap kartu tersimpan bersama jawaban kondisi, tanpa gambar/video. Stream dihentikan saat ganti metode, konfirmasi, keluar halaman, atau tab disembunyikan. Tap kartu bersifat interaksi kios dengan durasi yang sama seperti reader water station. Kedua jalur menuju pertanyaan kondisi tubuh lalu bukti absen; HSE meninjau hasilnya di tugas awal shift.
+
+## Pemeriksaan kamera, konektor, dan OSM
+
+- 148 pengujian / 22 berkas lulus, TypeScript lulus, ESLint 0 error / 8 warning Bklit yang sudah ada. Build produksi lulus.
+- Browser dengan perangkat kamera uji Chromium: stream hidup; ganti metode dan konfirmasi menghentikan track. Absen kartu, kamera, dan pratinjau menghasilkan tiga catatan berbeda; tiga jawaban/kehadiran tetap tersimpan setelah reload dan ditinjau HSE.
+- Keluhan wajib dipilih untuk jawaban Ada keluhan. Kios pertanyaan dan bukti absen diperiksa pada 390px.
+- BMKG nyata mengembalikan Kemayoran dan 18 periode pada waktu uji. Peta memuat 12 ubin OSM dan tiga marker; pilihan zona serta zoom berfungsi. Error HTTP 502 yang disisipkan lewat browser menampilkan pembaruan tertunda dan mempertahankan data terakhir; refresh berikutnya pulih.
+- Bukti browser pada `web/output/playwright/`: `kiosk-camera-live.png`, `kiosk-questions-new-390.png`, `kiosk-receipt-new-390.png`, `osm-bmkg-current.png`.
+
+## Pemeriksaan sebelumnya (rilis 9c4183f)
 
 - Final: **138 pengujian / 19 berkas lulus**; pemeriksaan TypeScript dan build produksi Next.js lulus.
 - TypeScript dan Vitest: alur, permissions, read-back, check-in idempoten, invalidasi tinjauan, baseline snapshot, format simpan, dan kompatibilitas data lama.

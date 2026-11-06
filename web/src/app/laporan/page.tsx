@@ -40,7 +40,7 @@ export default function LaporanPage() {
       .filter((x) => x.q !== "TERUKUR" && x.q !== "REPLAY"),
   )
   const belumKonfirmasi = state.pekerja.filter((p) => kandidatUntuk(state, p).pemicu && !state.konfirmasi.some((k) => k.pekerjaKode === p.kode))
-  const ditolakImpor = state.imporLog.filter((l, i, arr) => arr.findIndex((x) => x.jenis === l.jenis) === i).flatMap((l) => l.ditolak.map((d) => ({ ...d, jenis: l.jenis })))
+
 
   return (
     <>
@@ -50,7 +50,7 @@ export default function LaporanPage() {
       {shift && <p className="mb-5 rounded-md border p-4 text-sm">{shift.nama} · {shiftLabel(shift.status)}{shift.status === "CLOSED" ? ` · Ditutup ${shift.ditutupOleh}, ${new Date(shift.ditutupPada!).toLocaleString("id-ID")}` : " · Laporan sementara, shift belum ditutup"}</p>}
       {readiness.required && <div className="mb-5 rounded-md border bg-card p-4 text-sm"><p>Catatan awal shift: {readiness.checked}/{readiness.total} peserta absen · {readiness.reviewed}/{readiness.total} tinjauan HSE tercatat.</p><Link href="/absensi" className="panel-link no-print mt-2">Lihat catatan kondisi awal sesuai peran</Link></div>}
       <div data-guide="report" className="no-print mb-6">
-        <p className="mb-3 text-sm text-muted-foreground">Lingkup laporan: {user.role === "MANDOR" ? `regu ${user.reguKode}. Jejak audit lintas regu dan hasil impor hanya tersedia untuk HSE atau petugas data.` : "seluruh regu pada lokasi ini."}</p>
+        <p className="mb-3 text-sm text-muted-foreground">Lingkup laporan: {user.role === "MANDOR" ? `regu ${user.reguKode}. Jejak audit lintas regu dan data sumber hanya tersedia untuk HSE atau petugas data.` : "seluruh regu pada lokasi ini."}</p>
         <Button variant="outline" onClick={() => window.print()}><Printer /> Cetak laporan</Button>
       </div>
 
@@ -106,9 +106,6 @@ export default function LaporanPage() {
             </Gap>
             <Gap judul={`Kandidat adaptasi belum dikonfirmasi HSE (${belumKonfirmasi.length})`}>
               {belumKonfirmasi.length ? belumKonfirmasi.map((p) => `${p.nama}: ${kandidatUntuk(state, p).keterangan}`).join(" · ") : "Tidak ada."}
-            </Gap>
-            <Gap judul={`Baris impor ditolak (${ditolakImpor.length})`}>
-              {ditolakImpor.length ? ditolakImpor.map((d) => `${d.jenis} baris ${d.baris}: ${d.alasan}`).join(" · ") : "Tidak ada."}
             </Gap>
             <Gap judul="Interval tanpa alokasi yang memenuhi aturan">
               {aktif.flatMap((r) => r.intervals.filter((i) => i.barisNab === null && (i.kualitas === "TERUKUR" || i.kualitas === "REPLAY")).map((i) => `${state.pekerja.find((p) => p.kode === r.pekerjaKode)?.nama} ${rentangJam(i.jamMulai)}`)).join(", ") || "Tidak ada."}
@@ -175,7 +172,7 @@ export default function LaporanPage() {
         <Card>
           <CardHeader>
             <CardTitle>Jejak audit ({state.audit.length})</CardTitle>
-            <CardDescription>Impor, konfirmasi, versi aturan, persetujuan, pengiriman, tindakan, verifikasi, dan penolakan akses.</CardDescription>
+            <CardDescription>Sinkronisasi data, konfirmasi, versi aturan, persetujuan, instruksi, tindakan, verifikasi, dan penolakan akses.</CardDescription>
           </CardHeader>
           <CardContent>
             <p className="no-print mb-3 text-xs text-muted-foreground lg:hidden">Geser tabel ke samping untuk membaca aktor, aksi, dan detail.</p>
@@ -189,7 +186,7 @@ export default function LaporanPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {state.audit.length === 0 && <TableRow><TableCell colSpan={4} className="py-6 whitespace-normal text-muted-foreground">{user.role === "MANDOR" ? "Jejak audit lintas regu hanya tersedia untuk HSE atau petugas data." : "Aktivitas impor, persetujuan, dan verifikasi akan tercatat di sini."}</TableCell></TableRow>}
+                {state.audit.length === 0 && <TableRow><TableCell colSpan={4} className="py-6 whitespace-normal text-muted-foreground">{user.role === "MANDOR" ? "Jejak audit lintas regu hanya tersedia untuk HSE atau petugas data." : "Aktivitas data, persetujuan, dan verifikasi akan tercatat di sini."}</TableCell></TableRow>}
                 {state.audit.map((a, i) => (
                   <TableRow key={i}>
                     <TableCell className="font-mono text-xs">{new Date(a.waktu).toLocaleTimeString("id-ID")}</TableCell>

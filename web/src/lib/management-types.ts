@@ -1,3 +1,4 @@
+import type { CompanySync } from "./company-data"
 import type { AppState } from "./store-state"
 import type { Pekerja, Penugasan } from "./types"
 import type { HealthBaseline, ShiftReadiness } from "./worker-readiness"
@@ -23,6 +24,7 @@ export interface ManagementState {
   shifts: ShiftRecord[]
   activeId: string | null
   healthBaselines?: HealthBaseline[]
+  companySync?: CompanySync
 }
 export interface WorkerInput {
   kode: string

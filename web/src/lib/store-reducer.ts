@@ -1,4 +1,5 @@
 import { isManagementAction, currentShift, checkpointShift, ensureManagement, isClosedShift, mutableShiftAction, managementOf } from "./management-state"
+import { syncCompanyData } from "./company-data"
 import { manageWorker } from "./worker-management"
 import { shiftActionError } from "./shift-action-validation"
 import { ingestStationReadings } from "./device-ingestion"
@@ -11,6 +12,8 @@ import { bisaMuatDemo, dataDemo, DEMO_VERSION } from "./seed-data"
 import { aktor, userById, audit, notice, now, tanggalValid } from "./store-utils"
 import { recompute, rencanaAktif, isiPesan, deskripsiTindakan } from "./store-plans"
 import { imporPekerja, imporKehadiran, imporPengukuran, imporPrakiraan } from "./store-imports"
+import type { ManagementAction } from "./management-types"
+import type { WeatherAction } from "./bmkg"
 import type { AppState, Action } from "./store-state"
 import type { KonfirmasiPaparan, PengukuranWBGT, Tindakan, Pengiriman } from "./types"
 
@@ -50,7 +53,7 @@ function reguDari(s: AppState, a: Action): string | undefined {
   return undefined
 }
 
-function inner(s: AppState, a: Exclude<Action, import("./management-types").ManagementAction>): AppState {
+function inner(s: AppState, a: Exclude<Action, ManagementAction | WeatherAction | { type: "SINKRON_PERUSAHAAN" }>): AppState {
   switch (a.type) {
     case "SIMPAN_BASELINE": return saveBaseline(s, a.input)
     case "CATAT_CHECKIN":
@@ -169,6 +172,17 @@ function inner(s: AppState, a: Exclude<Action, import("./management-types").Mana
 }
 
 export function reducer(s: AppState, a: Action): AppState {
+  if (a.type === "SINKRON_PERUSAHAAN") return syncCompanyData(s)
+  if (a.type === "CUACA_MULAI") return { ...s, weather: { ...s.weather, status: "loading", error: undefined } }
+  if (a.type === "CUACA_GAGAL") return { ...s, weather: { ...s.weather, status: "error", error: a.pesan } }
+  if (a.type === "CUACA_DITERIMA") {
+    const next = { ...s, weather: { status: "ready" as const, data: a.data } }
+    const shift = currentShift(s)
+    if (shift?.status !== "DRAFT" || s.rencana.some(plan => plan.disetujuiOleh)) return next
+    const records = new Map(s.prakiraan.map(record => [`${record.tanggal}:${record.jamMulai}`, record]))
+    for (const record of a.data.records) records.set(`${record.tanggal}:${record.jamMulai}`, record)
+    return checkpointShift(recompute({ ...next, prakiraan: [...records.values()] }))
+  }
   const aksi = IZIN_AKSI[a.type]
   if (aksi) {
     const u = aktor(s)

@@ -1,47 +1,32 @@
-# TERMA frontend demo
+# TERMA frontend
 
-Landing page: `/`. Dashboard HSE: `/ringkasan`. All operational records are local mock data; there is no authentication or worker tracking.
+Next.js 15. Role homes: `/hse`, `/admin`, `/mandor`. `/ringkasan` redirects to the current role. See [role workflow](../docs/role-workspaces.md).
 
-## Dashboard map and tour
+## Start the application
 
-The dashboard includes desktop sidebar navigation (mobile drawer), an interactive zone scheme, interval-specific WBGT readings, and an optional six-step Driver.js tour. Start, skip, or replay it using **Panduan dashboard**; the tour does not alter records.
-
-The scheme works without a Mapbox account and makes no Mapbox requests. To enable the optional geographic view:
-
-1. Set `NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN` in `web/.env.local` using `web/.env.example` as a reference.
-2. Use a public `pk.*` token restricted to the allowed site URLs. Never use a secret `sk.*` token. This value is visible in browser bundles.
-3. Restart the development server, or rebuild the deployment, then choose **Mapbox** above the scheme.
-
-The map uses fictional demo coordinates from `src/lib/zone-map.ts`, **not an actual project location**. A configured token enables external Mapbox requests only when that view is selected; usage is governed by the token owner's Mapbox account. Invalid token, unsupported WebGL, network errors, or a 12-second load timeout return to the usable scheme. No geolocation permission is requested. Live tiles cannot be verified without a valid token.
-
-Run `scripts/dashboard-smoke.cjs` against the dev server with a Playwright runtime. It checks five viewport widths, role/date changes, zone selection, six tour steps, keyboard exit/replay, unchanged records, and zero Mapbox requests without a token.
-
-## Getting Started
-
-First, run the development server:
-
-```bash
+```sh
 npm install
 npm run dev -- --port 3001
 ```
 
-Open [http://localhost:3001/ringkasan](http://localhost:3001/ringkasan) for the dashboard.
+Open http://localhost:3001/hse. A new browser receives eight linked reference workers, assignments and baseline summaries through Company Data Hub. Existing workspaces are preserved. Create a draft shift, open **Buka layar absen pekerja**, then complete attendance and HSE review before approving plans.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Connected surfaces
 
-This project uses `next/font` for Inter and Manrope.
+- `/kiosk`: camera permission and live preview, thermal color effect, self-confirmed identity, or interactive card tap; body condition questions follow both methods. Camera tracks stop on confirmation, mode change, page exit or hidden tab. No photo, video, biometric match or temperature is stored. Card tap uses the same scan duration as the water-station visualization; physical hardware is not connected.
+- `/forecasting`: real BMKG JSON for Kemayoran, Jakarta Pusat (`31.71.03.1001`) through `/api/weather`. Server cache 15 minutes; visible browser refresh every 30 minutes. Source periods, production time, humidity and air temperature are retained. Air temperature is not WBGT. Errors are shown and previous successful data retained. Approved/active/closed shift snapshots stay unchanged.
+- `/forecasting` and `/monitoring`: Leaflet 1.9.4 with OpenStreetMap tiles, visible attribution, zoom, pan and selectable zone markers. No token is needed. Zone offsets are illustrative around the weather reference, not surveyed GPS or worker tracking. Network failure returns to the selectable scheme. Only visible tiles are requested; no offline prefetch.
+- `/impor`: existing URL now opens Company Data Hub and the worker directory; CSV forms have been removed. Empty workspaces get local reference data once. Sensor readings sync automatically when opening the Sensor task, preserving recorded/manual readings and closed history. Instructions go to the TERMA foreman inbox; no external WhatsApp delivery is claimed.
 
-## Learn More
+Operational records and role selection remain browser-local (`terma-demo-v2`), without server authentication or cross-device synchronization. Company/MCU/device adapters use local reference data; BMKG and OSM are actual external services.
 
-To learn more about Next.js, take a look at the following resources:
+## Checks and release
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```sh
+npm test
+npx tsc --noEmit
+npm run lint
+npm run build
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Vercel builds `web/` from the upstream repository main branch. No map token or private API credentials are required.
