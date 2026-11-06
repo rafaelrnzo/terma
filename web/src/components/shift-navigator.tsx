@@ -1,7 +1,7 @@
 "use client"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { ArrowLeftIcon } from "@phosphor-icons/react"
+import { ArrowLeftIcon } from "@phosphor-icons/react/dist/csr/ArrowLeft"
 import { currentShift, shiftLabel } from "@/lib/management-state"
 import { isShiftRoute } from "@/lib/navigation"
 import { useApp } from "@/lib/store"

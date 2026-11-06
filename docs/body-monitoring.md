@@ -4,7 +4,7 @@ Dibuat dari permintaan pengguna 6 November 2026: detail dari tabel pekerja menam
 
 Geometri: `web/scripts/anatomy/body/build.mjs`, memakai kit yang sudah divendor. Setiap bentuk direkam dengan geometri sebenarnya, disusun melalui `A.settle`, dan diperiksa melalui audit. Sambungan disesuaikan secara geometris, bukan dengan mengabaikan pasangan atau mengganti kunci painter. Tidak ada dependency baru. `npm run figure:body` meregenerasi modul; `npm run figure:body:audit` menjalankan audit. `--review` juga menghasilkan halaman inspeksi depan/belakang kedua tema pada output/anatomy-body (ignored).
 
-UI: `worker-health-detail.tsx` memuat `worker-body-monitor.tsx` saat dialog dibuka. Kedua tampak memakai model yang sama. Klik/keyboard pada marker dan daftar sinyal memilih penjelasan yang sama; satu indikator bergerak di daftar. Pulsa perhatian berhenti di luar viewport, pada tab tersembunyi dan reduced motion. SVG tidak dibangun ulang per frame. Angka bersumber dari model data yang sama dengan marker.
+UI: tombol Pantau menuju `/pemantauan/[kode]?tanggal=…`. `worker-health-detail.tsx` memuat `worker-body-monitor.tsx` saat halaman detail dibuka. Kedua tampak memakai model yang sama. Klik/keyboard pada marker dan daftar sinyal memilih penjelasan yang sama; satu indikator bergerak di daftar. Pulsa perhatian berhenti di luar viewport, pada tab tersembunyi dan reduced motion. SVG tidak dibangun ulang per frame. Angka bersumber dari model data yang sama dengan marker.
 
 ## Data dan arti marker
 
@@ -31,3 +31,7 @@ Permintaan lanjutan pengguna: perlihatkan semua sinyal terisi. Detail yang selur
 Audit depan dan belakang: 79 solid; clearance, support, depth order, terminals, folds, self-overlap, wobble, stand-in shapes dan crowding semuanya nol. Pemeriksaan ujung garis dijalankan pada halaman inspeksi kedua tema/tampak. Uji model mencakup data kosong, kunjungan terlambat dengan heartbeat segar, koneksi kedaluwarsa/offline, isolasi pekerja, consent Band, redaksi HSE, retry/ID konflik, invalid/future event, dan closed history. Hasil build, browser dan total tes akhir dicatat di source-flow-reconciliation.md.
 
 Revisi contoh terisi: 10 tes fokus (tujuh model asli, tiga contoh) lulus, TypeScript dan lint berkas berubah lulus. Browser membuktikan kelima sinyal terisi otomatis pada workspace kosong, kembali ke data asli melalui tombol sumber, tiga variasi antarpekerja, dan tanpa overflow desktop/mobile terang/gelap. Pratinjau tetap berupa model tampilan, tanpa penulisan state operasional.
+
+## Revisi 7 November 2026
+
+Pantau menggunakan halaman detail, bukan dialog. Nilai utama, angka per sinyal, status dan sumber mempunyai hierarki terpisah; penjelasan sumber/metode dapat dibuka. Logo asli proposal dan palet TERMA memakai komponen Summon. Lihat [audit antarmuka](ui-hierarchy-review.md) dan [rekonsiliasi Band/paper](band-paper-crosswalk.md) untuk implementasi estimator pilot, guard data, privasi, serta kemampuan yang masih belum aktif.

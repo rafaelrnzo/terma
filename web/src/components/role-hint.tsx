@@ -1,6 +1,6 @@
 "use client"
 
-import { InfoIcon as Info } from "@phosphor-icons/react"
+import { InfoIcon as Info } from "@phosphor-icons/react/dist/csr/Info"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { LABEL_PERAN } from "@/lib/access"
 import { useApp } from "@/lib/store"

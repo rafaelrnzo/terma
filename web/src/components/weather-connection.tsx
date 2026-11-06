@@ -1,6 +1,7 @@
 "use client"
 
-import { ArrowClockwiseIcon, CloudSunIcon } from "@phosphor-icons/react"
+import { ArrowClockwiseIcon } from "@phosphor-icons/react/dist/csr/ArrowClockwise"
+import { CloudSunIcon } from "@phosphor-icons/react/dist/csr/CloudSun"
 import { Button } from "@/components/ui/button"
 import { BMKG_SITE } from "@/lib/bmkg"
 import { useApp } from "@/lib/store"

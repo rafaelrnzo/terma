@@ -4,19 +4,21 @@ import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { useEffect, useState, type ReactNode } from "react"
 import { toast } from "sonner"
-import { ArrowRightIcon as ArrowRight, ListIcon as Menu, ArrowUpRightIcon as ArrowUpRight } from "@phosphor-icons/react"
+import { ArrowRightIcon as ArrowRight } from "@phosphor-icons/react/dist/csr/ArrowRight"
+import { ListIcon as Menu } from "@phosphor-icons/react/dist/csr/List"
+import { ArrowUpRightIcon as ArrowUpRight } from "@phosphor-icons/react/dist/csr/ArrowUpRight"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Toaster } from "@/components/ui/sonner"
 import { LABEL_PERAN } from "@/lib/access"
-import { ATURAN_FIXTURE, LOKASI, REGU, USERS } from "@/lib/config"
+import { LOKASI, REGU, USERS } from "@/lib/config"
 import { useApp } from "@/lib/store"
 import { cn } from "@/lib/utils"
 import { Navigation } from "@/components/workspace-navigation"
 import { ShiftRouteContext } from "@/components/shift-navigator"
-import { DashboardSkeleton } from "@/components/dashboard-skeleton"
+import { RouteLoading } from "@/components/route-loading"
 import { ThemeToggle } from "@/components/ui-provider"
 import { WorkspaceTools } from "@/components/workspace-tools"
 import { StepContext } from "@/components/shift-context"
@@ -67,9 +69,9 @@ export function AppShell({ children }: { children: ReactNode }) {
     <div className="app-frame">
       <a href="#konten-utama" className="skip-link no-print">Lewati navigasi ke konten utama</a>
       <aside className="app-sidebar no-print" aria-label="Navigasi ruang kerja" data-tour="navigation">
-        <div className="sidebar-brand"><Wordmark /><p>THERMAL & RENAL MONITORING</p></div><div className="sidebar-site"><span className="site-avatar">K</span><span><strong>Lokasi konstruksi</strong><small>Lokasi 1 · Indonesia</small></span></div><p className="nav-section-label">{user ? `${LABEL_PERAN[user.role]}${user.reguKode ? ` · ${REGU.find(crew => crew.kode === user.reguKode)?.nama}` : " · SELURUH LOKASI"}` : "RUANG KERJA"}</p>
+        <div className="sidebar-brand"><Wordmark /></div><div className="sidebar-site"><span className="site-avatar">K</span><span><strong>Lokasi konstruksi</strong><small>Lokasi 1 · Indonesia</small></span></div><p className="nav-section-label">{user ? `${LABEL_PERAN[user.role]}${user.reguKode ? ` · ${REGU.find(crew => crew.kode === user.reguKode)?.nama}` : " · SELURUH LOKASI"}` : "RUANG KERJA"}</p>
         <Navigation />
-        <div className="sidebar-support"><Link href="/" className="nav-item gap-3"><ArrowUpRight className="size-4" aria-hidden />Tentang TERMA</Link><p>TERMA<br /><span>Koordinasi keselamatan kerja.</span></p></div>
+        <div className="sidebar-support"><Link href="/" className="nav-item gap-3"><ArrowUpRight className="size-4" aria-hidden />Tentang TERMA</Link></div>
       </aside>
       <div className="app-workspace">
       <header className="app-header no-print" data-page-chrome>
@@ -90,10 +92,10 @@ export function AppShell({ children }: { children: ReactNode }) {
           </div>
         </div>
         <div className="context-bar">
-          <p className="hidden text-sm text-muted-foreground sm:block" role="status">{user?.nama} <span aria-hidden> / </span> {LABEL_PERAN[user?.role ?? "HSE"]}{user?.reguKode ? ` · ${REGU.find(crew => crew.kode === user.reguKode)?.nama}` : " · Seluruh lokasi"}</p>
+
           <UserSelect mobile />
           <div className="flex min-w-0 items-center gap-3">
-            <Link href={user?.role === "KLINIK" ? "/klinik" : shift ? `/shift/${shift.id}` : "/ringkasan"} className="text-sm font-medium underline-offset-4 hover:underline">{shift ? `${shift.nama} · ${shift.tanggal}` : "Belum ada shift dibuka"}</Link>
+            <Link href={user?.role === "KLINIK" ? "/klinik" : shift ? `/shift/${shift.id}` : "/ringkasan"} className="text-sm font-medium underline-offset-4 hover:underline">{shift ? `${shift.nama} · ${shift.tanggal}` : "Pilih shift"}</Link>
           </div>
         </div>
       </header>
@@ -101,9 +103,9 @@ export function AppShell({ children }: { children: ReactNode }) {
         {group && group.routes.length > 1 && <nav aria-label={group.label} className="no-print mb-6 flex flex-wrap gap-2 border-b pb-3 lg:hidden">{group.routes.filter(route=>!user || pageAllowedFor(user,route.href)).map(route => <Link key={route.href} href={route.href} aria-current={path === route.href ? "page" : undefined} className={cn("nav-item", path === route.href && "nav-item-active")}>{route.label}</Link>)}</nav>}
         {storageError && <div role="alert" className="mb-6 rounded-md border border-destructive p-4 text-sm"><p>{storageError}</p><Button className="mt-3" variant="outline" onClick={retryStorage}>Coba simpan lagi</Button></div>}
         {ready && <ShiftRouteContext />}
-        <div key={`${path}:${user?.id}`} className="page-enter">{ready ? user && !pageAllowedFor(user, path) ? <WorkflowEmpty title="Tidak punya akses" href={roleHomePath(user)} label="Kembali ke ruang kerja">Halaman ini tersedia untuk peran yang berwenang. Akun Anda tetap {user.nama} · {LABEL_PERAN[user.role]}.</WorkflowEmpty> : needsShift && !shift ? <WorkflowEmpty title="Buka shift terlebih dahulu" href="/ringkasan" label="Ke daftar shift">Pekerjaan, monitoring, dan laporan terkait dengan satu shift dalam lingkup Anda. Pilih shift dari beranda untuk melanjutkan.</WorkflowEmpty> : blockedExecution ? <WorkflowEmpty title="Terbitkan shift sebelum pelaksanaan" href={user?.role === "HSE" ? "/rencana" : roleHomePath(user!)} label="Lihat rencana shift">Tinjau dan setujui semua rencana, lalu terbitkan shift. Setelah itu instruksi dapat dibagikan dan pelaksanaan dicatat.</WorkflowEmpty> : <>{shift?.status === "CLOSED" && needsShift && <p role="status" className="mb-5 rounded-md border bg-secondary p-4 text-sm">Shift sudah ditutup. Catatan berikut hanya dapat dibaca.</p>}{children}</> : <DashboardSkeleton />}</div>
+        <div key={`${path}:${user?.id}`} className="page-enter">{ready ? user && !pageAllowedFor(user, path) ? <WorkflowEmpty title="Tidak punya akses" href={roleHomePath(user)} label="Kembali ke ruang kerja">Halaman ini tersedia untuk peran yang berwenang. Akun Anda tetap {user.nama} · {LABEL_PERAN[user.role]}.</WorkflowEmpty> : needsShift && !shift ? <WorkflowEmpty title="Buka shift terlebih dahulu" href="/ringkasan" label="Ke daftar shift">Pilih shift yang ingin dikerjakan.</WorkflowEmpty> : blockedExecution ? <WorkflowEmpty title="Terbitkan shift sebelum pelaksanaan" href={user?.role === "HSE" ? "/rencana" : roleHomePath(user!)} label="Lihat rencana shift">Selesaikan persetujuan rencana, lalu terbitkan shift.</WorkflowEmpty> : <>{shift?.status === "CLOSED" && needsShift && <p role="status" className="mb-5 rounded-md border bg-secondary p-4 text-sm">Shift sudah ditutup. Catatan berikut hanya dapat dibaca.</p>}{children}</> : <RouteLoading />}</div>
       </main>
-      <footer className="no-print app-footer"><Link className="underline underline-offset-4" href="/">Tentang TERMA</Link><span>Aturan {shift?.calculationVersion === "PDF_V0" ? "flow-pdf-v0 · parameter pilot" : `${ATURAN_FIXTURE.versi} · belum disahkan HSE`}</span></footer>
+
       </div>
       <Toaster position="bottom-right" />
     </div>
@@ -113,7 +115,7 @@ export function AppShell({ children }: { children: ReactNode }) {
 export function PageHeader({ context, title, summary }: { context?: boolean; title: string; summary?: string }) {
   return <div className="page-heading" data-guide="page-heading">
     <h1>{title}</h1>
-    {summary && <p className="mt-3 max-w-prose text-base leading-relaxed text-muted-foreground">{summary}</p>}
+    {summary && <p className="page-subtitle">{summary}</p>}
     {context && <StepContext />}
   </div>
 }

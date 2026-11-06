@@ -1,7 +1,9 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { IdentificationCardIcon, ContactlessPaymentIcon, ArrowDownIcon } from "@phosphor-icons/react"
+import { IdentificationCardIcon } from "@phosphor-icons/react/dist/csr/IdentificationCard"
+import { ContactlessPaymentIcon } from "@phosphor-icons/react/dist/csr/ContactlessPayment"
+import { ArrowDownIcon } from "@phosphor-icons/react/dist/csr/ArrowDown"
 import { Button } from "@/components/ui/button"
 import { RFID_SCAN_SECONDS } from "@/lib/device-telemetry"
 

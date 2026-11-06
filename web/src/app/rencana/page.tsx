@@ -1,7 +1,15 @@
 "use client"
+import { Suspense } from "react"
+import { useSearchParams } from "next/navigation"
+import { RouteLoading } from "@/components/route-loading"
 import { PageHeader } from "@/components/app-shell"
+import { ModuleTabs } from "@/components/module-tabs"
+import { AdaptationWorklist } from "@/components/adaptation-worklist"
 import { ShiftPlanReview } from "@/components/shift-plan-review"
-
-export default function RencanaPage() {
-  return <><PageHeader title="Rencana & persetujuan" summary="Daftar rencana pekerja berdasarkan risiko, sumber data dan versi persetujuan. Buka detail pekerja untuk memeriksa jadwal serta memberikan keputusan HSE." /><section className="summon-panel p-5"><ShiftPlanReview /></section></>
+function PlanningContent() {
+  const tab = useSearchParams().get("tab")
+  const adaptation = tab === "adaptasi"
+  return <><PageHeader title="Perencanaan shift" /><ModuleTabs label="Perencanaan shift" active={adaptation ? "adaptasi" : "rencana"} tabs={[{key:"adaptasi",label:"Adaptasi pekerja",href:"/rencana?tab=adaptasi"},{key:"rencana",label:"Rencana & persetujuan",href:"/rencana"}]} /><div className="module-panel" key={adaptation ? "adaptasi" : "rencana"}>{adaptation ? <AdaptationWorklist /> : <section className="summon-panel p-5"><ShiftPlanReview /></section>}</div></>
 }
+
+export default function PlanningPage() { return <Suspense fallback={<RouteLoading />}><PlanningContent /></Suspense> }

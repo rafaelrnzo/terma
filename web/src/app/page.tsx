@@ -1,6 +1,6 @@
 import Link from "next/link"
 import type { Metadata } from "next"
-import { ArrowRightIcon as ArrowRight } from "@phosphor-icons/react/ssr"
+import { ArrowRightIcon as ArrowRight } from "@phosphor-icons/react/dist/ssr/ArrowRight"
 import { Button } from "@/components/ui/button"
 import { Wordmark } from "@/components/wordmark"
 import { LandingHandoff } from "@/components/landing-handoff"

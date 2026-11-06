@@ -2,7 +2,9 @@
 
 import Link from "next/link"
 import { useEffect, useState } from "react"
-import { CheckCircleIcon, CheckIcon, ArrowLeftIcon } from "@phosphor-icons/react"
+import { CheckCircleIcon } from "@phosphor-icons/react/dist/csr/CheckCircle"
+import { CheckIcon } from "@phosphor-icons/react/dist/csr/Check"
+import { ArrowLeftIcon } from "@phosphor-icons/react/dist/csr/ArrowLeft"
 import { Button } from "@/components/ui/button"
 import { Wordmark } from "@/components/wordmark"
 import { KioskIdentity } from "@/components/kiosk/kiosk-identity"

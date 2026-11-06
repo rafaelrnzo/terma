@@ -1,7 +1,9 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { PauseIcon as Pause, PlayIcon as Play, ArrowCounterClockwiseIcon as RotateCcw } from "@phosphor-icons/react"
+import { PauseIcon as Pause } from "@phosphor-icons/react/dist/csr/Pause"
+import { PlayIcon as Play } from "@phosphor-icons/react/dist/csr/Play"
+import { ArrowCounterClockwiseIcon as RotateCcw } from "@phosphor-icons/react/dist/csr/ArrowCounterClockwise"
 import { Button } from "@/components/ui/button"
 
 const steps = [

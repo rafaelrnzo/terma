@@ -2,7 +2,9 @@
 
 import { OptionSelect } from "@/components/ui/option-select"
 import { useState } from "react"
-import { CameraIcon, IdentificationCardIcon, ArrowRightIcon } from "@phosphor-icons/react"
+import { CameraIcon } from "@phosphor-icons/react/dist/csr/Camera"
+import { IdentificationCardIcon } from "@phosphor-icons/react/dist/csr/IdentificationCard"
+import { ArrowRightIcon } from "@phosphor-icons/react/dist/csr/ArrowRight"
 import { Label } from "@/components/ui/label"
 import { CameraEntry } from "./camera-entry"
 import { CardEntry } from "./card-entry"

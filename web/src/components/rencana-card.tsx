@@ -1,7 +1,9 @@
 "use client"
 
 import { useState } from "react"
-import { WarningIcon as AlertTriangle, ArrowsLeftRightIcon as ArrowRightLeft, CheckCircleIcon as CheckCircle2 } from "@phosphor-icons/react"
+import { WarningIcon as AlertTriangle } from "@phosphor-icons/react/dist/csr/Warning"
+import { ArrowsLeftRightIcon as ArrowRightLeft } from "@phosphor-icons/react/dist/csr/ArrowsLeftRight"
+import { CheckCircleIcon as CheckCircle2 } from "@phosphor-icons/react/dist/csr/CheckCircle"
 import { QualityBadge, StatusChip, RiskBadge } from "@/components/status"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"

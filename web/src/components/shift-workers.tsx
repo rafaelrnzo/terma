@@ -2,7 +2,9 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { ArrowUpRightIcon, MagnifyingGlassIcon, UsersThreeIcon } from "@phosphor-icons/react"
+import { ArrowUpRightIcon } from "@phosphor-icons/react/dist/csr/ArrowUpRight"
+import { MagnifyingGlassIcon } from "@phosphor-icons/react/dist/csr/MagnifyingGlass"
+import { UsersThreeIcon } from "@phosphor-icons/react/dist/csr/UsersThree"
 import { Input } from "@/components/ui/input"
 import { QualityBadge, StatusChip } from "@/components/status"
 import { lingkupPekerja } from "@/lib/access"

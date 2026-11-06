@@ -1,7 +1,10 @@
 "use client"
 
 import { useId, useState } from "react"
-import { CameraIcon, ScanIcon, VideoCameraSlashIcon, ArrowRightIcon } from "@phosphor-icons/react"
+import { CameraIcon } from "@phosphor-icons/react/dist/csr/Camera"
+import { ScanIcon } from "@phosphor-icons/react/dist/csr/Scan"
+import { VideoCameraSlashIcon } from "@phosphor-icons/react/dist/csr/VideoCameraSlash"
+import { ArrowRightIcon } from "@phosphor-icons/react/dist/csr/ArrowRight"
 import { Button } from "@/components/ui/button"
 import { useKioskCamera } from "./use-kiosk-camera"
 import type { CheckinMethod } from "@/lib/kiosk-entry"

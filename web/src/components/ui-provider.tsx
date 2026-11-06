@@ -2,7 +2,8 @@
 
 import { ThemeProvider, useTheme } from "next-themes"
 import { MotionConfig } from "motion/react"
-import { MoonIcon as Moon, SunIcon as Sun } from "@phosphor-icons/react"
+import { MoonIcon as Moon } from "@phosphor-icons/react/dist/csr/Moon"
+import { SunIcon as Sun } from "@phosphor-icons/react/dist/csr/Sun"
 import type { ReactNode } from "react"
 import { Button } from "@/components/ui/button"
 

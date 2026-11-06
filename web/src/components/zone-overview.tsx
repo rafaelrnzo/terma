@@ -1,7 +1,10 @@
 "use client"
 
 import Link from "next/link"
-import { ArrowUpRightIcon as ArrowUpRight, MapPinIcon as MapPin, ThermometerIcon as Thermometer, UsersThreeIcon as UsersRound } from "@phosphor-icons/react"
+import { ArrowUpRightIcon as ArrowUpRight } from "@phosphor-icons/react/dist/csr/ArrowUpRight"
+import { MapPinIcon as MapPin } from "@phosphor-icons/react/dist/csr/MapPin"
+import { ThermometerIcon as Thermometer } from "@phosphor-icons/react/dist/csr/Thermometer"
+import { UsersThreeIcon as UsersRound } from "@phosphor-icons/react/dist/csr/UsersThree"
 import { Button } from "@/components/ui/button"
 import { QualityBadge } from "@/components/status"
 import { WbgtChart } from "@/components/wbgt-chart"

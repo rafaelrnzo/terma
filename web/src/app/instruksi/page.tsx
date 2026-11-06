@@ -1,7 +1,9 @@
 "use client"
 
 import { useRef, useState } from "react"
-import { CopyIcon as Copy, ChatTextIcon as MessageSquare, XCircleIcon as XCircle } from "@phosphor-icons/react"
+import { CopyIcon as Copy } from "@phosphor-icons/react/dist/csr/Copy"
+import { ChatTextIcon as MessageSquare } from "@phosphor-icons/react/dist/csr/ChatText"
+import { XCircleIcon as XCircle } from "@phosphor-icons/react/dist/csr/XCircle"
 import { toast } from "sonner"
 import { PageHeader, WorkflowEmpty } from "@/components/app-shell"
 import { RoleHint } from "@/components/role-hint"
@@ -31,7 +33,7 @@ export default function InstruksiPage() {
 
   return (
     <>
-      <PageHeader context title="Instruksi mandor" summary="Kelola instruksi per regu, versi yang dibagikan dan pengakuan penerimaan mandor." />
+      <PageHeader context title="Instruksi mandor" summary="Pengiriman dan penerimaan instruksi per regu." />
       <RoleHint peran={user?.role === "MANDOR" ? ["MANDOR"] : ["HSE"]} />
 
       <div data-guide="instructions" className="grid items-start gap-6">

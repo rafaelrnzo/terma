@@ -1,6 +1,8 @@
 "use client"
 
-import { DropIcon, MagnifyingGlassPlusIcon, MagnifyingGlassMinusIcon } from "@phosphor-icons/react"
+import { DropIcon } from "@phosphor-icons/react/dist/csr/Drop"
+import { MagnifyingGlassPlusIcon } from "@phosphor-icons/react/dist/csr/MagnifyingGlassPlus"
+import { MagnifyingGlassMinusIcon } from "@phosphor-icons/react/dist/csr/MagnifyingGlassMinus"
 import { Button } from "@/components/ui/button"
 
 export function WetBulbInspection({ inspecting, onInspect }: { inspecting: boolean; onInspect: () => void }) {

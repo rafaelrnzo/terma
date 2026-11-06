@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { BroadcastIcon } from "@phosphor-icons/react"
+import { BroadcastIcon } from "@phosphor-icons/react/dist/csr/Broadcast"
 import { Button } from "@/components/ui/button"
 import { useApp, useIzin } from "@/lib/store"
 import { currentShift } from "@/lib/management-state"

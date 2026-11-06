@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { ReviewStateBadge } from "@/components/status"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -37,27 +38,21 @@ export function WorkerAdaptation({ p, compact = false, onSaved }: { p: Pekerja; 
   const persen = paper && profil !== "NORMAL" ? Math.min(100, Number(hari) * 20) : persenAdaptasi(profil, Number(hari))
 
   return (
-    <Card data-compact={compact} className={cn(!konf && "border-status-tinjau")}>
+    <Card data-compact={compact} className={cn("worker-adaptation", !konf && !compact && "border-status-tinjau")}>
       <CardHeader>
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <CardTitle>
-            {p.nama} <span className="font-mono text-xs font-normal text-muted-foreground">{p.kode}</span>
-          </CardTitle>
+          {!compact && <CardTitle>{p.nama} <span className="font-mono text-xs font-normal text-muted-foreground">{p.kode}</span></CardTitle>}
           <div className="flex flex-wrap gap-2">
             <Badge variant="outline" className="rounded-sm">{k.pemicu && LABEL_PEMICU[k.pemicu]}</Badge>
-            {konf ? (
-              <Badge variant="outline" className="rounded-sm border-primary text-primary">Dikonfirmasi {konf.dikonfirmasiOleh}</Badge>
-            ) : (
-              <Badge variant="tinjau">BELUM DIKONFIRMASI</Badge>
-            )}
+            <ReviewStateBadge state={konf ? "reviewed" : "pending"} />
           </div>
         </div>
-        <CardDescription>{k.keterangan}</CardDescription>
+        {!compact && <CardDescription>{k.keterangan}</CardDescription>}
       </CardHeader>
-      <CardContent className="grid gap-6 md:grid-cols-2">
-        <div data-adaptation-calendar className="space-y-3">
+      <CardContent className="adaptation-grid grid grid-cols-1 gap-6 md:grid-cols-2">
+        <div data-adaptation-calendar className="min-w-0 space-y-3">
           <div>
-            <div className="mb-1 text-xs font-medium text-muted-foreground">Kehadiran (dari absensi, 14 hari)</div>
+            <div className="mb-1 text-xs font-medium text-muted-foreground">Kehadiran · 14 hari</div>
             <Kalender p={p} />
           </div>
           <div>
@@ -65,12 +60,12 @@ export function WorkerAdaptation({ p, compact = false, onSaved }: { p: Pekerja; 
             <div className="text-sm">
               {konf
                 ? `Profil ${LABEL_PROFIL[konf.profil].split(" (")[0].toLowerCase()}, hari adaptasi ke-${konf.hariAdaptasi}`
-                : "Belum ada. Hadir tidak sama dengan terpapar; mandor atau HSE mengonfirmasi riwayat paparan."}
+                : "Belum dikonfirmasi"}
             </div>
           </div>
         </div>
-        <div className="space-y-4 border-t pt-5 md:border-t-0 md:border-l md:pt-0 md:pl-6">
-          <div className="grid gap-3 sm:grid-cols-[1fr_7rem]">
+        <div className="adaptation-editor min-w-0 space-y-4 border-t pt-5 md:border-t-0 md:border-l md:pt-0 md:pl-6">
+          <div className="grid grid-cols-[minmax(0,1fr)_5rem] gap-3">
             <div className="space-y-1">
               <Label htmlFor={`profil-${p.kode}`}>Profil adaptasi</Label>
               <Select value={profil} onValueChange={value => { if (value === "PEKERJA_BARU" || value === "BERPENGALAMAN_KEMBALI" || value === "NORMAL") setProfil(value) }} disabled={!izin("KONFIRMASI_PAPARAN")}>
@@ -80,7 +75,7 @@ export function WorkerAdaptation({ p, compact = false, onSaved }: { p: Pekerja; 
                 <SelectContent>
                   {(["PEKERJA_BARU", "BERPENGALAMAN_KEMBALI", "NORMAL"] as const).map((x) => (
                     <SelectItem key={x} value={x}>
-                      {paper && x === "BERPENGALAMAN_KEMBALI" ? "Berpengalaman kembali (20%, +20 poin/hari)" : LABEL_PROFIL[x]}
+                      {x === "PEKERJA_BARU" ? "Pekerja baru" : x === "BERPENGALAMAN_KEMBALI" ? "Berpengalaman kembali" : "Normal"}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -91,14 +86,10 @@ export function WorkerAdaptation({ p, compact = false, onSaved }: { p: Pekerja; 
               <OptionSelect id={`hari-${p.kode}`} value={hari} onValueChange={setHari} disabled={profil === "NORMAL" || !izin("KONFIRMASI_PAPARAN")} options={Array.from({length:paper ? 14 : 5},(_,i)=>({value:String(i+1),label:String(i+1)}))} searchPlaceholder="Cari hari adaptasi…" />
             </div>
           </div>
-          <div className="text-sm">
-            Batas harian: <span className="font-semibold tabular-nums">{persen}% × 480 = {Math.round((persen / 100) * 480)} menit</span>
-            <div className="text-xs text-muted-foreground">Batas interval NAB tetap diperiksa terpisah di langkah rencana.</div>
-          </div>
+          <div className="adaptation-limit"><span>Batas kerja harian</span><strong>{Math.round((persen / 100) * 480)}<small>menit</small></strong><p>{persen}% × 480 menit</p></div>
           <Button disabled={!izin("KONFIRMASI_PAPARAN")} onClick={() => { dispatch({ type: "KONFIRMASI", pekerjaKode: p.kode, profil, hari: profil === "NORMAL" ? 1 : Number(hari) }); onSaved?.() }}>
             {konf ? "Perbarui konfirmasi" : "Konfirmasi riwayat paparan"}
           </Button>
-          <p className="text-xs text-muted-foreground">Jadwal adaptasi bukan jaminan toleransi individu.</p>
         </div>
       </CardContent>
     </Card>
@@ -118,7 +109,7 @@ export function Kalender({ p }: { p: Pekerja }) {
   return (
     <div className="max-w-full">
     <p className="mb-2 text-xs text-muted-foreground">{tanggalPendek(hari[0])}–{tanggalPendek(hari[13])}</p>
-    <div className="grid w-fit grid-cols-[repeat(7,28px)] gap-1 xl:grid-cols-[repeat(14,28px)]" role="list" aria-label={`Kehadiran 14 hari ${p.nama}`}>
+    <div className="adaptation-calendar grid w-fit grid-cols-[repeat(7,28px)] gap-1" role="list" aria-label={`Kehadiran 14 hari ${p.nama}`}>
       {hari.map((h) => {
         const k = state.kehadiran.find((x) => x.pekerjaKode === p.kode && x.tanggal === h)
         return (

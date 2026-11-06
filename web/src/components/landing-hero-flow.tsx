@@ -1,7 +1,12 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { CheckIcon as Check, ClipboardTextIcon as ClipboardCheck, PauseIcon as Pause, PlayIcon as Play, BroadcastIcon as RadioTower, PaperPlaneTiltIcon as Send } from "@phosphor-icons/react"
+import { CheckIcon as Check } from "@phosphor-icons/react/dist/csr/Check"
+import { ClipboardTextIcon as ClipboardCheck } from "@phosphor-icons/react/dist/csr/ClipboardText"
+import { PauseIcon as Pause } from "@phosphor-icons/react/dist/csr/Pause"
+import { PlayIcon as Play } from "@phosphor-icons/react/dist/csr/Play"
+import { BroadcastIcon as RadioTower } from "@phosphor-icons/react/dist/csr/Broadcast"
+import { PaperPlaneTiltIcon as Send } from "@phosphor-icons/react/dist/csr/PaperPlaneTilt"
 
 const steps = [
   { title: "Bacaan zona", description: "Periksa sumber dan jam bacaan sebelum menyusun rencana.", label: "Kualitas bacaan", value: "REPLAY", detail: "Rekaman contoh dibedakan dari pengukuran langsung.", icon: RadioTower },

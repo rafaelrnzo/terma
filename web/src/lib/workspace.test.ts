@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest"
+import { syncCompanyData } from "./company-data"
 import { USERS } from "./config"
-import { initialDemoState, readDemoState, DEMO_STORAGE_KEY } from "./store"
+import { initialDemoState, readDemoState, DEMO_STORAGE_KEY, emptyWorkspaceState, reducer } from "./store"
 import { attentionItems, searchWorkspace, tanggalLabel, scopedWorkspace } from "./workspace"
 
 describe("mock workspace", () => {
@@ -36,4 +37,15 @@ describe("mock workspace", () => {
     expect(s.pekerja).toHaveLength(8)
     expect(scopedWorkspace(s, USERS[0])).toBe(s)
   })
+  it("limits operational worklists to the chosen shift participants even if master records reach the projection",()=>{
+    const master=syncCompanyData(emptyWorkspaceState("2026-11-07"))
+    const shift=reducer(master,{type:"BUAT_SHIFT",tanggal:"2026-11-07",nama:"Pilihan regu",workerCodes:["CMP001","CMP005"]})
+    const stale={...shift,pekerja:shift.management!.workers}
+    const before=JSON.stringify(stale)
+    expect(scopedWorkspace(stale,USERS[0]).pekerja.map(worker=>worker.kode)).toEqual(["CMP001","CMP005"])
+    expect(scopedWorkspace(stale,USERS[1]).pekerja.map(worker=>worker.kode)).toEqual(["CMP001"])
+    expect(JSON.stringify(stale)).toBe(before)
+    expect(stale.management!.workers).toHaveLength(8)
+  })
+
 })

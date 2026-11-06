@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { ArrowUpRightIcon } from "@phosphor-icons/react"
+import { ArrowUpRightIcon } from "@phosphor-icons/react/dist/csr/ArrowUpRight"
 import { useReducedMotion } from "motion/react"
 import { BarChart } from "@/components/charts/bar-chart"
 import { Bar } from "@/components/charts/bar"
@@ -12,7 +12,7 @@ import { ACCLIMATISATION_EXAMPLE } from "@/lib/heat-series"
 export function AcclimatisationChart() {
   const reduceMotion = useReducedMotion()
   return <section className="summon-panel" aria-labelledby="accl-title">
-    <div className="panel-heading"><div><h2 id="accl-title">Mulai bertahap. Adaptasi terpantau.</h2><p>Contoh pekerja baru · shift 480 menit</p></div><Link href="/paparan" className="panel-link" aria-label="Buka adaptasi pekerja"><ArrowUpRightIcon size={16} /></Link></div>
+    <div className="panel-heading"><div><h2 id="accl-title">Mulai bertahap. Adaptasi terpantau.</h2><p>Contoh pekerja baru · shift 480 menit</p></div><Link href="/rencana?tab=adaptasi" className="panel-link" aria-label="Buka adaptasi pekerja"><ArrowUpRightIcon size={16} /></Link></div>
     <div className="accl-chart"><div role="img" aria-label="Contoh batas adaptasi hari 1 sampai 5: 96, 192, 288, 384, 480 menit">
       <BarChart data={ACCLIMATISATION_EXAMPLE} xDataKey="day" aspectRatio="2.5 / 1" margin={{ top: 8, left: 6, right: 6, bottom: 32 }} barGap={.3} animationDuration={reduceMotion ? 0 : 650}>
         <Bar dataKey="minutes" fill="var(--primary)" lineCap={5} showValue valueLabelFormatter={value => `${value}`} animate={!reduceMotion} />

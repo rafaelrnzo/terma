@@ -2,7 +2,10 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { ThermometerIcon, ArrowUpRightIcon, InfoIcon, MapPinIcon } from "@phosphor-icons/react"
+import { ThermometerIcon } from "@phosphor-icons/react/dist/csr/Thermometer"
+import { ArrowUpRightIcon } from "@phosphor-icons/react/dist/csr/ArrowUpRight"
+import { InfoIcon } from "@phosphor-icons/react/dist/csr/Info"
+import { MapPinIcon } from "@phosphor-icons/react/dist/csr/MapPin"
 import { WbgtChart } from "@/components/wbgt-chart"
 import { QualityBadge } from "@/components/status"
 import { overviewZones } from "@/lib/overview"

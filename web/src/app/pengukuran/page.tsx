@@ -6,7 +6,7 @@ import { useState } from "react"
 import { DeviceReadingsButton } from "@/components/device-readings-button"
 import { HeatMonitor } from "@/components/heat-monitor"
 import { PageHeader } from "@/components/app-shell"
-import { ThermometerIcon as Thermometer } from "@phosphor-icons/react"
+import { ThermometerIcon as Thermometer } from "@phosphor-icons/react/dist/csr/Thermometer"
 import { OriginBadge, QualityBadge } from "@/components/status"
 import { RoleHint } from "@/components/role-hint"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
@@ -41,7 +41,7 @@ export default function PengukuranPage() {
 
   return (
     <>
-      <PageHeader context title="Pengukuran WBGT / ISBB" summary="Lengkapi bacaan setiap zona dan jam kerja. Prakiraan tidak menggantikan pengukuran lokasi." />
+      <PageHeader context title="Pengukuran WBGT / ISBB" summary="Bacaan panas per zona dan interval shift." />
       <RoleHint peran={["PETUGAS_DATA", "HSE"]} />
 
       <div className="mb-6 flex flex-wrap items-center justify-between gap-4 rounded-md border bg-card p-5"><div><h2 className="text-sm font-semibold">Bacaan TERMA Station</h2><p className="mt-1 text-xs text-muted-foreground">Rekaman adaptor melengkapi interval kosong dan menyimpan sumber REPLAY. Bacaan pengukuran dapat dicatat pada formulir di bawah.</p></div><DeviceReadingsButton label="Gunakan rekaman adaptor lokal" /></div>

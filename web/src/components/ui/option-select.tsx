@@ -2,7 +2,9 @@
 
 import { useId, useRef, useState, type KeyboardEvent } from "react"
 import { Popover } from "radix-ui"
-import { CaretDownIcon, CheckIcon, MagnifyingGlassIcon } from "@phosphor-icons/react"
+import { CaretDownIcon } from "@phosphor-icons/react/dist/csr/CaretDown"
+import { CheckIcon } from "@phosphor-icons/react/dist/csr/Check"
+import { MagnifyingGlassIcon } from "@phosphor-icons/react/dist/csr/MagnifyingGlass"
 import { Input } from "./input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, selectTriggerClassName } from "./select"
 import { cn } from "@/lib/utils"

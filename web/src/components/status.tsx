@@ -1,3 +1,6 @@
+import { ClockIcon } from "@phosphor-icons/react/dist/csr/Clock"
+import { CheckIcon } from "@phosphor-icons/react/dist/csr/Check"
+import { SealCheckIcon } from "@phosphor-icons/react/dist/csr/SealCheck"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 import type { ActionLifecycle, ActionStatus, DataOrigin, DataQuality, DeliveryStatus, RiskColour } from "@/lib/types"
@@ -85,4 +88,10 @@ export function DeliveryBadge({ status }: { status: DeliveryStatus }) {
 export function RiskBadge({ colour }: { colour: RiskColour }) {
   const label = { HIJAU: "Hijau", KUNING: "Kuning", MERAH: "Merah", DATA_KURANG: "Data kurang" }
   return <Badge variant={colour === "MERAH" ? "riskRed" : colour === "KUNING" ? "riskYellow" : colour === "HIJAU" ? "riskGreen" : "outline"}>{label[colour]}</Badge>
+}
+
+export function ReviewStateBadge({ state, label }: { state: "pending" | "reviewed" | "approved"; label?: string }) {
+  const Icon = state === "approved" ? SealCheckIcon : state === "reviewed" ? CheckIcon : ClockIcon
+  const text = label ?? (state === "approved" ? "Disetujui" : state === "reviewed" ? "Sudah ditinjau" : "Belum ditinjau")
+  return <Badge variant="outline" className={state === "pending" ? "text-muted-foreground" : "border-success/30 bg-success/10 text-success"}><Icon weight={state === "approved" ? "fill" : "regular"} aria-hidden />{text}</Badge>
 }

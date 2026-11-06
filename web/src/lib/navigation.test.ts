@@ -19,7 +19,7 @@ describe("role workspaces", () => {
     expect(navigationGroup("/monitoring")?.href).toBe("/monitoring")
     expect(navigationGroup("/perangkat")?.href).toBe("/monitoring")
     expect(navigationGroup("/absensi")?.href).toBe("/monitoring")
-    expect(navigationGroup("/analitik")?.href).toBe("/laporan")
+    expect(navigationGroup("/analitik")?.href).toBe("/monitoring")
   })
   it("keeps foreman operations available without exposing HSE decisions", () => {
     const operations = navigationFor(USERS[1]).find(group=>group.href==="/rencana")!
@@ -31,4 +31,18 @@ describe("role workspaces", () => {
     expect(navigationFor(USERS[0]).some(group => group.href === "/impor")).toBe(true)
     expect(navigationFor(USERS[3]).some(group => group.href === "/impor")).toBe(true)
   })
+  it("opens worker monitoring without requiring a shift and restricts clinical access", () => {
+    const path="/pemantauan/CMP001"
+    expect(isShiftRoute(path)).toBe(false)
+    expect(navigationGroup(path)?.href).toBe("/impor")
+    for(const user of USERS) expect(pageAllowedFor(user,path)).toBe(user.role==="HSE" || user.role==="KLINIK")
+  })
+
+  it("keeps report consolidation available to Clinic without granting shift-report access",()=>{
+    const clinic=USERS.find(user=>user.role==="KLINIK")!
+    expect(pageAllowedFor(clinic,"/laporan/bulanan")).toBe(true)
+    expect(pageAllowedFor(clinic,"/laporan")).toBe(false)
+    expect(navigationGroup("/laporan/bulanan")?.href).toBe("/laporan")
+  })
+
 })

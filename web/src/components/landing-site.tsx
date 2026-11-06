@@ -3,7 +3,8 @@
 import { useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { ArrowRightIcon as ArrowRight, CheckIcon as Check } from "@phosphor-icons/react"
+import { ArrowRightIcon as ArrowRight } from "@phosphor-icons/react/dist/csr/ArrowRight"
+import { CheckIcon as Check } from "@phosphor-icons/react/dist/csr/Check"
 import project from "../../public/images/terma-project-diorama-blue.png"
 
 const areas = [

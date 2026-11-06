@@ -1,7 +1,9 @@
 "use client"
 
 import { useState } from "react"
-import { ArrowLeftIcon, CheckCircleIcon, HeartbeatIcon } from "@phosphor-icons/react"
+import { ArrowLeftIcon } from "@phosphor-icons/react/dist/csr/ArrowLeft"
+import { CheckCircleIcon } from "@phosphor-icons/react/dist/csr/CheckCircle"
+import { HeartbeatIcon } from "@phosphor-icons/react/dist/csr/Heartbeat"
 import { Button } from "@/components/ui/button"
 import type { BodyCondition, BodyComplaint } from "@/lib/worker-readiness"
 

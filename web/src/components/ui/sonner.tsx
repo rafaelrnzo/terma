@@ -2,7 +2,11 @@
 
 import { useTheme } from "next-themes"
 import { Toaster as Sonner, type ToasterProps } from "sonner"
-import { CheckCircleIcon as CircleCheckIcon, InfoIcon, WarningIcon as TriangleAlertIcon, WarningOctagonIcon as OctagonXIcon, CircleNotchIcon as Loader2Icon } from "@phosphor-icons/react"
+import { CheckCircleIcon as CircleCheckIcon } from "@phosphor-icons/react/dist/csr/CheckCircle"
+import { InfoIcon } from "@phosphor-icons/react/dist/csr/Info"
+import { WarningIcon as TriangleAlertIcon } from "@phosphor-icons/react/dist/csr/Warning"
+import { WarningOctagonIcon as OctagonXIcon } from "@phosphor-icons/react/dist/csr/WarningOctagon"
+import { CircleNotchIcon as Loader2Icon } from "@phosphor-icons/react/dist/csr/CircleNotch"
 
 const Toaster = ({ ...props }: ToasterProps) => {
   const { theme = "system" } = useTheme()

@@ -3,7 +3,7 @@
 import { ShiftClosure } from "@/components/shift-closure"
 import { LaporDialog, VerifikasiDialog } from "@/components/action-dialogs"
 import { useState } from "react"
-import { MagnifyingGlassIcon as Search } from "@phosphor-icons/react"
+import { MagnifyingGlassIcon as Search } from "@phosphor-icons/react/dist/csr/MagnifyingGlass"
 import { PageHeader, WorkflowEmpty } from "@/components/app-shell"
 import { RoleHint } from "@/components/role-hint"
 import { LifecycleBadge } from "@/components/status"
@@ -32,7 +32,7 @@ export default function TindakanPage() {
   const reset = () => { setQuery(""); setFilter("SEMUA") }
 
   return <>
-    <PageHeader context title={user?.role === "MANDOR" ? "Pelaksanaan regu" : "Pelaksanaan & verifikasi"} summary="Catat pelaksanaan di lapangan, lalu verifikasi bersama HSE. Durasi rencana dan laporan tetap terpisah." />
+    <PageHeader context title={user?.role === "MANDOR" ? "Pelaksanaan regu" : "Pelaksanaan & verifikasi"} summary="Laporan mandor dan hasil verifikasi HSE." />
     <RoleHint peran={user?.role === "HSE" ? ["HSE"] : ["MANDOR"]} />
 
     {daftar.length === 0 ? <WorkflowEmpty title="Belum ada tindakan untuk shift ini" href="/rencana" label="Buka rencana & persetujuan">Tindakan dibuat saat HSE menyetujui rencana. Setelah instruksi diakui, mandor dapat mencatat pelaksanaannya.</WorkflowEmpty> : <>

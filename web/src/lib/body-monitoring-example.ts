@@ -1,4 +1,5 @@
-import type { BodySignal } from "./body-monitoring"
+import { coreTemperatureSeries } from "./band-physiology"
+import type { BodyMetric, BodyRegion, BodySignal } from "./body-monitoring"
 
 const scenarios = [
   { name: "Jeda minum meningkat", wbgt: 29.6, heat: true, gap: 58, target: 20, heartRate: 106, skin: 35.1, planned: 216, cap: 384, worked: 148 },
@@ -16,17 +17,24 @@ export function exampleBodyMonitoring(code: string, date: string, clinical: bool
   const missed = scenario.gap > scenario.target * 1.5
   const factors = Number(scenario.heat) + Number(missed)
   const number = (value: number) => value.toFixed(1).replace(".", ",")
-  const signals: BodySignal[] = [
-    { key: "heat", title: "Paparan panas", value: `${number(scenario.wbgt)} °C WBGT`, tone: scenario.heat ? "attention" : "recorded", source: "Ilustrasi · Station ST-01", observedAt,
-      explanation: `Cuplikan contoh panas lingkungan ${number(scenario.wbgt)} °C WBGT. ${scenario.heat ? "Marker panas menyala untuk menunjukkan peninjauan jadwal kerja–istirahat." : "Paparan pada skenario ini berada dalam target jadwal kerja."} WBGT bukan suhu tubuh.`, action: "Lihat alokasi kerja dan jeda istirahat pada contoh rencana." },
-    { key: "hydration", title: "Hidrasi & titik minum", value: `${scenario.gap} menit sejak kunjungan minum`, tone: missed ? "attention" : "recorded", source: "Ilustrasi · Water Station WS-01", observedAt: drinkAt,
-      explanation: `Contoh kunjungan terakhir ${scenario.gap} menit sebelum cuplikan, dengan target kunjungan setiap ${scenario.target} menit. ${missed ? "Jeda melewati target; marker hidrasi menandai perlunya konfirmasi minum." : "Kunjungan masih mengikuti target skenario."} Kunjungan tidak mengukur volume air atau memastikan dehidrasi.`, action: missed ? "Contoh tindak lanjut: mandor mengonfirmasi akses minum dan kondisi pekerja." : "Contoh tindak lanjut: lanjutkan akses minum dan pencatatan kunjungan." },
-    { key: "band", title: "Band · sinyal tubuh", value: clinical ? `${scenario.heartRate} bpm · kulit ${number(scenario.skin)} °C` : "Band aktif · kualitas sinyal baik", tone: "recorded", source: "Ilustrasi · Band TB-01", observedAt,
-      explanation: clinical ? `Contoh denyut ${scenario.heartRate} bpm dan suhu kulit ${number(scenario.skin)} °C berasal dari skenario ilustrasi. Suhu kulit berbeda dari suhu inti.` : "Contoh Band terpasang dan mengirim sinyal dengan kualitas baik. Nilai denyut dan suhu kulit tersedia pada tampilan Klinik; HSE melihat status perangkat.", action: "Periksa pemasangan dan kualitas sinyal Band pada contoh pemantauan." },
-    { key: "kidneys", title: "Pencegahan risiko ginjal", value: factors ? `${factors} faktor paparan perlu perhatian` : "Pencegahan rutin · faktor paparan terkendali", tone: factors ? "attention" : "recorded", source: "Ilustrasi · konteks panas dan hidrasi", observedAt,
-      explanation: factors ? `${[scenario.heat && "Paparan panas meningkat", missed && "jeda kunjungan minum memanjang"].filter(Boolean).join(" dan ")} pada skenario ini. Marker ginjal menghubungkan faktor tersebut dengan tindak lanjut pencegahan, tanpa menyatakan kerusakan organ.` : "Pada contoh ini, jadwal kerja dan kunjungan minum mengikuti target. Pemantauan pencegahan tetap berjalan; fungsi ginjal tidak disimpulkan dari sensor.", action: factors ? "Contoh tindak lanjut: tinjau panas, hidrasi, pemulihan dan kebutuhan pemeriksaan Klinik." : "Contoh tindak lanjut: pertahankan jadwal kerja–istirahat dan pemantauan rutin." },
-    { key: "exposure", title: "Beban & pemulihan", value: `${scenario.worked}/${scenario.planned} menit kerja tercatat`, tone: "recorded", source: "Ilustrasi · rencana dan laporan shift", observedAt,
-      explanation: `Contoh rencana ${scenario.planned} menit kerja dari batas harian ${scenario.cap} menit. Pada cuplikan pukul 13.40 WIB, ${scenario.worked} menit telah dijalankan dan ${scenario.planned - scenario.worked} menit tersisa. Angka ini bukan laporan shift yang tersimpan.`, action: "Ikuti sisa alokasi dan jeda pemulihan pada skenario ini." },
+  const summaries: Omit<BodySignal,"metrics" | "explanation" | "action">[] = [
+    { key: "heat", title: "Paparan panas", value: `${number(scenario.wbgt)} °C WBGT`, tone: scenario.heat ? "attention" : "recorded", source: "Ilustrasi · Station ST-01", observedAt },
+    { key: "hydration", title: "Hidrasi & titik minum", value: `${scenario.gap} menit sejak kunjungan minum`, tone: missed ? "attention" : "recorded", source: "Ilustrasi · Water Station WS-01", observedAt: drinkAt },
+    { key: "band", title: "Band · sinyal tubuh", value: clinical ? `${scenario.heartRate} bpm · kulit ${number(scenario.skin)} °C` : "Band aktif · kualitas sinyal baik", tone: "recorded", source: "Ilustrasi · Band TB-01", observedAt },
+    { key: "kidneys", title: "Pencegahan risiko ginjal", value: factors ? `${factors} faktor paparan perlu perhatian` : "Pencegahan rutin · faktor paparan terkendali", tone: factors ? "attention" : "recorded", source: "Ilustrasi · konteks panas dan hidrasi", observedAt },
+    { key: "exposure", title: "Beban & pemulihan", value: `${scenario.worked}/${scenario.planned} menit kerja tercatat`, tone: "recorded", source: "Ilustrasi · rencana dan laporan shift", observedAt },
   ]
-  return { signals, asOf, scenario: scenario.name, clinicalNote: undefined }
+  const estimates=coreTemperatureSeries(Array.from({length:180},(_,minute)=>75+(scenario.heartRate-75)*Math.min(1,minute/120)))
+  const latest=estimates.at(-1)!
+  const metrics:Record<BodyRegion,BodyMetric[]>={
+    heat:[{label:"Puncak WBGT",value:number(scenario.wbgt),unit:"°C",note:"Ilustrasi · Station"},{label:"Interval tersedia",value:"8",unit:"/ 8"}],
+    hydration:[{label:"Sejak kunjungan",value:String(scenario.gap),unit:"mnt"},{label:"Target interval",value:String(scenario.target),unit:"mnt"},{label:"Kunjungan tercatat",value:missed ? "9" : "16",unit:"scan"}],
+    band:[...(clinical ? [{label:"Denyut jantung",value:String(scenario.heartRate),unit:"bpm"},{label:"Suhu kulit",value:number(scenario.skin),unit:"°C"},{label:"Estimasi suhu inti",value:number(latest.temperature),unit:"°C",note:"Buller 2013 · ilustrasi"},{label:"Denyut puncak",value:String(scenario.heartRate),unit:"bpm"}] : []),{label:"Sinyal PPG",value:"Baik"},{label:"Baterai",value:"78",unit:"%"},{label:"Sampel berurutan",value:"360"},{label:"Pembaruan terakhir",value:"13.40"}],
+    kidneys:[{label:"Paparan perlu ditinjau",value:String(factors),unit:"faktor"},{label:"Paparan terverifikasi",value:"—",unit:"mnt / bulan"}],
+    exposure:[{label:"Kerja tercatat",value:String(scenario.worked),unit:"mnt"},{label:"Alokasi kerja",value:String(scenario.planned),unit:"mnt"},{label:"Batas harian",value:String(scenario.cap),unit:"mnt"},{label:"Sisa alokasi",value:String(scenario.planned-scenario.worked),unit:"mnt"}],
+  }
+  const explanations:Record<BodyRegion,string>={heat:"Panas lingkungan dari Station; tinjau alokasi kerja–istirahat.",hydration:"Scan mencatat kunjungan, tanpa pengukuran volume air.",band:clinical ? "Estimasi suhu inti dari rangkaian denyut per menit; suhu kulit adalah bacaan terpisah. Model Buller 2013, belum divalidasi di lokasi." : "Status perangkat Band. Nilai fisiologis tersedia pada Klinik.",kidneys:"Konteks panas dan jeda minum untuk tindak lanjut pencegahan; fungsi ginjal memerlukan pemeriksaan Klinik.",exposure:"Durasi kerja dibanding alokasi dan batas harian."}
+  const actions:Record<BodyRegion,string>={heat:"Tinjau jadwal kerja–istirahat.",hydration:missed ? "Konfirmasi akses minum dengan mandor." : "Lanjutkan jadwal kunjungan minum.",band:"Periksa pemasangan dan kualitas sinyal.",kidneys:factors ? "Tinjau paparan dan kebutuhan pemeriksaan Klinik." : "Lanjutkan pemantauan rutin.",exposure:"Ikuti sisa alokasi dan jeda pemulihan."}
+  const signals:BodySignal[]=summaries.map(signal=>({...signal,metrics:metrics[signal.key],explanation:explanations[signal.key],action:actions[signal.key]}))
+  return { signals, asOf, bandTrend:clinical ? estimates.map((estimate,minute)=>({minute,value:estimate.temperature})) : [], scenario: scenario.name, clinicalNote: undefined }
 }

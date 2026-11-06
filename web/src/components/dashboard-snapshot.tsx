@@ -1,7 +1,12 @@
 "use client"
 
 import Link from "next/link"
-import { UsersThreeIcon, ShieldCheckIcon, WarningCircleIcon, RadioIcon, ArrowUpRightIcon, CheckCircleIcon } from "@phosphor-icons/react"
+import { UsersThreeIcon } from "@phosphor-icons/react/dist/csr/UsersThree"
+import { ShieldCheckIcon } from "@phosphor-icons/react/dist/csr/ShieldCheck"
+import { WarningCircleIcon } from "@phosphor-icons/react/dist/csr/WarningCircle"
+import { RadioIcon } from "@phosphor-icons/react/dist/csr/Radio"
+import { ArrowUpRightIcon } from "@phosphor-icons/react/dist/csr/ArrowUpRight"
+import { CheckCircleIcon } from "@phosphor-icons/react/dist/csr/CheckCircle"
 import { JAM_SHIFT } from "@/lib/config"
 import { overviewZones } from "@/lib/overview"
 import { rencanaAktif, useApp } from "@/lib/store"

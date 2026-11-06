@@ -1,6 +1,6 @@
 "use client"
 import Link from "next/link"
-import { ArrowRightIcon } from "@phosphor-icons/react"
+import { ArrowRightIcon } from "@phosphor-icons/react/dist/csr/ArrowRight"
 import { Button } from "@/components/ui/button"
 import { useApp } from "@/lib/store"
 import { currentShift } from "@/lib/management-state"

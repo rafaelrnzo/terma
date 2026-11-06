@@ -21,4 +21,35 @@ describe("worker-specific body monitoring",()=>{
  it("rejects invalid, future, wrong-worker and unassigned Band readings without partial writes",()=>{for(const event of [{...visit,id:" "},{...visit,deviceId:" "},{...coverage,coverageFrom:"invalid-date"},{...band,heartRate:999},{...visit,pekerjaKode:"unknown"},{...visit,observedAt:`${date}T15:00:00+07:00`},band]){const s=ingestPersonalTelemetry(state(),[coverage,event],now);expect(s.notice?.tipe).toBe("error");expect(s.management!.shifts[0].personalTelemetry).toBeUndefined()}})
  it("deduplicates identical retries and preserves history on conflicting IDs or closed shifts",()=>{let s=ingestPersonalTelemetry(state(),[coverage,visit],now);s=ingestPersonalTelemetry(s,[coverage,visit],now);expect(s.management!.shifts[0].personalTelemetry).toHaveLength(2);const stored=JSON.stringify(s.management!.shifts[0]);const changed=ingestPersonalTelemetry(s,[{...visit,observedAt:`${date}T11:01:00+07:00`}],now);expect(changed.notice?.tipe).toBe("error");expect(JSON.stringify(changed.management!.shifts[0])).toBe(stored);s.management!.shifts[0].status="CLOSED";const closed=JSON.stringify(s.management!.shifts[0]);expect(ingestPersonalTelemetry(s,[coverage],now).notice?.tipe).toBe("error");expect(JSON.stringify(s.management!.shifts[0])).toBe(closed);expect(readDemoState(JSON.stringify(s)).management!.shifts[0].personalTelemetry).toHaveLength(2)})
  it("keeps consent and clinical risk factors private on HSE's body map",()=>{let s=state();s=run(s,{type:"LOGIN",userId:clinic.id},{type:"PERSETUJUAN_MEDIS",pekerjaKode:"W01",jenis:"MCU",aktif:true},{type:"SIMPAN_PROFIL_MEDIS",input:{pekerjaKode:"W01",hipertensi:true,diabetes:true,jantung:false,riwayatPanas:false,obatBerisiko:false,catatan:"Rincian privat"}});expect(signal(s,"kidneys",clinic).explanation).toContain("Hipertensi tercatat");expect(JSON.stringify(bodyMonitoring(s,hse,"W01",date,now))).not.toContain("Hipertensi");expect(JSON.stringify(bodyMonitoring(s,hse,"W01",date,now))).not.toContain("Rincian privat")})
+ it("keeps computed physiology and raw metrics private, with consent and device boundaries",()=>{
+   const readings:PersonalDeviceEvent[]=Array.from({length:60},(_,index)=>({...band,id:`series-${index}`,observedAt:new Date(now-60*60000+index*60000).toISOString(),batteryPercent:78}))
+   const s=ingestPersonalTelemetry(bandState(),readings,now)
+   const clinical=bodyMonitoring(s,clinic,"W01",date,now)!
+   expect(clinical.bandTrend.length).toBe(60)
+   expect(clinical.signals.find(row=>row.key==="band")!.metrics!.find(metric=>metric.label==="Estimasi suhu inti")!.value).not.toBe("—")
+   const operational=bodyMonitoring(s,hse,"W01",date,now)!
+   expect(operational.bandTrend).toEqual([])
+   expect(JSON.stringify(operational)).not.toMatch(/bpm|Estimasi suhu inti|34[.,]4/)
+   expect(signal(s,"band",hse).metrics!.find(metric=>metric.label==="Baterai")!.value).toBe("78")
+   s.management!.clinic!.consents[0].aktif=false
+   const revoked=bodyMonitoring(s,clinic,"W01",date,now)!
+   expect(revoked.bandTrend).toEqual([])
+   expect(JSON.stringify(revoked)).not.toContain("bpm")
+ })
+ it("validates optional device numbers and rejects conflicting telemetry metadata",()=>{
+   for(const event of [{...band,batteryPercent:101},{...band,batteryPercent:NaN},{...band,activityG:-1}]) expect(ingestPersonalTelemetry(bandState(),[event],now).notice?.tipe).toBe("error")
+   const s=ingestPersonalTelemetry(bandState(),[{...band,batteryPercent:78,activityG:.4}],now)
+   const before=JSON.stringify(s.management!.shifts[0].personalTelemetry)
+   expect(ingestPersonalTelemetry(s,[{...band,batteryPercent:79,activityG:.4}],now).notice?.tipe).toBe("error")
+   expect(JSON.stringify(s.management!.shifts[0].personalTelemetry)).toBe(before)
+   expect(readDemoState(JSON.stringify(s)).management!.shifts[0].personalTelemetry![0]).toMatchObject({batteryPercent:78,activityG:.4})
+ })
+
+ it("redacts restored Band events that do not match an assigned wearing period",()=>{
+   const s=bandState();s.management!.shifts[0].personalTelemetry=[band]
+   s.management!.shifts[0].bands=[]
+   expect(signal(s,"band",clinic).tone).toBe("unknown")
+   expect(JSON.stringify(bodyMonitoring(s,clinic,"W01",date,now))).not.toContain("110 bpm")
+ })
+
 })

@@ -1,4 +1,6 @@
-import { ThermometerIcon, DropIcon, HeartbeatIcon } from "@phosphor-icons/react/ssr"
+import { ThermometerIcon } from "@phosphor-icons/react/dist/ssr/Thermometer"
+import { DropIcon } from "@phosphor-icons/react/dist/ssr/Drop"
+import { HeartbeatIcon } from "@phosphor-icons/react/dist/ssr/Heartbeat"
 
 const devices = [
   { name: "TERMA Station", Icon: ThermometerIcon, placement: "SATU PER ZONA KERJA", description: "Membaca tekanan panas di tempat pekerja beraktivitas, sebagai dasar rencana kerja harian.", specs: [["Pengukuran", "WBGT / ISBB · ±5 menit"], ["Sensor", "Globe, wet bulb, suhu & RH"], ["Kontroler", "ESP32"], ["Koneksi", "Wi-Fi / 4G / LoRa"], ["Daya", "Surya + baterai"]] },
