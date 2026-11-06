@@ -1,0 +1,50 @@
+.instruction-workspace { display: grid; gap: 24px; }
+.instruction-card { min-width: 0; overflow: hidden; }
+.instruction-heading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; padding: 20px 24px; border-bottom: 1px solid var(--border); }
+.instruction-recipient { display: flex; align-items: center; gap: 12px; }
+.instruction-avatar { display: grid; place-items: center; width: 42px; height: 42px; border-radius: var(--radius-xl); background: var(--whatsapp-surface); color: var(--whatsapp-accent); font-weight: 600; font-size: var(--text-section); }
+.instruction-heading h2 { font-size: var(--text-section); font-weight: 600; }
+.instruction-heading p { margin-top: 4px; font-size: var(--text-meta); color: var(--muted-foreground); }
+.instruction-state { display: inline-flex; align-items: center; gap: 6px; padding: 6px 9px; border: 1px solid var(--border); border-radius: var(--radius-md); font-size: var(--text-meta); color: var(--muted-foreground); }
+.instruction-state svg { width: 16px; height: 16px; flex-shrink: 0; }
+.instruction-state[data-complete=true] { color: var(--whatsapp-accent); background: var(--whatsapp-surface); border-color: color-mix(in oklch,var(--whatsapp-accent) 25%,transparent); }
+.instruction-state[data-failed=true] { color: var(--destructive); }
+.instruction-layout { display: grid; grid-template-columns: minmax(0,1.4fr) minmax(280px,1fr); }
+.instruction-preview { min-width: 0; background: var(--background); border-right: 1px solid var(--border); }
+.instruction-preview-heading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; padding: 14px 20px; background: var(--whatsapp-surface); color: var(--whatsapp-accent); border-bottom: 1px solid var(--border); }
+.instruction-preview-heading > span { display: flex; gap: 8px; align-items: center; font-size: var(--text-ui); font-weight: 600; }
+.instruction-preview-heading small { font-size: var(--text-meta); }
+.instruction-chat { display: flex; flex-direction: column; align-items: flex-end; gap: 18px; padding: 20px; }
+.instruction-date { align-self: center; padding: 5px 10px; color: var(--muted-foreground); background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-md); font-size: var(--text-meta); }
+.instruction-bubble { width: 100%; padding: 18px 16px 10px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-xl) var(--radius-sm) var(--radius-xl) var(--radius-xl); box-shadow: var(--shadow-raised); transition: background-color 150ms var(--ease-out),border-color 150ms var(--ease-out); }
+.instruction-bubble[data-sent=true] { background: var(--whatsapp-surface); border-color: color-mix(in oklch,var(--whatsapp-accent) 20%,var(--border)); }
+.instruction-message { max-height: 340px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; padding-right: 8px; font-size: var(--text-ui); line-height: 1.75; overflow-wrap: anywhere; }
+.instruction-message p + p { margin-top: 12px; }
+.instruction-message p:first-child { font-weight: 600; }
+.instruction-message p:nth-child(2), .instruction-message p:last-child { color: var(--muted-foreground); font-size: var(--text-meta); }
+.instruction-message-meta { display: flex; justify-content: flex-end; align-items: center; gap: 6px; margin-top: 12px; color: var(--whatsapp-accent); font-size: var(--text-meta); }
+.instruction-message-meta svg { width: 18px; height: 18px; }
+.instruction-no-message { padding: 40px 0; font-size: var(--text-ui); line-height: 1.6; color: var(--muted-foreground); }
+.instruction-dispatch { display: flex; flex-direction: column; gap: 20px; min-width: 0; padding: 24px; }
+.instruction-dispatch h3 { margin-top: 8px; font-size: var(--text-section); font-weight: 600; }
+.instruction-progress { display: grid; gap: 20px; }
+.instruction-progress li { display: flex; gap: 12px; color: var(--muted-foreground); }
+.instruction-progress li > svg { flex-shrink: 0; width: 20px; height: 20px; margin-top: 1px; }
+.instruction-progress li[data-complete=true] > svg { color: var(--whatsapp-accent); }
+.instruction-progress strong { display: block; color: var(--foreground); font-size: var(--text-ui); font-weight: 500; }
+.instruction-progress span { display: block; font-size: var(--text-meta); margin-top: 4px; line-height: 1.6; }
+.instruction-send-actions { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 8px; }
+.whatsapp-send[data-slot=button] { background: var(--whatsapp); color: var(--whatsapp-ink); border-color: transparent; box-shadow: var(--shadow-tactile); }
+.whatsapp-send[data-slot=button]:hover { background: var(--whatsapp-hover); color: var(--whatsapp-ink); }
+.whatsapp-send[data-sent=true]:disabled { background: var(--whatsapp-surface); color: var(--whatsapp-accent); border-color: color-mix(in oklch,var(--whatsapp-accent) 25%,transparent); box-shadow: none; opacity: 1; }
+.instruction-pending { padding: 10px 12px; border-radius: var(--radius-md); border: 1px solid var(--border); font-size: var(--text-meta); line-height: 1.6; color: var(--destructive); }
+.instruction-history { border-top: 1px solid var(--border); padding: 16px 24px; }
+.instruction-history summary { cursor: pointer; font-size: var(--text-meta); font-weight: 500; }
+.instruction-history summary > span { margin-left: 6px; color: var(--muted-foreground); }
+.instruction-history-row { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; padding-top: 16px; }
+.instruction-history-row > div { flex: 1; min-width: 160px; overflow-wrap: anywhere; }
+.instruction-history-row strong { font-size: var(--text-meta); font-weight: 500; }
+.instruction-history-row p { font-size: var(--text-meta); color: var(--muted-foreground); margin-top: 4px; }
+@media(max-width:1100px) { .instruction-layout { grid-template-columns: minmax(0,1fr); } .instruction-preview { border-right: 0; border-bottom: 1px solid var(--border); } }
+@media(max-width:600px) { .instruction-heading { padding: 18px; } .instruction-chat { padding: 16px; } .instruction-dispatch { padding: 20px 18px; } .instruction-send-actions { grid-template-columns: minmax(0,1fr); } .instruction-preview-heading { padding-inline: 16px; } .instruction-history { padding-inline: 18px; } .instruction-message { max-height: 300px; } }
+@media(prefers-reduced-motion:reduce) { .instruction-bubble { transition: none; } }

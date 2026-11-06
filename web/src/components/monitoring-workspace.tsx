@@ -2,6 +2,7 @@
 import { useSearchParams } from "next/navigation"
 import { PageHeader } from "@/components/app-shell"
 import { ModuleTabs } from "@/components/module-tabs"
+import { ShiftHealthReview } from "@/components/shift-health-review"
 import { ShiftMonitoring } from "@/components/shift-monitoring"
 import dynamic from "next/dynamic"
 import { useApp } from "@/lib/store"
@@ -17,6 +18,8 @@ export function MonitoringWorkspace() {
   if (!user) return null
   const shift = currentShift(state)
   const canAnalyze = pageAllowedFor(user, "/analitik")
-  const analytics = tab === "analitik" && canAnalyze
-  return <><PageHeader title={user.role === "MANDOR" ? "Monitoring regu" : "Monitoring shift"} summary={shift ? `${shift.nama} · ${tanggalLabel(shift.tanggal)}` : undefined} />{canAnalyze && <ModuleTabs label="Monitoring shift" active={analytics ? "analitik" : "pemantauan"} tabs={[{key:"pemantauan",label:"Pemantauan",href:"/monitoring"},{key:"analitik",label:"Analitik",href:"/monitoring?tab=analitik"}]} />}<div className="module-panel" key={analytics ? "analitik" : "pemantauan"}>{analytics ? <ShiftAnalytics /> : <ShiftMonitoring />}</div></>
+  const canAttend = pageAllowedFor(user, "/absensi")
+  const tabs = [{key:"pemantauan",label:"Pemantauan",href:"/monitoring"},...(canAttend ? [{key:"absensi",label:"Absensi",href:"/monitoring?tab=absensi"}] : []),...(canAnalyze ? [{key:"analitik",label:"Analitik",href:"/monitoring?tab=analitik"}] : [])]
+  const active = tab === "analitik" && canAnalyze ? "analitik" : tab === "absensi" && canAttend ? "absensi" : "pemantauan"
+  return <><PageHeader title={user.role === "MANDOR" ? "Monitoring regu" : "Monitoring shift"} summary={shift ? `${shift.nama} · ${tanggalLabel(shift.tanggal)}` : undefined} />{tabs.length > 1 && <ModuleTabs label="Monitoring shift" active={active} tabs={tabs} />}<div className="module-panel" key={active}>{active === "analitik" ? <ShiftAnalytics /> : active === "absensi" ? <ShiftHealthReview /> : <ShiftMonitoring />}</div></>
 }

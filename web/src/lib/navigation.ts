@@ -5,7 +5,7 @@ export const NAV_GROUPS = [
   { label: "Data pekerja", href: "/impor", routes: [{ href: "/impor", label: "Data pekerja" }] },
   { label: "Operasional shift", href: "/rencana", routes: [{ href: "/rencana", label: "Perencanaan shift" }, { href: "/instruksi", label: "Instruksi regu" }, { href: "/tindakan", label: "Pelaksanaan & verifikasi" }] },
   { label: "Forecasting", href: "/forecasting", routes: [{ href: "/forecasting", label: "Peta prakiraan" }] },
-  { label: "Monitoring", href: "/monitoring", routes: [{ href: "/monitoring", label: "Pantau shift" }, { href: "/pengukuran", label: "Bacaan WBGT" }, { href: "/perangkat", label: "Perangkat IoT" }, { href: "/absensi", label: "Absensi pekerja" }, { href: "/band", label: "Band bergilir" }] },
+  { label: "Monitoring", href: "/monitoring", routes: [{ href: "/monitoring", label: "Pantau shift" }, { href: "/pengukuran", label: "Bacaan WBGT" }, { href: "/perangkat", label: "Perangkat IoT" }, { href: "/band", label: "Band bergilir" }] },
   { label: "Laporan", href: "/laporan", routes: [{ href: "/laporan", label: "Pusat laporan" }, { href: "/laporan/bulanan", label: "Rekap bulanan", hiddenInNav: true }] },
 ]
 
@@ -29,6 +29,7 @@ export function isShiftRoute(path: string) {
 }
 export function navigationGroup(path: string) {
   if (path === "/paparan") return NAV_GROUPS.find(group=>group.href==="/rencana")
+  if (path === "/absensi") return NAV_GROUPS.find(group=>group.href==="/monitoring")
   if (path === "/analitik") return NAV_GROUPS.find(group=>group.href==="/monitoring")
   if (path === "/kesehatan-awal") return NAV_GROUPS.find(group=>group.href==="/impor")
   if (path === "/kesehatan") return NAV_GROUPS.find(group=>group.href==="/laporan")

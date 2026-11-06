@@ -144,7 +144,7 @@ function inner(s: AppState, a: Exclude<Action, ManagementAction | WeatherAction 
       const id = `${a.reguKode}:${rencanaIds.join("+")}`
       const ada = s.pengiriman.find((p) => p.id === id)
       if (ada && ada.status === "DIBAGIKAN_MANUAL") return notice(s, "info", "Pesan versi ini sudah tercatat dibagikan. Tidak digandakan.")
-      const kirim: Pengiriman = { id, reguKode: a.reguKode, isi: teks, status: "DIBAGIKAN_MANUAL", waktu: now(), buktiKanal: undefined, diakui: false }
+      const kirim: Pengiriman = { id, reguKode: a.reguKode, kanal: a.kanal, isi: teks, status: "DIBAGIKAN_MANUAL", waktu: now(), buktiKanal: undefined, diakui: false }
       const pengiriman = [kirim, ...s.pengiriman.filter((p) => p.id !== id)]
       const tindakan = s.tindakan.map((t) => (rencanaIds.includes(t.rencanaId) && t.status === "DIBUAT" ? { ...t, status: "DISAMPAIKAN" as const } : t))
       const n = audit({ ...s, pengiriman, tindakan }, "BAGIKAN_INSTRUKSI", `${a.reguKode}: dibagikan manual lewat ${a.kanal} (tanpa bukti kanal otomatis)`)

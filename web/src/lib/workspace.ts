@@ -6,7 +6,7 @@ import type { AppState } from "./store"
 import type { User } from "./types"
 
 export const SURFACES = [
-  { href: "/absensi", label: "Absensi & kondisi awal", detail: "Cakupan kehadiran; jawaban kondisi tubuh hanya untuk Klinik" },
+  { href: "/monitoring?tab=absensi", label: "Absensi & kondisi awal", detail: "Cakupan kehadiran; jawaban kondisi tubuh hanya untuk Klinik" },
   { href: "/impor?tab=pemeriksaan", label: "Baseline kesehatan perusahaan", detail: "Ringkasan pemeriksaan dan pembatasan kerja untuk ditinjau HSE" },
   { href: "/forecasting", label: "Forecasting · peta prakiraan", detail: "Prakiraan cuaca, suhu dan kelembapan per periode untuk persiapan shift" },
   { href: "/monitoring", label: "Monitoring shift", detail: "Peta WBGT per zona, kualitas bacaan, dan progres pelaksanaan regu" },
@@ -38,7 +38,7 @@ export function searchWorkspace(s: AppState, user: User, query: string) {
   const terms = query.toLocaleLowerCase("id-ID").trim().split(/\s+/).filter(Boolean)
   const matches = (text: string) => terms.every(t => text.toLocaleLowerCase("id-ID").includes(t))
   return [
-    ...SURFACES.filter(p => pageAllowedFor(user,p.href.split("?")[0]) && matches(p.label + " " + p.detail)).map(p => ({ ...p, kind: "Halaman" })),
+    ...SURFACES.filter(p => pageAllowedFor(user,p.href.includes("tab=absensi") ? "/absensi" : p.href.split("?")[0]) && matches(p.label + " " + p.detail)).map(p => ({ ...p, kind: "Halaman" })),
     ...lingkupPekerja(user, s.pekerja).filter(p => matches(`${p.nama} ${p.kode} ${p.reguKode}`)).map(p => ({ href: `/pekerja/${p.kode}`, label: p.nama, detail: `${p.kode} · Regu ${p.reguKode}`, kind: "Pekerja" })),
   ]
 }

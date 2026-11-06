@@ -18,6 +18,10 @@ describe("mock workspace", () => {
     for (const raw of ["bad", "{}", JSON.stringify({ ...s, demo: undefined }), JSON.stringify({ ...s, pekerja: [null] }), JSON.stringify({ ...s, tanggal: "2026-99-99" })]) expect(() => readDemoState(raw)).toThrow()
   })
   it("searches names and ids without case sensitivity", () => expect(searchWorkspace(s, USERS[0], "  demo001  ").map(r => r.href)).toEqual(["/pekerja/DEMO001"]))
+  it("finds consolidated attendance only for roles allowed to view attendance",()=>{
+    expect(searchWorkspace(s,USERS[0],"absensi").some(row=>row.href==="/monitoring?tab=absensi")).toBe(true)
+    expect(searchWorkspace(s,USERS[4],"absensi").some(row=>row.href==="/monitoring?tab=absensi")).toBe(false)
+  })
   it("search returns no unrelated records", () => expect(searchWorkspace(s, USERS[0], "nonexistent-person")).toHaveLength(0))
   it("does not leak other crews through search", () => {
     const results = searchWorkspace(s, USERS[1], "DEMO").filter(r => r.kind === "Pekerja")

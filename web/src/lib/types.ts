@@ -195,6 +195,7 @@ export interface Tindakan {
 export interface Pengiriman {
   id: string
   reguKode: string
+  kanal?: string
   isi: string
   status: DeliveryStatus
   waktu: string

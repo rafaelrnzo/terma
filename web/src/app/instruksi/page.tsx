@@ -1,150 +1,70 @@
 "use client"
 
 import { useRef, useState } from "react"
-import { CopyIcon as Copy } from "@phosphor-icons/react/dist/csr/Copy"
-import { ChatTextIcon as MessageSquare } from "@phosphor-icons/react/dist/csr/ChatText"
+import { CopyIcon } from "@phosphor-icons/react/dist/csr/Copy"
+import { WhatsappLogoIcon } from "@phosphor-icons/react/dist/csr/WhatsappLogo"
+import { PaperPlaneTiltIcon } from "@phosphor-icons/react/dist/csr/PaperPlaneTilt"
+import { ChecksIcon } from "@phosphor-icons/react/dist/csr/Checks"
+import { CheckCircleIcon } from "@phosphor-icons/react/dist/csr/CheckCircle"
+import { ClockIcon } from "@phosphor-icons/react/dist/csr/Clock"
 import { XCircleIcon as XCircle } from "@phosphor-icons/react/dist/csr/XCircle"
 import { toast } from "sonner"
 import { PageHeader, WorkflowEmpty } from "@/components/app-shell"
-import { RoleHint } from "@/components/role-hint"
 import { DeliveryBadge } from "@/components/status"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { REGU } from "@/lib/config"
+import { REGU, USERS } from "@/lib/config"
+import { currentShift } from "@/lib/management-state"
 import { isiPesan, rencanaAktif, useApp, useIzin } from "@/lib/store"
+import { scopedWorkspace } from "@/lib/workspace"
 
-const KANAL = ["Kotak masuk TERMA", "WhatsApp", "SMS", "Disampaikan langsung"]
+const WHATSAPP_SIMULASI = "WhatsApp · simulasi"
+const waktuPesan = (value: string) => new Date(value).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })
 
 export default function InstruksiPage() {
-  const { state, user } = useApp()
-  const reguTerlihat = user?.role === "MANDOR" ? REGU.filter((g) => g.kode === user.reguKode) : REGU
-
-  if (!state.rencanaDihitung)
-    return (
-      <>
-        <PageHeader context title="Instruksi mandor" />
-        <WorkflowEmpty title="Instruksi menunggu rencana" href="/rencana" label="Buka rencana & persetujuan">Hitung dan setujui rencana terlebih dahulu. Instruksi per regu disusun dari versi yang sudah disetujui HSE.</WorkflowEmpty>
-      </>
-    )
-
-  return (
-    <>
-      <PageHeader context title="Instruksi mandor" summary="Pengiriman dan penerimaan instruksi per regu." />
-      <RoleHint peran={user?.role === "MANDOR" ? ["MANDOR"] : ["HSE"]} />
-
-      <div data-guide="instructions" className="grid items-start gap-6">
-        {reguTerlihat.map((g) => (
-          <KartuRegu key={g.kode} reguKode={g.kode} />
-        ))}
-      </div>
-
-
-    </>
-  )
+  const { state: workspace, user } = useApp()
+  if (!user) return null
+  const state = scopedWorkspace(workspace, user)
+  const crews = REGU.filter(crew => state.pekerja.some(worker => worker.reguKode === crew.kode))
+  if (!state.rencanaDihitung) return <><PageHeader context title="Instruksi mandor" /><WorkflowEmpty title="Instruksi menunggu rencana" href="/rencana" label="Buka rencana & persetujuan">Setujui rencana sebelum membagikan instruksi.</WorkflowEmpty></>
+  return <><PageHeader context title="Instruksi mandor" /><div data-guide="instructions" className="instruction-workspace">{crews.map(crew => <KartuRegu key={crew.kode} reguKode={crew.kode} />)}{!crews.length && <p className="page-empty">Belum ada peserta regu pada shift ini.</p>}</div></>
 }
 
 function KartuRegu({ reguKode }: { reguKode: string }) {
-  const { state, dispatch } = useApp()
+  const { state: workspace, user, dispatch } = useApp()
   const izin = useIzin()
-  const [kanal, setKanal] = useState(KANAL[0])
-  const g = REGU.find((r) => r.kode === reguKode)!
+  if (!user) return null
+  const state = scopedWorkspace(workspace, user)
+  const crew = REGU.find(row => row.kode === reguKode)!
+  const foreman = USERS.find(row => row.id === crew.mandorId)!
   const { teks, rencanaIds } = isiPesan(state, reguKode)
-  const pekerjaRegu = state.pekerja.filter((p) => p.reguKode === reguKode).map((p) => p.kode)
-  const belum = rencanaAktif(state).filter((r) => pekerjaRegu.includes(r.pekerjaKode) && !r.disetujuiOleh)
-  const riwayat = state.pengiriman.filter((p) => p.reguKode === reguKode)
-  const versiIni = riwayat.find((p) => p.id === `${reguKode}:${rencanaIds.join("+")}`)
-  const terakhir = versiIni
-  const bisaBagikan = izin("KIRIM_INSTRUKSI") && rencanaIds.length > 0 && versiIni?.status !== "DIBAGIKAN_MANUAL"
-
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2"><MessageSquare className="size-4" /> {g.nama}</CardTitle>
-        <CardDescription>Versi rencana: {rencanaIds.length ? rencanaIds.join(", ") : "Belum tersedia"}</CardDescription>
-      </CardHeader>
-      <CardContent className="grid items-start gap-6 xl:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
-        <div className="space-y-4">
-        {belum.length > 0 && (
-          <Alert className="bg-background">
-            <AlertTitle>{belum.length} rencana belum disetujui, tidak ikut dibagikan</AlertTitle>
-            <AlertDescription>{belum.map((r) => r.id).join(", ")}</AlertDescription>
-          </Alert>
-        )}
-        <div className="rounded-sm bg-background p-5">
-          <h3 className="mb-3 text-sm font-medium">Isi instruksi</h3>
-          <div className="whitespace-pre-wrap text-base leading-relaxed">
-            {rencanaIds.length ? teks : <span className="text-muted-foreground">Belum ada rencana disetujui untuk regu ini.</span>}
-          </div>
-        </div>
-        </div>
-        <div className="space-y-5 border-t pt-5 xl:border-t-0 xl:border-l xl:pt-0 xl:pl-6">
-        <div>
-          <h3 className="text-sm font-semibold">Pembagian & penerimaan</h3>
-          <p className="mt-2 text-sm leading-relaxed text-muted-foreground">Instruksi tersedia di kotak masuk regu. Kanal eksternal tetap dicatat manual; pengakuan penerimaan berbeda dari laporan pelaksanaan.</p>
-        </div>
-        {izin("KIRIM_INSTRUKSI") && rencanaIds.length > 0 && (
-          <div className="no-print space-y-3">
-            <div className="flex flex-wrap gap-2">
-              <Button
-                variant="outline"
-                onClick={async () => {
-                  try {
-                    await navigator.clipboard.writeText(teks)
-                    toast.success("Pesan disalin.")
-                  } catch {
-                    toast.error("Pesan belum tersalin. Pilih teks instruksi dan salin secara manual.")
-                  }
-                }}
-              >
-                <Copy /> Salin pesan
-              </Button>
-            </div>
-            <div className="flex flex-wrap items-center gap-2">
-              <Select value={kanal} onValueChange={setKanal}>
-                <SelectTrigger className="w-52 bg-card" aria-label="Kanal yang dipakai"><SelectValue /></SelectTrigger>
-                <SelectContent>{KANAL.map((k) => <SelectItem key={k} value={k}>{k}</SelectItem>)}</SelectContent>
-              </Select>
-              {versiIni?.status === "DIBAGIKAN_MANUAL" ? <p role="status" className="text-sm text-primary">Pembagian versi ini sudah dicatat.</p> : <Button disabled={!bisaBagikan} onClick={() => dispatch({ type: "BAGIKAN", reguKode, kanal })}>{kanal === "Kotak masuk TERMA" ? "Kirim instruksi ke mandor" : "Catat sudah dibagikan"}</Button>}
-            </div>
-          </div>
-        )}
-
-        {terakhir && terakhir.status === "DIBAGIKAN_MANUAL" && (
-          <div className="no-print flex flex-wrap gap-2">
-            {izin("AKUI_PESAN", reguKode) && (
-              terakhir.diakui ? <p className="text-sm text-primary">Penerimaan sudah diakui.</p> : <Button onClick={() => dispatch({ type: "AKUI", pengirimanId: terakhir.id })}>Akui penerimaan</Button>
-            )}
-            {izin("KIRIM_INSTRUKSI") && !terakhir.diakui && (
-              <GagalTersampaikan pengirimanId={terakhir.id} reguKode={reguKode} />
-            )}
-          </div>
-        )}
-
-        {riwayat.length > 0 && (
-          <div className="space-y-2 border-t pt-3">
-            <h3 className="text-sm font-medium">Riwayat pembagian</h3>
-            {riwayat.map((k) => (
-              <div key={k.id} className="flex flex-wrap items-center justify-between gap-2 text-sm">
-                <span className="font-mono text-xs text-muted-foreground">
-                  {new Date(k.waktu).toLocaleString("id-ID")} · {k.id.split(":")[1]}
-                  {k.status === "GAGAL" && k.buktiKanal && <span className="ml-2 font-sans text-destructive">{k.buktiKanal}</span>}
-                </span>
-                <span className="flex flex-wrap gap-2">
-                  <DeliveryBadge status={k.status} />
-                  {k.diakui && <span className="text-xs text-primary">DIAKUI</span>}
-                </span>
-              </div>
-            ))}
-          </div>
-        )}
-        </div>
-      </CardContent>
-    </Card>
-  )
+  const workers = state.pekerja.filter(worker => worker.reguKode === reguKode)
+  const pending = rencanaAktif(state).filter(plan => workers.some(worker => worker.kode === plan.pekerjaKode) && !plan.disetujuiOleh)
+  const history = state.pengiriman.filter(row => row.reguKode === reguKode)
+  const delivery = history.find(row => row.id === `${reguKode}:${rencanaIds.join("+")}`)
+  const shared = !!delivery && delivery.status !== "GAGAL"
+  const simulated = delivery?.kanal === WHATSAPP_SIMULASI
+  const canSend = izin("KIRIM_INSTRUKSI") && rencanaIds.length > 0 && !shared && currentShift(workspace)?.status === "ACTIVE"
+  const status = delivery?.diakui ? "Dikonfirmasi mandor" : shared ? simulated ? "Terkirim · simulasi" : "Pembagian tercatat" : delivery?.status === "GAGAL" ? "Gagal tersampaikan" : rencanaIds.length ? "Siap dikirim" : "Menunggu persetujuan"
+  return <section className="instruction-card summon-panel" aria-label={`Instruksi ${crew.nama}`} data-crew={crew.kode}>
+    <header className="instruction-heading"><div className="instruction-recipient"><span className="instruction-avatar" aria-hidden>{foreman.nama[0]}</span><div><h2>{crew.nama}</h2><p>{foreman.nama} · Mandor regu</p></div></div><span className="instruction-state" data-complete={shared} data-failed={delivery?.status === "GAGAL"}>{shared ? <ChecksIcon /> : <ClockIcon />}{status}</span></header>
+    <div className="instruction-layout">
+      <div className="instruction-preview"><div className="instruction-preview-heading"><span><WhatsappLogoIcon size={20} />Pratinjau WhatsApp</span><small>Simulasi pengiriman</small></div>
+        <div className="instruction-chat"><span className="instruction-date">{new Date(state.tanggal+"T00:00:00Z").toLocaleDateString("id-ID",{day:"numeric",month:"long",year:"numeric",timeZone:"UTC"})}</span><div className="instruction-bubble" data-sent={shared}>{rencanaIds.length ? <><div className="instruction-message" tabIndex={0} aria-label={`Isi pesan ${crew.nama}`}>{teks.split("\n").map((line,index) => <p key={index}>{line}</p>)}</div><div className="instruction-message-meta">{shared ? <><span>{waktuPesan(delivery.waktu)}</span><ChecksIcon aria-label={delivery.diakui ? "Dikonfirmasi di TERMA" : "Pembagian tercatat"} /></> : <span>Draf · {rencanaIds.length} rencana disetujui</span>}</div></> : <p className="instruction-no-message">Pesan tersedia setelah rencana regu disetujui.</p>}</div></div>
+      </div>
+      <div className="instruction-dispatch"><div><span className="section-kicker">PENGIRIMAN INSTRUKSI</span><h3>{shared ? "Pesan sudah dibagikan" : "Siap bagikan ke mandor"}</h3></div>
+        <ol className="instruction-progress"><li data-complete={rencanaIds.length > 0}><CheckCircleIcon /><div><strong>Rencana disetujui</strong><span>{rencanaIds.length} dari {workers.length} pekerja</span></div></li><li data-complete={shared}>{shared ? <ChecksIcon /> : <PaperPlaneTiltIcon />}<div><strong>{simulated && shared ? "Terkirim ke WhatsApp" : "Bagikan instruksi"}</strong><span>{shared ? `${simulated ? "Simulasi · " : "Tercatat · "}${waktuPesan(delivery.waktu)}` : "Pesan siap disalin dan dibagikan"}</span></div></li><li data-complete={!!delivery?.diakui}>{delivery?.diakui ? <CheckCircleIcon /> : <ClockIcon />}<div><strong>Konfirmasi mandor</strong><span>{delivery?.diakui ? `Dikonfirmasi ${foreman.nama} di TERMA` : "Menunggu penerimaan di TERMA"}</span></div></li></ol>
+        {pending.length > 0 && <p className="instruction-pending" role="status">{pending.length} rencana belum disetujui dan belum masuk pesan.</p>}
+        {delivery?.status === "GAGAL" && <p className="instruction-pending" role="alert">{delivery.buktiKanal || "Pesan belum tersampaikan. Kirim ulang setelah kendala ditangani."}</p>}
+        {izin("KIRIM_INSTRUKSI") && <div className="instruction-send-actions"><Button className="whatsapp-send" disabled={!canSend} data-sent={shared} onClick={() => dispatch({ type: "BAGIKAN", reguKode, kanal: WHATSAPP_SIMULASI })}>{shared ? <ChecksIcon /> : <WhatsappLogoIcon size={20} />}{shared ? simulated || delivery.status === "TERKIRIM" ? "Terkirim" : "Sudah dibagikan" : delivery?.status === "GAGAL" ? "Kirim ulang WhatsApp" : "Kirim WhatsApp"}</Button><Button variant="outline" disabled={!rencanaIds.length} onClick={async () => { try { await navigator.clipboard.writeText(teks); toast.success("Pesan disalin. Siap ditempel ke WhatsApp.") } catch { toast.error("Pesan belum tersalin. Pilih dan salin isi pesan.") } }}><CopyIcon />Salin pesan</Button></div>}
+        {shared && izin("AKUI_PESAN",reguKode) && !delivery.diakui && <Button className="whatsapp-send" onClick={() => dispatch({ type:"AKUI",pengirimanId:delivery.id })}><CheckCircleIcon />Konfirmasi penerimaan</Button>}
+        <p className="sr-only" role="status" aria-live="polite">{shared ? simulated ? `Pesan terkirim ke ${foreman.nama} dalam simulasi.` : "Pembagian instruksi versi ini sudah tercatat." : "Simulasi pengiriman · tidak mengirim pesan ke nomor WhatsApp."}</p>
+        {shared && izin("KIRIM_INSTRUKSI") && !delivery.diakui && <GagalTersampaikan pengirimanId={delivery.id} reguKode={reguKode} />}
+      </div>
+    </div>
+    {!!history.length && <details className="instruction-history"><summary>Riwayat pengiriman <span>{history.length}</span></summary><div>{history.map(row => <div className="instruction-history-row" key={row.id}><div><strong>{new Date(row.waktu).toLocaleString("id-ID")}</strong><p>{row.kanal ?? "Pembagian manual"} · {row.id.split(":")[1]}</p>{row.status === "GAGAL" && row.buktiKanal && <p className="text-destructive">{row.buktiKanal}</p>}</div><span>{row.kanal === WHATSAPP_SIMULASI && row.status !== "GAGAL" ? <span className="instruction-state" data-complete><ChecksIcon />{row.diakui ? "Dikonfirmasi mandor" : "Terkirim · simulasi"}</span> : <DeliveryBadge status={row.status} />}</span></div>)}</div></details>}
+  </section>
 }
 
 function GagalTersampaikan({ pengirimanId, reguKode }: { pengirimanId: string; reguKode: string }) {

@@ -7,6 +7,7 @@
 @import "./styles/legacy-3.css";
 @import "./styles/legacy-4.css";
 @import "./styles/summon.css";
+@import "./styles/instructions.css";
 @import "./styles/dashboard.css";
 @import "./styles/shift-flow.css";
 @import "./styles/management.css";
@@ -157,6 +158,11 @@
   --brand-on-navy: oklch(0.985 0 0);
   --brand-orange: oklch(0.76 0.158 59);
   --brand-yellow: oklch(0.89 0.16 91);
+  --whatsapp: #25d366;
+  --whatsapp-hover: #1fba59;
+  --whatsapp-ink: #063b25;
+  --whatsapp-surface: #e9fbee;
+  --whatsapp-accent: #087443;
   --text-page: 24px;
   --text-section: 16px;
   --text-metric: 32px;
@@ -204,6 +210,8 @@
 }
 
 .dark {
+  --whatsapp-surface: #122a20;
+  --whatsapp-accent: #70e49b;
   color-scheme: dark;
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.94 0 0);

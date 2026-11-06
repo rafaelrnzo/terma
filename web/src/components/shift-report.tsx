@@ -44,7 +44,7 @@ export function ShiftReport() {
     <>
 
       {shift && <p className="mb-5 rounded-md border p-4 text-sm">{shift.nama} · {shiftLabel(shift.status)}{shift.status === "CLOSED" ? ` · Ditutup ${shift.ditutupOleh}, ${new Date(shift.ditutupPada!).toLocaleString("id-ID")}` : " · Laporan sementara, shift belum ditutup"}</p>}
-      {readiness.required && <div className="mb-5 rounded-md border bg-card p-4 text-sm"><p>Catatan awal shift: {readiness.checked}/{readiness.total} peserta absen. Jawaban kondisi hanya untuk Klinik.</p><Link href="/absensi" className="panel-link no-print mt-2">Lihat catatan kondisi awal sesuai peran</Link></div>}
+      {readiness.required && <div className="mb-5 rounded-md border bg-card p-4 text-sm"><p>Catatan awal shift: {readiness.checked}/{readiness.total} peserta absen. Jawaban kondisi hanya untuk Klinik.</p><Link href="/monitoring?tab=absensi" className="panel-link no-print mt-2">Lihat catatan kondisi awal sesuai peran</Link></div>}
       <div data-guide="report" className="no-print mb-6">
         <p className="mb-3 text-sm text-muted-foreground">Lingkup laporan: {user.role === "MANDOR" ? `regu ${user.reguKode}. Jejak audit lintas regu dan data sumber hanya tersedia untuk HSE atau petugas data.` : "seluruh regu pada lokasi ini."}</p>
         <Button variant="outline" onClick={() => window.print()}><Printer /> Cetak laporan</Button>

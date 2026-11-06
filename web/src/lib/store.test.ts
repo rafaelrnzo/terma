@@ -120,6 +120,7 @@ describe("follow-up lifecycle", () => {
     let s = run(siapRencana(), { type: "SETUJUI", rencanaId: rid }, { type: "BAGIKAN", reguKode: "COR", kanal: "WhatsApp" })
     const t = () => s.tindakan.find((x) => x.rencanaId === rid)!
     expect(s.pengiriman[0].status).toBe("DIBAGIKAN_MANUAL")
+    expect(s.pengiriman[0].kanal).toBe("WhatsApp")
     expect(t().status).toBe("DISAMPAIKAN")
 
     s = run(s, { type: "TANDAI_GAGAL", pengirimanId: s.pengiriman[0].id, alasan: "Nomor mandor tidak aktif" })

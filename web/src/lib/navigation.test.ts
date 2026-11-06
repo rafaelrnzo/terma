@@ -19,6 +19,7 @@ describe("role workspaces", () => {
     expect(navigationGroup("/monitoring")?.href).toBe("/monitoring")
     expect(navigationGroup("/perangkat")?.href).toBe("/monitoring")
     expect(navigationGroup("/absensi")?.href).toBe("/monitoring")
+    expect(NAV_GROUPS.flatMap(group=>group.routes).some(route=>route.href==="/absensi")).toBe(false)
     expect(navigationGroup("/analitik")?.href).toBe("/monitoring")
   })
   it("keeps foreman operations available without exposing HSE decisions", () => {

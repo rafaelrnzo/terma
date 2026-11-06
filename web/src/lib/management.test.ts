@@ -31,6 +31,19 @@ function verified() {
   return state
 }
 
+describe("WhatsApp instruction simulation", () => {
+  it("persists its simulated channel without provider delivery proof or foreman acknowledgement", () => {
+    const state=run(approved(), {type:"TERBITKAN_SHIFT",shiftId:date}, {type:"BAGIKAN",reguKode:"COR",kanal:"WhatsApp · simulasi"})
+    const restored=readDemoState(JSON.stringify(state))
+    expect(restored.pengiriman[0].kanal).toBe("WhatsApp · simulasi")
+    expect(restored.pengiriman[0].status).toBe("DIBAGIKAN_MANUAL")
+    expect(restored.pengiriman[0].diakui).toBe(false)
+    expect(restored.tindakan.every(action=>action.status==="DISAMPAIKAN")).toBe(true)
+    const again=reducer(restored,{type:"BAGIKAN",reguKode:"COR",kanal:"WhatsApp · simulasi"})
+    expect(again.pengiriman).toHaveLength(1)
+  })
+})
+
 describe("worker master CRUD", () => {
   it("starts empty and creates master data without silently creating a shift", () => {
     const state = run(emptyWorkspaceState(date), add)
