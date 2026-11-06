@@ -46,14 +46,10 @@
 .device-specs > div { display: flex; justify-content: space-between; gap: 12px; padding: 10px 0; border-top: 1px solid var(--border); font-size: 12px; }
 .device-specs dt { color: var(--muted-foreground); }
 .device-specs dd { text-align: right; }
-.connection-flow { display: flex; align-items: center; flex-wrap: wrap; justify-content: space-around; gap: 12px; padding: 28px 20px; }
-.connection-flow > div { text-align: center; }
-.connection-flow strong { display: block; margin-top: 8px; font-size: 13px; font-weight: 500; }
-.connection-flow small { display: block; margin-top: 4px; color: var(--muted-foreground); font-size: 12px; }
 .connected-note { display: inline-flex; gap: 6px; align-items: center; font-size: 12px; color: var(--muted-foreground); }
 .landing-device-intro { margin-bottom: 22px; }
 .landing-device-intro h2 { font-size: 28px; letter-spacing: -.03em; font-weight: 500; }
 .landing-device-intro p { max-width: 62ch; margin-top: 12px; color: var(--muted-foreground); font-size: 14px; line-height: 1.8; }
 @media (max-width: 1150px) { .dashboard-grid { grid-template-columns: minmax(0, 1.5fr) minmax(260px, 1fr); gap: 16px; } .metrics-grid { gap: 10px; } .metric-card { padding: 16px; } }
 @media (max-width: 900px) { .dashboard-grid { grid-template-columns: minmax(0, 1fr); } .device-grid { grid-template-columns: minmax(0, 1fr); } .device-card > p { min-height: 0; } }
-@media (max-width: 600px) { .metrics-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .metric-value { font-size: 28px; } .metric-foot { line-height: 1.6; align-items: start; } .chart-body, .worker-toolbar { padding: 16px; } .chart-readout { margin-top: 18px; } .zone-select { min-height: 36px; } .worker-toolbar input { width: 100%; } .connection-flow { flex-direction: column; } .connection-flow > svg { transform: rotate(90deg); } }
+@media (max-width: 600px) { .metrics-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .metric-value { font-size: 28px; } .metric-foot { line-height: 1.6; align-items: start; } .chart-body, .worker-toolbar { padding: 16px; } .chart-readout { margin-top: 18px; } .zone-select { min-height: 36px; } .worker-toolbar input { width: 100%; } }
