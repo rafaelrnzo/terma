@@ -1,5 +1,6 @@
 import { hariIni } from "./config"
 import type { ManagementAction, ManagementState } from "./management-types"
+import type { ReadinessAction } from "./worker-readiness"
 import type { AcclProfile, AuditEntry, ImportResult, Kehadiran, KonfirmasiPaparan, Pekerja, Penugasan, Pengiriman, PengukuranWBGT, PrakiraanCuaca, Rencana, Tindakan } from "./types"
 
 export interface AppState {
@@ -46,6 +47,7 @@ export function stateAwal(tanggal = hariIni()): AppState {
 
 export type Action =
   | ManagementAction
+  | ReadinessAction
   | { type: "MUAT_DEMO" }
   | { type: "LOGIN"; userId: string }
   | { type: "SET_TANGGAL"; tanggal: string }

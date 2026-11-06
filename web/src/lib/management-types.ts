@@ -1,5 +1,6 @@
 import type { AppState } from "./store-state"
 import type { Pekerja, Penugasan } from "./types"
+import type { HealthBaseline, ShiftReadiness } from "./worker-readiness"
 
 export type ShiftWorkspace = Pick<AppState, "pekerja" | "penugasan" | "kehadiran" | "konfirmasi" | "bacaan" | "prakiraan" | "rencana" | "rencanaDihitung" | "tindakan" | "pengiriman">
 export interface ShiftRecord {
@@ -13,6 +14,7 @@ export interface ShiftRecord {
   ditutupPada?: string
   ditutupOleh?: string
   contoh?: boolean
+  readiness?: ShiftReadiness
   workspace: ShiftWorkspace
 }
 export interface ManagementState {
@@ -20,6 +22,7 @@ export interface ManagementState {
   assignments: Penugasan[]
   shifts: ShiftRecord[]
   activeId: string | null
+  healthBaselines?: HealthBaseline[]
 }
 export interface WorkerInput {
   kode: string

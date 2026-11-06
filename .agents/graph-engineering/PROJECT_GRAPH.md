@@ -7,6 +7,10 @@ Inspected upstream: `rafaelrnzo/terma`, merged focused workflow contribution `db
 | Focused shift workflow and walkthrough | web/src/lib/shift-task-flow.ts, guide-content.ts, components/shift-workspace.tsx, shift-navigator.tsx, workflow-guide.tsx | scoped plans/actions, workflow.ts, inline task components, Driver.js |
 | Inline operational forms | web/src/components/shift-participants.tsx, shift-plan-review.tsx, shift-instructions.tsx, shift-execution.tsx | shared worker-adaptation.tsx, rencana-card.tsx, action-dialogs.tsx, existing reducer guards |
 | Shift sensor task and monitoring return | web/src/components/shift-sensor-task.tsx, device-workflow-context.tsx | server-built focused IotFigure, explicit device ingestion, selected shift |
+| Role entry routing and dashboards | web/src/lib/navigation.ts, components/role-home.tsx, workspace-home.tsx, role-start.tsx, role-task-board.tsx | AppProvider identity, scoped shift flow, /admin, /hse, /mandor |
+| Initial-condition check-in and baseline snapshots | web/src/lib/worker-readiness.ts, components/shift-health-review.tsx, app/kiosk, app/kesehatan-awal | management records, reducer permissions, draft approval guards, validation |
+| Forecast map and native periods | web/src/lib/forecast.ts, app/forecasting/page.tsx, components/zone-map.tsx | source forecast records, shared geometry and optional Mapbox |
+| Shift monitoring | web/src/app/monitoring/page.tsx | scoped task flow, HeatMonitor, selected shift |
 | App layout and persistent chrome | web/src/app/layout.tsx, components/app-shell.tsx | AppProvider, navigation, UI primitives |
 | Worker catalogue and shift snapshots | web/src/lib/worker-management.ts, shift-management.ts, management-state.ts | store-state.ts, access.ts, workflow.ts |
 | Browser persistence and reducer boundary | web/src/lib/store.tsx, store-reducer.ts, management-validation.ts | store-imports.ts, store-plans.ts, shift-action-validation.ts |

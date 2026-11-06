@@ -39,7 +39,7 @@ export function manageWorker(s: AppState, a: Extract<ManagementAction, { type: "
   if ((worker.revision ?? 1) !== a.expectedRevision) return notice(s, "error", "Data pekerja sudah berubah. Buka ulang daftar.")
   if (a.type === "HAPUS_PEKERJA") {
     if (workerUsage(s, worker.kode) || s.rencana.some(plan => plan.pekerjaKode === worker.kode)) return notice(s, "error", "Pekerja sudah memiliki riwayat shift. Arsipkan pekerja untuk menyimpan riwayatnya.")
-    const next = { ...s, management: { ...management, workers: management.workers.filter(item => item.kode !== worker.kode), assignments: management.assignments.filter(item => item.pekerjaKode !== worker.kode) } }
+    const next = { ...s, management: { ...management, workers: management.workers.filter(item => item.kode !== worker.kode), healthBaselines: (management.healthBaselines ?? []).filter(item => item.pekerjaKode !== worker.kode), assignments: management.assignments.filter(item => item.pekerjaKode !== worker.kode) } }
     return notice(audit(next, "HAPUS_PEKERJA", `${worker.kode}: data master tanpa riwayat dihapus.`), "ok", "Pekerja dihapus dari master.")
   }
   const next = { ...s, management: { ...management, workers: management.workers.map(item => item.kode === worker.kode ? { ...item, diarsipkan: a.archived, revision: (item.revision ?? 1) + 1 } : item) } }

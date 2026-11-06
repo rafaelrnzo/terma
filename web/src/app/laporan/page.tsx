@@ -1,5 +1,7 @@
 "use client"
 
+import Link from "next/link"
+import { readinessProgress } from "@/lib/worker-readiness"
 import { PrinterIcon as Printer } from "@phosphor-icons/react"
 import { PageHeader } from "@/components/app-shell"
 import { OriginBadge, QualityBadge, StatusChip } from "@/components/status"
@@ -23,6 +25,7 @@ export default function LaporanPage() {
   if (!user) return null
   const state = scopedWorkspace(workspace, user)
   const shift = currentShift(workspace)
+  const readiness = readinessProgress(state)
   const aktif = rencanaAktif(state)
   const idsTanggal = new Set(rencanaTanggal(state).map((r) => r.id))
   const tindakanTanggal = state.tindakan.filter((t) => idsTanggal.has(t.rencanaId))
@@ -45,6 +48,7 @@ export default function LaporanPage() {
         Laporan menampilkan sumber data dan kekosongannya, bukan hanya persentase kepatuhan. Penyebut setiap persentase ditulis jelas.
       </PageHeader>
       {shift && <p className="mb-5 rounded-md border p-4 text-sm">{shift.nama} · {shiftLabel(shift.status)}{shift.status === "CLOSED" ? ` · Ditutup ${shift.ditutupOleh}, ${new Date(shift.ditutupPada!).toLocaleString("id-ID")}` : " · Laporan sementara, shift belum ditutup"}</p>}
+      {readiness.required && <div className="mb-5 rounded-md border bg-card p-4 text-sm"><p>Catatan awal shift: {readiness.checked}/{readiness.total} peserta absen · {readiness.reviewed}/{readiness.total} tinjauan HSE tercatat.</p><Link href="/absensi" className="panel-link no-print mt-2">Lihat catatan kondisi awal sesuai peran</Link></div>}
       <div data-guide="report" className="no-print mb-6">
         <p className="mb-3 text-sm text-muted-foreground">Lingkup laporan: {user.role === "MANDOR" ? `regu ${user.reguKode}. Jejak audit lintas regu dan hasil impor hanya tersedia untuk HSE atau petugas data.` : "seluruh regu pada lokasi ini."}</p>
         <Button variant="outline" onClick={() => window.print()}><Printer /> Cetak laporan</Button>

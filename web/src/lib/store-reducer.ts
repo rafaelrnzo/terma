@@ -2,6 +2,7 @@ import { isManagementAction, currentShift, checkpointShift, ensureManagement, is
 import { manageWorker } from "./worker-management"
 import { shiftActionError } from "./shift-action-validation"
 import { ingestStationReadings } from "./device-ingestion"
+import { saveBaseline, recordReadiness, readinessProgress } from "./worker-readiness"
 import { manageShift, openShift } from "./shift-management"
 import { AksesDitolak, wajib, type Aksi } from "./access"
 import { ATURAN_FIXTURE } from "./config"
@@ -14,6 +15,8 @@ import type { AppState, Action } from "./store-state"
 import type { KonfirmasiPaparan, PengukuranWBGT, Tindakan, Pengiriman } from "./types"
 
 const IZIN_AKSI: Partial<Record<Action["type"], Aksi>> = {
+  SIMPAN_BASELINE: "KELOLA_BASELINE",
+  TINJAU_KONDISI: "TINJAU_KONDISI",
   MUAT_DEMO: "MUAT_DEMO",
   SIMPAN_PEKERJA: "KELOLA_PEKERJA",
   HAPUS_PEKERJA: "KELOLA_PEKERJA",
@@ -49,6 +52,9 @@ function reguDari(s: AppState, a: Action): string | undefined {
 
 function inner(s: AppState, a: Exclude<Action, import("./management-types").ManagementAction>): AppState {
   switch (a.type) {
+    case "SIMPAN_BASELINE": return saveBaseline(s, a.input)
+    case "CATAT_CHECKIN":
+    case "TINJAU_KONDISI": return recordReadiness(s, a)
     case "AMBIL_BACAAN_PERANGKAT": return ingestStationReadings(s)
     case "MUAT_DEMO":
       if (!bisaMuatDemo(s)) return notice(s, "info", "Seed tidak dijalankan: ruang kerja sudah berisi data. Tidak ada data yang ditimpa.")
@@ -174,6 +180,8 @@ export function reducer(s: AppState, a: Action): AppState {
       throw e
     }
   }
+  if (a.type === "SIMPAN_BASELINE") return saveBaseline(s, a.input)
+  if (a.type === "SETUJUI" && !readinessProgress(s).ready) return notice(s, "error", "Lengkapi absensi, kondisi awal, dan tinjauan HSE seluruh peserta sebelum menyetujui rencana.")
   if (isManagementAction(a)) {
     if (a.type === "SIMPAN_PEKERJA" || a.type === "HAPUS_PEKERJA" || a.type === "ARSIP_PEKERJA") return manageWorker(s, a)
     return manageShift(s, a)

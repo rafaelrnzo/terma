@@ -19,8 +19,9 @@ describe("monthly verified exposure", () => {
   })
   it("counts a replacement verification once per worker per day", () => {
     const state = initialDemoState("2026-10-31")
-    const action = state.tindakan.find(item => item.status === "TERVERIFIKASI")!
-    state.tindakan.push({ ...action, id: "replacement", menitDiverifikasi: 42, waktuVerifikasi: "2026-10-31T23:59:00Z" })
+    const action = state.tindakan.find(item => item.status === "TERVERIFIKASI")
+    if (!action?.waktuVerifikasi) throw new Error("Expected a verified action")
+    state.tindakan.push({ ...action, id: "replacement", menitDiverifikasi: 42, waktuVerifikasi: new Date(Date.parse(action.waktuVerifikasi) + 60_000).toISOString() })
     const row = monthlyExposure(state, USERS[0]).find(item => item.worker.kode === action.pekerjaKode)
     expect(row?.verifiedMinutes).toBe(42)
     expect(row?.verifiedShifts).toBe(1)

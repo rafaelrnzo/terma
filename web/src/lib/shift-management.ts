@@ -1,5 +1,6 @@
 import { managementOf, checkpointShift, workspaceSnapshot } from "./management-state"
 import { workflow } from "./workflow"
+import { readinessProgress } from "./worker-readiness"
 import { audit, notice, now, tanggalValid, aktor } from "./store-utils"
 import type { AppState } from "./store-state"
 import type { ManagementAction, ShiftRecord, ShiftWorkspace } from "./management-types"
@@ -12,7 +13,7 @@ function shiftWorkspace(s: AppState, tanggal: string, workerCodes: string[]): Sh
   return {
     pekerja: management.workers.filter(worker => selected.has(worker.kode)).map(worker => ({ ...worker })),
     penugasan: management.assignments.filter(assignment => selected.has(assignment.pekerjaKode)).map(assignment => ({ ...assignment })),
-    kehadiran: [...kehadiran, ...workerCodes.map(pekerjaKode => ({ pekerjaKode, tanggal, status: "HADIR" as const, source: "Peserta dipilih saat membuat shift" }))],
+    kehadiran,
     konfirmasi: [], bacaan: [], prakiraan: [], rencana: [], rencanaDihitung: false, tindakan: [], pengiriman: [],
   }
 }
@@ -54,7 +55,8 @@ export function manageShift(s: AppState, a: Exclude<ManagementAction, { type: "S
     const invalid = participantsError(s, a.tanggal, a.workerCodes)
     if (invalid) return notice(s, "error", invalid)
     const workspace = shiftWorkspace(saved, a.tanggal, a.workerCodes)
-    const shift: ShiftRecord = { id: a.tanggal, tanggal: a.tanggal, nama: a.nama.trim(), status: "DRAFT", dibuatOleh: user.nama, dibuatPada: now(), workspace }
+    const readiness = { checkins: [], reviews: [], baselines: (management.healthBaselines ?? []).filter(row => a.workerCodes.includes(row.pekerjaKode)).map(row => ({ ...row })) }
+    const shift: ShiftRecord = { id: a.tanggal, tanggal: a.tanggal, nama: a.nama.trim(), status: "DRAFT", dibuatOleh: user.nama, dibuatPada: now(), workspace, readiness }
     const next = { ...saved, ...workspace, tanggal: a.tanggal, management: { ...management, activeId: shift.id, shifts: [...management.shifts, shift] } }
     return notice(audit(next, "BUAT_SHIFT", `${shift.id}: ${shift.nama}, ${workspace.pekerja.length} peserta. Snapshot master disimpan.`), "ok", "Draft shift dibuat. Mulai dari persiapan pekerja dan bacaan panas.")
   }
@@ -72,14 +74,17 @@ export function manageShift(s: AppState, a: Exclude<ManagementAction, { type: "S
     if (a.nama.trim().length < 3) return notice(s, "error", "Nama shift minimal 3 karakter.")
     const invalid = participantsError(s, shift.tanggal, a.workerCodes)
     if (invalid) return notice(s, "error", invalid)
-    const workspace = { ...shiftWorkspace(saved, shift.tanggal, a.workerCodes), bacaan: shift.workspace.bacaan, prakiraan: shift.workspace.prakiraan }
-    const shifts = management.shifts.map(item => item.id === shift.id ? { ...item, nama: a.nama.trim(), workspace } : item)
+    const checkins = shift.readiness?.checkins.filter(row => a.workerCodes.includes(row.pekerjaKode)) ?? []
+    const workspace = { ...shiftWorkspace(saved, shift.tanggal, a.workerCodes), kehadiran: shift.workspace.kehadiran.filter(row => a.workerCodes.includes(row.pekerjaKode)), bacaan: shift.workspace.bacaan, prakiraan: shift.workspace.prakiraan }
+    const readiness = shift.readiness ? { checkins, reviews: [], baselines: (management.healthBaselines ?? []).filter(row => a.workerCodes.includes(row.pekerjaKode)).map(row => ({ ...row })) } : undefined
+    const shifts = management.shifts.map(item => item.id === shift.id ? { ...item, nama: a.nama.trim(), workspace, readiness } : item)
     const next = { ...saved, ...(management.activeId === shift.id ? workspace : workspaceSnapshot(saved)), management: { ...management, shifts } }
     return notice(audit(next, "UBAH_DRAFT_SHIFT", `${shift.id}: peserta dan nama draft diperbarui. Rencana draft perlu dihitung ulang.`), "ok", "Draft diperbarui. Periksa penugasan dan hitung ulang rencana.")
   }
   if (management.activeId !== shift.id) return notice(s, "error", "Buka shift yang akan diproses terlebih dahulu.")
   const steps = workflow(s, user)
   if (a.type === "TERBITKAN_SHIFT") {
+    if (!readinessProgress(s).ready) return notice(s, "error", "Absensi dan tinjauan kondisi awal belum lengkap. Periksa peserta sebelum menerbitkan shift.")
     if (shift.status !== "DRAFT") return notice(s, "error", "Hanya draft yang dapat diterbitkan.")
     if (!steps[3].selesai) return notice(s, "error", "Hitung dan setujui seluruh rencana peserta sebelum menerbitkan shift.")
     const next = { ...saved, management: { ...management, shifts: management.shifts.map(item => item.id === shift.id ? { ...item, status: "ACTIVE" as const, diterbitkanPada: now() } : item) } }

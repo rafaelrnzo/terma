@@ -3,6 +3,7 @@ import { workflow } from "./workflow"
 import { rencanaAktif, isiPesan } from "./store-plans"
 import { scopedWorkspace } from "./workspace"
 import { REGU } from "./config"
+import { readinessProgress } from "./worker-readiness"
 import type { AppState } from "./store-state"
 import type { Role, User } from "./types"
 
@@ -23,8 +24,9 @@ export function shiftTaskFlow(workspace: AppState, user: User) {
   })
   const submitted = actions.filter(action => action.status === "TINDAKAN_DILAPORKAN" || action.status === "TERVERIFIKASI").length
   const published = shift?.status === "ACTIVE" || shift?.status === "CLOSED"
+  const readiness = readinessProgress(state)
   const steps: ShiftTask[] = [
-    { key: "participants", title: "Peserta", description: "Periksa penugasan dan konfirmasi adaptasi pekerja yang perlu ditinjau.", done: progress[0].selesai && progress[1].selesai, owners: ["HSE"], progress: progress[1].progress },
+    { key: "participants", title: "Absen & kondisi awal", description: "Pekerja mengisi absen dan kondisi tubuh. HSE meninjau baseline perusahaan, keluhan, penugasan, serta adaptasi.", done: progress[0].selesai && progress[1].selesai && readiness.ready, owners: ["HSE"], progress: readiness.required ? `${readiness.checked}/${readiness.total} absen · ${readiness.reviewed}/${readiness.total} ditinjau HSE` : progress[1].progress },
     { key: "sensors", title: "Sensor", description: "Periksa Station di zona peserta, lalu simpan bacaannya untuk shift ini.", done: progress[2].selesai, owners: ["HSE", "PETUGAS_DATA"], progress: progress[2].progress },
     { key: "plans", title: "Rencana", description: "Hitung, tinjau setiap rencana, kemudian terbitkan shift.", done: progress[3].selesai && published, owners: ["HSE"], progress: progress[3].progress },
     { key: "instructions", title: "Instruksi", description: "HSE membagikan instruksi. Mandor membaca dan mengakui penerimaan.", done: published && progress[4].selesai, owners: allShared ? ["MANDOR"] : ["HSE"], progress: progress[4].progress },

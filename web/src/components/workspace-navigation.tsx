@@ -3,14 +3,16 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useLayoutEffect, useRef } from "react"
-import { SquaresFourIcon as LayoutDashboard, ClipboardTextIcon as ClipboardList, ChartLineUpIcon as CalendarCheck, CpuIcon as ListChecks, FileTextIcon as FileText } from "@phosphor-icons/react"
-import { NAV_GROUPS, navigationGroup } from "@/lib/navigation"
+import { SquaresFourIcon, UsersThreeIcon, CloudSunIcon, BroadcastIcon, FileTextIcon } from "@phosphor-icons/react"
+import { navigationFor, navigationGroup, roleHomePath, ROLE_WORKSPACE } from "@/lib/navigation"
+import { useApp } from "@/lib/store"
 import { cn } from "@/lib/utils"
 
-const icons = [LayoutDashboard, ClipboardList, CalendarCheck, ListChecks, FileText]
+const icons: Record<string, typeof SquaresFourIcon> = { "/ringkasan": SquaresFourIcon, "/impor": UsersThreeIcon, "/forecasting": CloudSunIcon, "/monitoring": BroadcastIcon, "/laporan": FileTextIcon }
 
 export function Navigation({ mobile, onNavigate }: { mobile?: boolean; onNavigate?: () => void }) {
   const path = usePathname()
+  const { user } = useApp()
   const group = navigationGroup(path)
   const nav = useRef<HTMLElement>(null)
   const indicator = useRef<HTMLSpanElement>(null)
@@ -22,7 +24,7 @@ export function Navigation({ mobile, onNavigate }: { mobile?: boolean; onNavigat
       const item = root.querySelector<HTMLElement>("[data-active=true]")
       if (!item) { thumb.hidden = true; return }
       thumb.hidden = false
-      thumb.style.transform = `translateY(${item.offsetTop}px)`
+      thumb.style.transform = `translateY(${item.getBoundingClientRect().top - root.getBoundingClientRect().top}px)`
       thumb.style.height = `${item.offsetHeight}px`
     }
     place()
@@ -30,15 +32,16 @@ export function Navigation({ mobile, onNavigate }: { mobile?: boolean; onNavigat
     const observer = new ResizeObserver(place)
     observer.observe(root)
     return () => { observer.disconnect(); cancelAnimationFrame(frame) }
-  }, [path])
+  }, [path, user?.id])
   return <nav ref={nav} aria-label="Alur kerja" className={cn("workspace-navigation", mobile && "p-4")}>
     <span ref={indicator} className="nav-indicator" aria-hidden />
-    {NAV_GROUPS.map((item, index) => {
+    {navigationFor(user).map((item) => {
       const active = group === item
-      const Icon = icons[index]
+      const Icon = icons[item.href]
+      const href = item.href === "/ringkasan" && user ? roleHomePath(user) : item.href
       return <div key={item.href} className="nav-group">
-        <Link href={item.href} onClick={onNavigate} data-active={active} aria-current={path === item.href ? "page" : undefined} className={cn("nav-item gap-3", active && "nav-item-active")}>
-          <span className="selectable-icon"><Icon className="icon-outline size-4" aria-hidden /><Icon className="icon-fill size-4" weight="fill" aria-hidden /></span>{item.label}
+        <Link href={href} onClick={onNavigate} data-active={active} aria-current={path === href ? "page" : undefined} className={cn("nav-item gap-3", active && "nav-item-active")}>
+          <span className="selectable-icon"><Icon className="icon-outline size-4" aria-hidden /><Icon className="icon-fill size-4" weight="fill" aria-hidden /></span>{item.href === "/ringkasan" && user ? ROLE_WORKSPACE[user.role].nav : item.label}
         </Link>
         {(mobile || active) && item.routes.length > 1 && <div className="sidebar-subroutes">{item.routes.map(route => <Link key={route.href} href={route.href} onClick={onNavigate} className="nav-item" aria-current={path === route.href ? "page" : undefined}>{route.label}</Link>)}</div>}
       </div>

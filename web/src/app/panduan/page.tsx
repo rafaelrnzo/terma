@@ -10,7 +10,7 @@ import { shiftTaskFlow } from "@/lib/shift-task-flow"
 import { useApp } from "@/lib/store"
 
 const tasks = [
-  ["Peserta", "HSE memeriksa penugasan dan mengonfirmasi adaptasi satu pekerja pada satu waktu."],
+  ["Absen & kondisi awal", "Petugas data menyiapkan pekerja, HSE meninjau baseline perusahaan. Pekerja absen melalui kios dan menjawab kondisi tubuh. HSE mencatat tindak lanjut dan konfirmasi adaptasi sebelum persetujuan rencana."],
   ["Sensor", "Periksa WBGT dari Station. Simpan bacaannya ke shift, lalu lanjutkan."],
   ["Rencana", "Hitung dan tinjau setiap rencana. Setelah seluruhnya disetujui, terbitkan shift."],
   ["Instruksi", "HSE membagikan instruksi ke regu dan mencatat pembagian. Mandor membaca serta mengakui penerimaan."],
@@ -23,9 +23,10 @@ export default function PanduanPage() {
   const shift = currentShift(state)
   const flow = user && shift ? shiftTaskFlow(state,user) : null
   return <>
-    <PageHeader title="Cara menjalankan satu shift" summary="Mulai dari data pekerja dan satu draft shift. Selanjutnya kerjakan enam tugas dalam halaman shift yang sama." />
+    <PageHeader title="Cara menjalankan satu shift" summary="Mulai dari data pekerja, ringkasan kesehatan perusahaan, dan satu draft shift. Selanjutnya kerjakan enam tugas dalam halaman shift yang sama." />
     <section className="summon-panel mb-6 p-6"><h2 className="text-lg font-semibold">Satu tugas pada satu waktu.</h2><p className="mt-3 max-w-prose text-sm leading-relaxed text-muted-foreground">Isi formulir pada tugas yang terbuka. Setelah lengkap, gunakan tombol Lanjut. Saat giliran peran lain, buka tugas penanggung jawab yang disebutkan. Anda tetap berada di shift yang sama.</p><div className="mt-5 flex flex-wrap gap-2"><Button asChild><Link href={shift ? `/shift/${shift.id}` : "/ringkasan"}>{shift ? "Lanjutkan shift" : "Mulai dari shift kerja"}<ArrowRightIcon /></Link></Button><GuideButton mode="journey" label="Tunjukkan alurnya" /></div></section>
     <section className="summon-panel p-6"><h2 className="mb-4 text-sm font-semibold">Urutan kerja</h2><ol className="flow-step-list">{tasks.map(([title,description],index) => <li key={title}><div><strong>{title}</strong><p>{description}</p>{flow && <p className="text-xs text-muted-foreground">{flow.steps[index].done ? "Selesai" : flow.steps[index].progress}</p>}</div></li>)}</ol></section>
+    <section className="summon-panel mt-6 p-6"><h2 className="text-sm font-semibold">Forecasting, monitoring, dan hasil akhir</h2><p className="mt-3 text-sm leading-relaxed text-muted-foreground">Forecasting dipakai saat menyiapkan jadwal; data prakiraan ditampilkan pada peta lokasi. Monitoring menampilkan bacaan WBGT tersimpan dan progres tindakan pada shift yang dibuka. Siklus berakhir setelah HSE memverifikasi seluruh tindakan dan menutup shift; hasilnya ada di Laporan & evaluasi.</p><div className="mt-4 flex flex-wrap gap-3"><Link className="panel-link" href="/forecasting">Peta forecasting</Link><Link className="panel-link" href="/monitoring">Monitoring shift</Link><Link className="panel-link" href="/absensi">Absensi pekerja</Link></div></section>
     <section className="summon-panel mt-6 p-6"><h2 className="text-sm font-semibold">Peran perangkat IoT</h2><p className="mt-3 max-w-prose text-sm leading-relaxed text-muted-foreground">Station menyediakan WBGT untuk rencana kerja. Water Station dan Band dapat dipantau melalui Perangkat IoT. Penyimpanan bacaan untuk perencanaan dilakukan dari tugas Sensor pada shift yang dibuka.</p></section>
   </>
 }

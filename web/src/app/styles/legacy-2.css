@@ -71,28 +71,28 @@
 .map-toolbar button[aria-pressed="true"] { background: var(--secondary); color: var(--primary); }
 /* Isometric geometry is the zone selector, not a risk or location map. */
 .map-toolbar { align-items: center; border-bottom: 1px solid var(--border); }
-.map-view-label { display: inline-flex; align-items: center; gap: 6px; color: var(--muted-foreground); font-size: 11px; }
-.zone-scheme { position: relative; height: 340px; background-color: #fafbfc; background-image: radial-gradient(#d8dde5 .7px, transparent .7px); background-size: 16px 16px; }
+.map-view-label { display: inline-flex; align-items: center; gap: 6px; color: var(--muted-foreground); font-size: 12px; }
+.zone-scheme { position: relative; height: 340px; background-color: var(--background); background-image: radial-gradient(var(--border) .7px, transparent .7px); background-size: 16px 16px; }
 .scheme-paths { position: absolute; inset: 0; width: 100%; height: 100%; }
 .scheme-zone { position: absolute; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; width: 42%; max-width: 220px; padding: 0 6px; border-radius: 8px; color: var(--foreground); cursor: pointer; }
 .isometric-zone { display: block; width: 156px; max-width: 100%; height: 100px; overflow: visible; }
-.iso-ground { fill: #e8ecf2; }
+.iso-ground { fill: var(--secondary); }
 .iso-platform { transform: translateY(0); transition: transform 240ms cubic-bezier(.16, 1, .3, 1); }
-.iso-top { fill: var(--zone-fill); stroke: #96a8c0; stroke-width: 1; }
-.iso-side { fill: #d4dfee; stroke: #96a8c0; stroke-linejoin: round; }
-.iso-grid { fill: none; stroke: #9eacc0; stroke-width: .6; opacity: .6; }
-.iso-structure { fill: var(--card); fill-opacity: .75; stroke: #6c85a5; stroke-width: 1.2; stroke-linejoin: round; }
-.iso-marker { fill: #9ba8bb; stroke: white; stroke-width: 2; }
+.map-zone-top { fill: var(--zone-fill); stroke: var(--muted-foreground); stroke-width: 1; }
+.iso-side { fill: var(--secondary); stroke: var(--muted-foreground); stroke-linejoin: round; }
+.iso-grid { fill: none; stroke: var(--muted-foreground); stroke-width: .6; opacity: .6; }
+.iso-structure { fill: var(--card); fill-opacity: .75; stroke: var(--muted-foreground); stroke-width: 1.2; stroke-linejoin: round; }
+.iso-marker { fill: var(--muted-foreground); stroke: var(--card); stroke-width: 2; }
 .scheme-zone:hover .iso-platform { transform: translateY(-3px); }
 .scheme-zone[aria-pressed="true"] .iso-platform { transform: translateY(-9px); }
-.scheme-zone[aria-pressed="true"] .iso-top { stroke: var(--primary); }
+.scheme-zone[aria-pressed="true"] .map-zone-top { stroke: var(--primary); }
 .scheme-zone[aria-pressed="true"] .iso-marker { fill: var(--primary); }
 .scheme-zone:focus-visible { outline: 2px solid var(--primary); outline-offset: 5px; }
 .scheme-label { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; padding: 9px 10px; border: 1px solid var(--border); border-radius: 6px; background: var(--card); font-size: 12px; }
 .scheme-zone[aria-pressed="true"] .scheme-label { border-color: var(--primary); }
 .scheme-name { display: flex; align-items: center; gap: 6px; font-weight: 600; }
 .scheme-name svg { color: var(--primary); }
-.scheme-value { font-size: 11px; white-space: nowrap; color: var(--muted-foreground); font-variant-numeric: tabular-nums; }
+.scheme-value { font-size: 12px; white-space: nowrap; color: var(--muted-foreground); font-variant-numeric: tabular-nums; }
 .map-caption { border-top: 1px solid var(--border); padding: 14px 20px 18px; color: var(--muted-foreground); font-size: 12px; line-height: 1.6; }
 .map-caption summary { width: fit-content; min-height: 44px; align-content: center; cursor: pointer; color: var(--foreground); text-decoration: underline; text-underline-offset: 4px; }
 .map-caption details p { max-width: 65ch; padding: 0 0 8px; }

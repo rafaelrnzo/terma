@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button"
 import { useApp } from "@/lib/store"
 import { currentShift } from "@/lib/management-state"
 import { pageGuide } from "@/lib/guide-content"
+import { roleHomePath } from "@/lib/navigation"
 
 type Mode = "page" | "journey"
 interface GuideSession { mode: Mode; routes: string[]; index: number; userId: string; date: string }
@@ -28,7 +29,8 @@ export function WorkflowGuideProvider({ children }: { children: ReactNode }) {
     active.current?.destroy()
     setError("")
     const shift = currentShift(state)
-    const routes = mode === "page" ? [path] : !shift ? ["/ringkasan", "/impor"] : [`/shift/${shift.id}`]
+    const accessible = shift && (user.role !== "MANDOR" || shift.workspace.pekerja.some(worker => worker.reguKode === user.reguKode))
+    const routes = mode === "page" ? [path] : !accessible ? user.role === "MANDOR" ? [roleHomePath(user)] : [roleHomePath(user), "/impor"] : [`/shift/${shift.id}`]
     requestedRoute.current = routes[0]
     setSession({ mode, routes, index: 0, userId: user.id, date: state.tanggal })
     if (path !== routes[0]) router.push(routes[0])

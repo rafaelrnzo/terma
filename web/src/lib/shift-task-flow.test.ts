@@ -14,7 +14,7 @@ function draft(twoCrews = false) {
 }
 function published(twoCrews = false) {
   let state = draft(twoCrews)
-  for (const worker of state.pekerja) state = reducer(state, { type: "KONFIRMASI", pekerjaKode: worker.kode, profil: "PEKERJA_BARU", hari: 1 })
+  for (const worker of state.pekerja) state = run(state, { type: "CATAT_CHECKIN", pekerjaKode: worker.kode, kondisi: "BAIK", keluhan: [] }, { type: "TINJAU_KONDISI", pekerjaKode: worker.kode, hasil: "LANJUT_TINJAU_RENCANA", catatan: "Kondisi awal dan data tersedia ditinjau sesuai SOP" }, { type: "KONFIRMASI", pekerjaKode: worker.kode, profil: "PEKERJA_BARU", hari: 1 })
   state = run(state, { type: "AMBIL_BACAAN_PERANGKAT" }, { type: "HITUNG_RENCANA" })
   for (const plan of rencanaAktif(state)) state = reducer(state, { type: "SETUJUI", rencanaId: plan.id })
   return reducer(state, { type: "TERBITKAN_SHIFT", shiftId: date })
@@ -30,7 +30,7 @@ describe("focused shift task flow", () => {
   it("requires preparation, saved sensor readings, approval and explicit publication in sequence", () => {
     let state = draft()
     expect(shiftTaskFlow(state,hse).current).toBe(0)
-    state = reducer(state, { type: "KONFIRMASI", pekerjaKode: "W01", profil: "PEKERJA_BARU", hari: 1 })
+    state = run(state, { type: "CATAT_CHECKIN", pekerjaKode: "W01", kondisi: "BAIK", keluhan: [] }, { type: "TINJAU_KONDISI", pekerjaKode: "W01", hasil: "LANJUT_TINJAU_RENCANA", catatan: "Kondisi awal dan data tersedia ditinjau sesuai SOP" }, { type: "KONFIRMASI", pekerjaKode: "W01", profil: "PEKERJA_BARU", hari: 1 })
     expect(shiftTaskFlow(state,hse).current).toBe(1)
     state = run(state, { type: "AMBIL_BACAAN_PERANGKAT" }, { type: "HITUNG_RENCANA" })
     expect(shiftTaskFlow(state,hse).current).toBe(2)

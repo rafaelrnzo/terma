@@ -14,11 +14,13 @@ The current application stores its workspace in the browser. Server authenticati
 
 ## Guided shift workflow
 
-Start at **Shift kerja**. Add workers through **Data pekerja**, then create a dated draft and select participants. Inside `/shift/[id]`, one task panel is open at a time: participants → sensors → plans → instructions → execution → verification and closure. Adaptation and plan review advance one worker at a time. Forms and decisions stay on this page; completed tasks can be reviewed, future tasks remain locked, and **Lanjut** appears when the current task is complete. Explicit role handoffs retain the same shift URL. Returned reports reopen execution for correction. Publication requires approved plans; closure requires every current action verified. Closed shifts remain readable as final reports.
+Start in the role workspace: **/admin** for data officers, **/hse** for HSE, and **/mandor** for foremen. **/ringkasan** routes to the current role. Add workers through **Data pekerja**, record company examination summaries through **Baseline perusahaan**, then create a dated draft. Workers check in and report their initial condition at **/kiosk**; HSE reviews the company baseline, check-in, assignments and adaptation before final plan approval. Selecting participants no longer records attendance automatically. Inside `/shift/[id]`, one task panel is open at a time: attendance and initial condition → sensors → plans → instructions → execution → verification and closure. Adaptation and plan review advance one worker at a time. Forms and decisions stay on this page; completed tasks can be reviewed, future tasks remain locked, and **Lanjut** appears when the current task is complete. Explicit role handoffs retain the same shift URL. Returned reports reopen execution for correction. Publication requires approved plans; closure requires every current action verified. Closed shifts remain readable as final reports.
 
 Worker forms support create/edit/delete for unused records and archive/restore for workers with shift history. Each shift stores its own participant and assignment snapshot. Master edits affect future shifts; they do not rewrite existing history. Drafts can be edited or deleted before approvals. See [focused shift flow and checks](docs/focused-shift-flow.md) and [CRUD lifecycle and boundaries](docs/crud-shift-flow.md).
 
 Use **Panduan penggunaan** or the header help button for Driver.js guidance. The shift tour explains the task rail, active form, role handoff and next button on the same page. Tours explain without submitting data or switching roles.
+
+See [role workspaces, health check-in, and source boundaries](docs/role-workspaces.md). **Forecasting** (`/forecasting`) is a map and native-period weather view for preparation; **Monitoring** (`/monitoring`) shows saved WBGT and task progress for the selected shift. Neither surface claims a live external integration.
 
 ## Interactive IoT instruments
 

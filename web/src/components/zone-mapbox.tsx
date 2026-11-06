@@ -15,7 +15,7 @@ export default function ZoneMapbox({ zones, selected, onZone, token, onFailure }
     for (const { code, element } of markers.current) {
       const zone = zones.find(z => z.kode === code)
       element.setAttribute("aria-pressed", String(selected === code))
-      element.textContent = `${DEMO_ZONE_POSITIONS[code].label} · ${zone?.reading ? zone.reading.isbb.toFixed(1).replace(".", ",") + " °C" : "Belum diukur"}`
+      element.textContent = `${DEMO_ZONE_POSITIONS[code].label} · ${zone?.value ?? "Belum tersedia"}`
     }
   }, [zones, selected, onZone, onFailure])
   useEffect(() => {
@@ -41,7 +41,7 @@ export default function ZoneMapbox({ zones, selected, onZone, token, onFailure }
             const element = document.createElement("button")
             element.type = "button"
             element.className = "map-zone-marker"
-            element.textContent = `${position.label} · ${zone.reading ? zone.reading.isbb.toFixed(1).replace(".", ",") + " °C" : "Belum diukur"}`
+            element.textContent = `${position.label} · ${zone.value}`
             element.setAttribute("aria-label", `Pilih ${zone.nama}`)
             element.setAttribute("aria-pressed", String(latest.current.selected === zone.kode))
             element.addEventListener("click", () => latest.current.onZone(zone.kode))

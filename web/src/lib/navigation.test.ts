@@ -1,18 +1,26 @@
 import { describe, expect, it } from "vitest"
-import { NAV_GROUPS, SHIFT_ROUTES, navigationGroup } from "./navigation"
+import { NAV_GROUPS, SHIFT_ROUTES, navigationGroup, navigationFor, roleHomePath } from "./navigation"
+import { USERS } from "./config"
 
-describe("shift-oriented navigation", () => {
-  it("provides five entry points and makes shifts the primary workspace", () => {
-    expect(NAV_GROUPS.map(group => group.label)).toEqual(["Shift kerja", "Data pekerja", "Analitik", "Perangkat IoT", "Laporan"])
+describe("role workspaces", () => {
+  it("lands each role on its own surface", () => {
+    expect(USERS.map(user => roleHomePath(user))).toEqual(["/hse", "/mandor", "/mandor", "/admin"])
+    for (const user of USERS) expect(navigationGroup(roleHomePath(user))).toBe(NAV_GROUPS[0])
     expect(navigationGroup("/")).toBeUndefined()
   })
-  it("keeps all operational pages inside the shift context", () => {
+  it("keeps operational pages in a single shift context", () => {
     for (const route of [...SHIFT_ROUTES, "/shift/2026-10-31", "/pekerja/PK01", "/regu/cor"]) expect(navigationGroup(route)).toBe(NAV_GROUPS[0])
-    expect(NAV_GROUPS[0].routes).toHaveLength(1)
   })
-  it("separates reusable workers and cross-shift analysis from execution", () => {
-    expect(navigationGroup("/impor")).toBe(NAV_GROUPS[1])
-    expect(navigationGroup("/analitik")).toBe(NAV_GROUPS[2])
-    expect(navigationGroup("/laporan")).toBe(NAV_GROUPS[4])
+  it("exposes forecasting and monitoring as distinct destinations", () => {
+    expect(navigationGroup("/forecasting")?.href).toBe("/forecasting")
+    expect(navigationGroup("/monitoring")?.href).toBe("/monitoring")
+    expect(navigationGroup("/perangkat")?.href).toBe("/monitoring")
+    expect(navigationGroup("/absensi")?.href).toBe("/monitoring")
+    expect(navigationGroup("/analitik")?.href).toBe("/laporan")
+  })
+  it("removes master-data navigation from the foreman workspace", () => {
+    expect(navigationFor(USERS[1]).some(group => group.href === "/impor")).toBe(false)
+    expect(navigationFor(USERS[0]).some(group => group.href === "/impor")).toBe(true)
+    expect(navigationFor(USERS[3]).some(group => group.href === "/impor")).toBe(true)
   })
 })

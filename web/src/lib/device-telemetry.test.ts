@@ -44,7 +44,12 @@ describe("local telemetry adapter", () => {
     expect(reducer(closed, { type: "AMBIL_BACAAN_PERANGKAT" }).bacaan).toHaveLength(0)
   })
   it("never auto-approves plans when new device readings trigger recomputation", () => {
-    let state = reducer(draft(), { type: "HITUNG_RENCANA" })
+    let state = draft()
+    for (const worker of state.pekerja) {
+      state = reducer(state, { type: "CATAT_CHECKIN", pekerjaKode: worker.kode, kondisi: "BAIK", keluhan: [] })
+      state = reducer(state, { type: "TINJAU_KONDISI", pekerjaKode: worker.kode, hasil: "LANJUT_TINJAU_RENCANA", catatan: "Kondisi awal ditinjau HSE sesuai SOP" })
+    }
+    state = reducer(state, { type: "HITUNG_RENCANA" })
     state = reducer(state, { type: "SETUJUI", rencanaId: state.rencana[0].id })
     state = reducer(state, { type: "AMBIL_BACAAN_PERANGKAT" })
     const current = state.rencana.filter(plan => !plan.digantikan)

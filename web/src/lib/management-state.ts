@@ -13,7 +13,17 @@ export function managementOf(s: AppState): ManagementState {
 }
 
 export function ensureManagement(s: AppState): AppState {
-  return s.management ? s : { ...s, management: managementOf(s) }
+  const management = managementOf(s)
+  const shifts = management.shifts.map(shift => {
+    if (shift.readiness || shift.status !== "DRAFT" || shift.workspace.rencana.some(plan => plan.disetujuiOleh) || shift.workspace.tindakan.length) return shift
+    // Older drafts inferred attendance from selection; retain actual attendance and history.
+    const kehadiran = shift.workspace.kehadiran.filter(row => row.tanggal !== shift.tanggal || row.source !== "Peserta dipilih saat membuat shift")
+    const baselines = (management.healthBaselines ?? []).filter(row => shift.workspace.pekerja.some(worker => worker.kode === row.pekerjaKode)).map(row => ({ ...row }))
+    return { ...shift, workspace: { ...shift.workspace, kehadiran }, readiness: { checkins: [], reviews: [], baselines } }
+  })
+  if (shifts.every((shift, index) => shift === management.shifts[index])) return s.management ? s : { ...s, management }
+  const active = shifts.find(shift => shift.id === management.activeId)
+  return { ...s, ...(active ? active.workspace : workspaceSnapshot(s)), management: { ...management, shifts } }
 }
 
 export function currentShift(s: AppState) {
