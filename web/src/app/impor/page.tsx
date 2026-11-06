@@ -9,7 +9,7 @@ import { useApp } from "@/lib/store"
 export default function ImporPage() {
   const { state } = useApp()
   return <>
-    <PageHeader title="Data pekerja" peran="Petugas data · HSE" summary="Kelola identitas dan penugasan pekerja. Pantau dokumen pemeriksaan, kondisi saat check-in, dan tindak lanjut HSE per tanggal." />
+    <PageHeader title="Data pekerja" summary="Kelola identitas dan penugasan pekerja. Pantau dokumen pemeriksaan, kondisi saat check-in, dan tindak lanjut HSE per tanggal." />
     <RoleHint peran={["PETUGAS_DATA", "HSE", "KLINIK"]} />
     <CompanyConnection />
     <WorkerDirectory key={state.sesi?.userId} />

@@ -24,6 +24,10 @@ Dasar konteks: [NIOSH tentang panas, kekurangan cairan dan risiko cedera ginjal]
 
 Belum ada transport sensor fisik/API autentikasi perangkat. Karena itu pekerja tanpa kejadian individual yang tersimpan menampilkan keadaan tidak diketahui. Dataset berisi untuk QA hanya dibuat dalam sesi browser terisolasi, menggunakan label REPLAY; tidak menjadi seed operasional atau data browser pengguna.
 
+Permintaan lanjutan pengguna: perlihatkan semua sinyal terisi. Detail yang seluruh datanya kosong kini otomatis menampilkan **Data ilustrasi**, cuplikan tetap pukul 13.40 WIB pada tanggal pemantauan, dari `body-monitoring-example.ts`. Tiga skenario stabil dibagi antarpekerja: jeda minum meningkat, panas meningkat, serta kerja/hidrasi terkendali. Kelima marker berisi nilai, sumber, waktu, penjelasan dan tindakan. Tombol **Lihat data tersimpan** kembali ke data asli; data asli yang sudah tersedia tetap menjadi tampilan awal. Pratinjau tidak membuat telemetri, consent, profil medis, rencana, maupun laporan shift. Semua sumber contoh menyebut Ilustrasi; nilai mentah Band tetap khusus tampilan Klinik. Angka contoh tidak ikut perhitungan atau ekspor.
+
 ## Verifikasi
 
 Audit depan dan belakang: 79 solid; clearance, support, depth order, terminals, folds, self-overlap, wobble, stand-in shapes dan crowding semuanya nol. Pemeriksaan ujung garis dijalankan pada halaman inspeksi kedua tema/tampak. Uji model mencakup data kosong, kunjungan terlambat dengan heartbeat segar, koneksi kedaluwarsa/offline, isolasi pekerja, consent Band, redaksi HSE, retry/ID konflik, invalid/future event, dan closed history. Hasil build, browser dan total tes akhir dicatat di source-flow-reconciliation.md.
+
+Revisi contoh terisi: 10 tes fokus (tujuh model asli, tiga contoh) lulus, TypeScript dan lint berkas berubah lulus. Browser membuktikan kelima sinyal terisi otomatis pada workspace kosong, kembali ke data asli melalui tombol sumber, tiga variasi antarpekerja, dan tanpa overflow desktop/mobile terang/gelap. Pratinjau tetap berupa model tampilan, tanpa penulisan state operasional.

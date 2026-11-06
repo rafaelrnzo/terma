@@ -21,7 +21,6 @@ export const SURFACES = [
   { href: "/instruksi", label: "Instruksi mandor", detail: "Pembagian dan penerimaan rencana per regu" },
   { href: "/tindakan", label: "Tindakan & verifikasi", detail: "Pelaksanaan, laporan mandor, dan pemeriksaan HSE" },
   { href: "/laporan", label: "Laporan & audit", detail: "Rekap shift dan jejak aktivitas" },
-  { href: "/panduan", label: "Panduan alur shift", detail: "Data pekerja, draft, terbitkan, pelaksanaan, verifikasi, dan penutupan" },
 ]
 
 export const STEP_OUTCOMES: Record<string, string> = {

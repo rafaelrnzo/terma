@@ -113,7 +113,7 @@ export default function Home() {
       </section>
       <section className="landing-section" aria-labelledby="lifecycle-title"><div className="landing-section-heading"><h2 id="lifecycle-title">Awal yang jelas.<br />Akhir yang tercatat.</h2><p>Kelola pekerja satu kali, gunakan kembali untuk setiap shift. Semua keputusan dan laporan mengikuti status pekerjaan yang sedang berlangsung.</p></div><ol className="workflow-map"><li><span>01</span><strong>Data pekerja</strong><p>Tambah, edit, atau arsipkan identitas.</p></li><li><span>02</span><strong>Draft shift</strong><p>Pilih peserta dan siapkan rencana.</p></li><li><span>03</span><strong>Shift berjalan</strong><p>Bagikan instruksi dan catat pelaksanaan.</p></li><li><span>04</span><strong>Shift selesai</strong><p>Verifikasi, tutup, dan cetak laporan.</p></li></ol></section>
       <section id="pertanyaan" className="landing-section landing-faq" aria-labelledby="faq-title">
-        <div><h2 id="faq-title">Sebelum Anda mulai.</h2><p className="mt-4 max-w-sm text-sm leading-relaxed text-muted-foreground">Jawaban singkat tentang data, peran, dan cara menggunakan TERMA.</p><Link href="/panduan" className="mt-5 inline-flex min-h-11 items-center gap-2 text-sm underline underline-offset-4">Baca panduan aplikasi<ArrowRight className="size-4" aria-hidden /></Link></div>
+        <div><h2 id="faq-title">Sebelum Anda mulai.</h2><p className="mt-4 max-w-sm text-sm leading-relaxed text-muted-foreground">Jawaban singkat tentang data, peran, dan cara menggunakan TERMA.</p></div>
         <Accordion type="single" collapsible>{questions.map((item, index) => <AccordionItem key={item.question} value={String(index)}><AccordionTrigger className="py-5 text-base">{item.question}</AccordionTrigger><AccordionContent className="max-w-prose text-sm leading-relaxed text-muted-foreground">{item.answer}</AccordionContent></AccordionItem>)}</Accordion>
       </section>
       <section className="landing-start" aria-labelledby="start-title">
@@ -121,6 +121,6 @@ export default function Home() {
         <Button asChild size="lg"><Link href="/ringkasan">Buka ruang kerja<ArrowRight aria-hidden /></Link></Button>
       </section>
     </main>
-    <footer className="intro-footer"><p>TERMA · Thermal Exposure & Renal Monitoring Assistant</p><Link href="/panduan" className="shrink-0 underline underline-offset-4">Panduan penggunaan</Link></footer>
+    <footer className="intro-footer"><p>TERMA · Thermal Exposure & Renal Monitoring Assistant</p></footer>
   </div>
 }

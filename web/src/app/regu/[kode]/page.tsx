@@ -50,7 +50,7 @@ export default function ReguPage({ params }: { params: Promise<{ kode: string }>
   const rs = rencanaAktif(state).filter((r) => kodePekerja.includes(r.pekerjaKode))
   return (
     <>
-      <PageHeader title={regu.nama}>Rencana aktif untuk {kodePekerja.length} pekerja di regu ini.</PageHeader>
+      <PageHeader title={regu.nama} />
       {rs.length === 0 ? (
         <p className="text-muted-foreground">Belum ada rencana untuk regu ini.</p>
       ) : (

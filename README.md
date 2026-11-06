@@ -12,23 +12,25 @@ npm run dev
 
 The current application stores its workspace in the browser. Server authentication, cloud persistence, live sensor ingest, trained AI and clinical integration remain future integration work.
 
-## Guided shift workflow
+## Operational modules
 
 Start in the role workspace: **/admin** for data officers, **/hse** for HSE, **/mandor** for foremen and **/klinik** for Clinic. **/ringkasan** routes to the current role. The source flow is 05.30 HR/assignment/forecast preparation → 06.30 HSE approval → 06.45 crew instructions → 07.00 worker check-in → daytime monitoring and revised plans → 17.00 reporting/verification/closure. Check-in and a full day of measured WBGT are not prerequisites for the morning plan. Weather estimates retain their source and uncalibrated label.
 
 **Data pekerja** contains the worker table, filters and health detail with an interactive Anatomy human figure. The five markers explain environmental heat, drinking-station visits, Band signals, kidney-risk context and planned/verified exposure. Missing worker-specific telemetry remains unknown. Clinical condition answers are only shown to Clinic; raw Band readings also require active consent. HSE sees work summaries and generic health factors.
 
+Health details with no saved signals open a filled illustration with three worker scenarios; **Lihat data tersimpan** returns to actual records. Illustration values never enter shift calculations or reports. Dropdowns use the shared Select component; lists with more than six choices add search by label or record ID, including worker selection, adaptation days and measurement hours.
+
 New shifts use the PDF v0 planning engine: personal points, hourly allocation reductions, cooler-first allocation and the separate daily acclimatisation cap. New condition/measurement inputs create a pending replacement when an approved plan changes. Previous approved versions and closed snapshots are retained. **/band** handles HSE allocation and foreman handoff/clean return. **/klinik** handles check-in follow-up and separate MCU/medicine/Band consent. See [source reconciliation](docs/source-flow-reconciliation.md) and [body monitoring](docs/body-monitoring.md).
 
-Worker forms support create/edit/delete for unused records and archive/restore for workers with shift history. Each shift stores its own participant and assignment snapshot. Master edits affect future shifts; they do not rewrite existing history. Drafts can be edited or deleted before approvals. See [focused shift flow and checks](docs/focused-shift-flow.md) and [CRUD lifecycle and boundaries](docs/crud-shift-flow.md).
+Worker forms support create/edit/delete for unused records and archive/restore for workers with shift history. Each shift stores its own participant and assignment snapshot. The shift detail is an overview; adaptation, measurements, plans, crew instructions, execution and verification have separate worklists/routes. Header account selection is the only role switch. Publish from Plans; close from Execution & verification. Master edits affect future shifts; they do not rewrite existing history. Drafts can be edited or deleted before approvals. See [focused shift flow and checks](docs/focused-shift-flow.md) and [CRUD lifecycle and boundaries](docs/crud-shift-flow.md).
 
-Use **Panduan penggunaan** or the header help button for Driver.js guidance. The shift tour explains the task rail, active form, role handoff and next button on the same page. Tours explain without submitting data or switching roles.
+The standalone [E2E demo guide](docs/demo/index.html) contains the presenter checklist, account changes, module links and alternative scenarios. It opens locally as a single offline HTML file. Demo guides and tours are not part of the application UI.
 
 See [role workspaces, health check-in, and source boundaries](docs/role-workspaces.md). **Forecasting** (`/forecasting`) is a map and native-period weather view for preparation; **Monitoring** (`/monitoring`) shows saved WBGT and task progress for the selected shift. Neither surface claims a live external integration.
 
 ## Interactive IoT instruments
 
-Open **Perangkat IoT** to inspect the Anatomy isometric bench: WBGT Station, RFID water point, upper-arm Band and gateway. Select a device to zoom in, tap a worker card, or pause the instrument activity. Under Station, **Perbesar wet bulb** exposes the sectioned reservoir, water level and immersed wick; the globe and air sensor remain dry. The **Sensor** task embeds a focused Station view and owns automatic reading synchronization, which fills missing shift intervals. The monitoring page points back to the selected shift. The local telemetry adapter is replaceable; generated readings retain recorded provenance and do not overwrite manual observations or closed history. See [implementation and checks](docs/iot-visualization.md) and [Anatomy provenance](docs/anatomy-provenance.md).
+Open **Perangkat IoT** to inspect the Anatomy isometric bench: WBGT Station, RFID water point, upper-arm Band and gateway. Select a device to zoom in, tap a worker card, or pause the instrument activity. Under Station, **Perbesar wet bulb** exposes the sectioned reservoir, water level and immersed wick; the globe and air sensor remain dry. The **Bacaan WBGT** module owns explicit local-record ingestion, which fills missing shift intervals and retains REPLAY provenance. The monitoring page points back to the selected shift. The local telemetry adapter is replaceable; generated readings retain recorded provenance and do not overwrite manual observations or closed history. See [implementation and checks](docs/iot-visualization.md) and [Anatomy provenance](docs/anatomy-provenance.md).
 
 ## Proposal alignment
 

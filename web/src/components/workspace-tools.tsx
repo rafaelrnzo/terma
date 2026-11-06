@@ -36,6 +36,5 @@ export function WorkspaceTools() {
         </div>
       </DialogContent>
     </Dialog>
-    <Button asChild variant="ghost" className="hidden sm:inline-flex"><Link href="/panduan">Panduan</Link></Button>
   </div>
 }

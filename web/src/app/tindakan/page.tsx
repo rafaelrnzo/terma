@@ -1,16 +1,17 @@
 "use client"
 
+import { ShiftClosure } from "@/components/shift-closure"
 import { LaporDialog, VerifikasiDialog } from "@/components/action-dialogs"
 import { useState } from "react"
 import { MagnifyingGlassIcon as Search } from "@phosphor-icons/react"
-import { NextStep, PageHeader, WorkflowEmpty } from "@/components/app-shell"
+import { PageHeader, WorkflowEmpty } from "@/components/app-shell"
 import { RoleHint } from "@/components/role-hint"
 import { LifecycleBadge } from "@/components/status"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { OptionSelect } from "@/components/ui/option-select"
 import { REGU } from "@/lib/config"
 import { kelompokTindakan, cocokPencarianTindakan, FILTER_TINDAKAN } from "@/lib/tindak-lanjut"
 import { useApp, useIzin } from "@/lib/store"
@@ -31,11 +32,7 @@ export default function TindakanPage() {
   const reset = () => { setQuery(""); setFilter("SEMUA") }
 
   return <>
-    <PageHeader no="6" title="Tindakan & verifikasi" peran="Mandor mencatat · HSE memverifikasi" summary="Catat pelaksanaan di lapangan, lalu verifikasi bersama HSE. Durasi rencana dan laporan tetap terpisah.">
-      Setiap tindakan punya status sendiri: DIBUAT, DISAMPAIKAN, DIAKUI, TINDAKAN DILAPORKAN, lalu TERVERIFIKASI atau BELUM SELESAI.
-      Durasi paparan direncanakan, dilaporkan mandor, dan diverifikasi HSE disimpan terpisah. Laporan mandor tidak mengubah data rencana
-      menjadi data aktual, dan mandor tidak bisa menurunkan batas keselamatan dengan menulis alasan.
-    </PageHeader>
+    <PageHeader context title={user?.role === "MANDOR" ? "Pelaksanaan regu" : "Pelaksanaan & verifikasi"} summary="Catat pelaksanaan di lapangan, lalu verifikasi bersama HSE. Durasi rencana dan laporan tetap terpisah." />
     <RoleHint peran={user?.role === "HSE" ? ["HSE"] : ["MANDOR"]} />
 
     {daftar.length === 0 ? <WorkflowEmpty title="Belum ada tindakan untuk shift ini" href="/rencana" label="Buka rencana & persetujuan">Tindakan dibuat saat HSE menyetujui rencana. Setelah instruksi diakui, mandor dapat mencatat pelaksanaannya.</WorkflowEmpty> : <>
@@ -53,7 +50,7 @@ export default function TindakanPage() {
         <CardContent>
           <div className="no-print mb-5 grid items-end gap-3 sm:grid-cols-[minmax(0,1fr)_14rem]">
             <div className="space-y-2"><Label htmlFor="cari-tindakan">Cari tindakan</Label><div className="relative"><Search className="pointer-events-none absolute top-3.5 left-3 size-4 text-muted-foreground" aria-hidden /><Input id="cari-tindakan" type="search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Nama pekerja, ID, atau tindakan" className="pl-9" /></div></div>
-            <div className="space-y-2"><Label htmlFor="filter-tindakan">Status tindak lanjut</Label><Select value={filter} onValueChange={setFilter}><SelectTrigger id="filter-tindakan" className="w-full"><SelectValue /></SelectTrigger><SelectContent>{FILTER_TINDAKAN.map((f) => <SelectItem key={f.value} value={f.value}>{f.label}</SelectItem>)}</SelectContent></Select></div>
+            <div className="space-y-2"><Label htmlFor="filter-tindakan">Status tindak lanjut</Label><OptionSelect id="filter-tindakan" value={filter} onValueChange={setFilter} options={FILTER_TINDAKAN} searchPlaceholder="Cari status tindakan…" /></div>
           </div>
           <p role="status" className="mb-4 text-xs text-muted-foreground">{hasil.length} dari {daftar.length} tindakan ditampilkan{filter !== "SEMUA" || query.trim() ? " · hasil difilter" : ""}.</p>
           {hasil.length === 0 && <div className="space-y-3 border-t py-8"><h3 className="font-heading text-lg font-semibold">Tidak ada tindakan yang cocok</h3><p className="text-sm text-muted-foreground">Coba nama atau ID lain, atau tampilkan seluruh status.</p><Button variant="outline" onClick={reset}>Reset pencarian & filter</Button></div>}
@@ -84,6 +81,6 @@ export default function TindakanPage() {
         </CardContent>
       </Card>
     </>}
-    <NextStep />
+    <ShiftClosure />
   </>
 }

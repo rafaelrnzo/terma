@@ -5,7 +5,7 @@ import { WeatherConnection } from "@/components/weather-connection"
 import { useState } from "react"
 import { DeviceReadingsButton } from "@/components/device-readings-button"
 import { HeatMonitor } from "@/components/heat-monitor"
-import { NextStep, PageHeader } from "@/components/app-shell"
+import { PageHeader } from "@/components/app-shell"
 import { ThermometerIcon as Thermometer } from "@phosphor-icons/react"
 import { OriginBadge, QualityBadge } from "@/components/status"
 import { RoleHint } from "@/components/role-hint"
@@ -14,9 +14,10 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { OptionSelect } from "@/components/ui/option-select"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { AMBANG_USIA_BACAAN_MENIT, ATURAN_FIXTURE, JAM_SHIFT, ZONA } from "@/lib/config"
+import { ATURAN_FIXTURE, JAM_SHIFT, ZONA } from "@/lib/config"
 import { jam, kualitasBacaan, rentangJam, usiaBacaanMenit } from "@/lib/rules"
 import { useApp, useIzin } from "@/lib/store"
 import type { Workload } from "@/lib/types"
@@ -40,13 +41,10 @@ export default function PengukuranPage() {
 
   return (
     <>
-      <PageHeader no="3" title="Pengukuran WBGT / ISBB" peran="Petugas data · HSE" summary="Lengkapi bacaan setiap zona dan jam kerja. Prakiraan tidak menggantikan pengukuran lokasi.">
-        Status siap hanya lahir dari bacaan WBGT per zona per jam. Bacaan yang diambil lebih dari {AMBANG_USIA_BACAAN_MENIT} menit sebelum
-        interval yang dipakainya menjadi KEDALUWARSA. Prakiraan BMKG disimpan dengan interval aslinya dan tidak diubah menjadi ISBB per jam.
-      </PageHeader>
+      <PageHeader context title="Pengukuran WBGT / ISBB" summary="Lengkapi bacaan setiap zona dan jam kerja. Prakiraan tidak menggantikan pengukuran lokasi." />
       <RoleHint peran={["PETUGAS_DATA", "HSE"]} />
 
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-4 rounded-md border bg-card p-5"><div><h2 className="text-sm font-semibold">Bacaan TERMA Station</h2><p className="mt-1 text-xs text-muted-foreground">Ambil bacaan perangkat untuk melengkapi interval kosong pada shift ini.</p></div><DeviceReadingsButton /></div>
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-4 rounded-md border bg-card p-5"><div><h2 className="text-sm font-semibold">Bacaan TERMA Station</h2><p className="mt-1 text-xs text-muted-foreground">Rekaman adaptor melengkapi interval kosong dan menyimpan sumber REPLAY. Bacaan pengukuran dapat dicatat pada formulir di bawah.</p></div><DeviceReadingsButton label="Gunakan rekaman adaptor lokal" /></div>
       <Card>
         <CardHeader>
           <CardTitle>Bacaan per zona</CardTitle>
@@ -148,10 +146,7 @@ export default function PengukuranPage() {
               </div>
               <div className="space-y-1">
                 <Label htmlFor="in-jam">Interval</Label>
-                <Select value={jamMulai} onValueChange={setJamMulai} disabled={!boleh}>
-                  <SelectTrigger id="in-jam" className="w-full bg-card"><SelectValue /></SelectTrigger>
-                  <SelectContent>{JAM_SHIFT.map((h) => <SelectItem key={h} value={String(h)}>{rentangJam(h)}</SelectItem>)}</SelectContent>
-                </Select>
+                <OptionSelect id="in-jam" value={jamMulai} onValueChange={setJamMulai} disabled={!boleh} options={JAM_SHIFT.map(hour=>({value:String(hour),label:rentangJam(hour)}))} searchPlaceholder="Cari interval jam…" />
               </div>
               <div className="space-y-1">
                 <Label htmlFor="in-isbb">ISBB (°C)</Label>
@@ -213,7 +208,7 @@ export default function PengukuranPage() {
       </Card>
 
       <section className="mt-8"><h2 className="mb-4 text-lg font-semibold">Zona & interval lapangan</h2><HeatMonitor /></section>
-      <NextStep />
+
     </>
   )
 }

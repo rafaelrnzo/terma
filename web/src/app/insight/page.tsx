@@ -8,6 +8,7 @@ import { OriginBadge, QualityBadge, StatusChip } from "@/components/status"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
+import { OptionSelect } from "@/components/ui/option-select"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { lingkupPekerja } from "@/lib/access"
 import { ATURAN_FIXTURE, REGU, TUGAS, ZONA } from "@/lib/config"
@@ -59,10 +60,7 @@ export default function InsightPage() {
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
         <div className="w-full max-w-sm space-y-2">
           <Label htmlFor="insight-worker">Pilih pekerja</Label>
-          <Select value={worker.kode} onValueChange={value => { setSelectedCode(value); setComparisonZone(""); window.history.replaceState(window.history.state, "", `/insight?pekerja=${encodeURIComponent(value)}`) }}>
-            <SelectTrigger id="insight-worker" className="w-full bg-card"><SelectValue /></SelectTrigger>
-            <SelectContent>{workers.map(item => <SelectItem key={item.kode} value={item.kode}>{item.nama} · {item.kode}</SelectItem>)}</SelectContent>
-          </Select>
+          <OptionSelect id="insight-worker" value={worker.kode} onValueChange={value => { setSelectedCode(value); setComparisonZone(""); window.history.replaceState(window.history.state, "", `/insight?pekerja=${encodeURIComponent(value)}`) }} options={workers.map(item=>({value:item.kode,label:`${item.nama} · ${item.kode}`}))} searchPlaceholder="Cari nama atau ID pekerja…" />
         </div>
         <Button asChild variant="outline"><Link href={`/pekerja/${worker.kode}`}>Buka profil pekerja<ArrowRight aria-hidden /></Link></Button>
       </div>

@@ -1,5 +1,6 @@
 "use client"
 
+import { OptionSelect } from "@/components/ui/option-select"
 import { useState } from "react"
 import { CameraIcon, IdentificationCardIcon, ArrowRightIcon } from "@phosphor-icons/react"
 import { Label } from "@/components/ui/label"
@@ -17,7 +18,7 @@ export function KioskIdentity({ workers, onIdentified }: { workers: Pekerja[]; o
   const worker = workers.find(person => person.kode === code)
   return <div className="kiosk-identity">
     <div className="kiosk-entry-modes" role="group" aria-label="Cara absen"><span className="kiosk-method-indicator" data-mode={mode} aria-hidden />{modes.map(item => <button key={item.value} type="button" aria-pressed={mode === item.value} onClick={() => setMode(item.value)}><span className="selectable-icon"><item.Icon className="icon-outline" /><item.Icon className="icon-fill" weight="fill" /></span><strong>{item.title}</strong><small>{item.description}</small></button>)}</div>
-    <div className="kiosk-worker-select"><Label htmlFor="kiosk-worker">{mode === "card" ? "Pilih kartu pekerja" : "Siapa yang akan absen?"}</Label><select id="kiosk-worker" className="management-select" value={code} onChange={event => setCode(event.target.value)}><option value="">Pilih nama / ID pekerja</option>{workers.map(person => <option key={person.kode} value={person.kode}>{person.nama} · {person.kode}</option>)}</select></div>
+    <div className="kiosk-worker-select"><Label htmlFor="kiosk-worker">{mode === "card" ? "Pilih kartu pekerja" : "Siapa yang akan absen?"}</Label><OptionSelect id="kiosk-worker" value={code} onValueChange={setCode} options={workers.map(person=>({value:person.kode,label:`${person.nama} · ${person.kode}`}))} placeholder="Pilih nama / ID pekerja" searchPlaceholder="Cari nama atau ID pekerja…" /></div>
     {mode === "camera" ? <CameraEntry name={worker?.nama} onConfirm={method => { if (worker) onIdentified(worker.kode, method) }} /> : worker ? <CardEntry key={worker.kode} name={worker.nama} code={worker.kode} onConfirm={() => onIdentified(worker.kode, "TAP_KARTU")} /> : <div className="kiosk-identify-empty"><IdentificationCardIcon size={32} /><p>Pilih {mode === "card" ? "kartu" : "nama"} pekerja untuk memulai.</p><span>Identitas<ArrowRightIcon size={14} />Kondisi tubuh<ArrowRightIcon size={14} />Absen tercatat</span></div>}
   </div>
 }

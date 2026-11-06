@@ -1,64 +1,35 @@
 "use client"
 
-import { NextStep, PageHeader, WorkflowEmpty } from "@/components/app-shell"
-import { WorkerAdaptation, Kalender } from "@/components/worker-adaptation"
-import { RoleHint } from "@/components/role-hint"
-import { Card, CardContent } from "@/components/ui/card"
+import { useState } from "react"
+import { PageHeader } from "@/components/app-shell"
+import { WorkerAdaptation } from "@/components/worker-adaptation"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { OptionSelect } from "@/components/ui/option-select"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { kandidatUntuk, useApp } from "@/lib/store"
 import { scopedWorkspace } from "@/lib/workspace"
+import { REGU } from "@/lib/config"
 
 export default function PaparanPage() {
   const { state: workspace, user } = useApp()
+  const [query,setQuery] = useState("")
+  const [filter,setFilter] = useState("ALL")
+  const [selected,setSelected] = useState("")
   if (!user) return null
-  const state = scopedWorkspace(workspace, user)
-  if (state.pekerja.length === 0)
-    return (
-      <>
-        <PageHeader no="2" title="Riwayat paparan & adaptasi" />
-        <WorkflowEmpty title="Siapkan data pekerja" href="/impor" label="Buka data perusahaan">Data pekerja dan riwayat kehadiran diperlukan untuk meninjau kandidat adaptasi.</WorkflowEmpty>
-      </>
-    )
-
-  const sudahKonfirmasi = new Set(state.konfirmasi.map((k) => k.pekerjaKode))
-  const kandidat = state.pekerja.filter((p) => kandidatUntuk(state, p).pemicu)
-    .sort((a, b) => Number(sudahKonfirmasi.has(a.kode)) - Number(sudahKonfirmasi.has(b.kode)))
-  const lain = state.pekerja.filter((p) => !kandidatUntuk(state, p).pemicu)
-
-  return (
-    <>
-      <PageHeader no="2" title="Paparan & adaptasi" peran="HSE" summary="Konfirmasi riwayat paparan dan profil adaptasi. Kehadiran saja bukan bukti paparan panas.">
-        Sistem menandai kandidat adaptasi dari data kehadiran: pekerja baru, kembali setelah tujuh hari tanpa paparan, atau riwayat yang
-        tidak lengkap. Kehadiran hanya pemicu tinjauan. HSE yang mengonfirmasi profil dan hari adaptasi; tanggal mulai kerja saja tidak
-        membuktikan adaptasi, dan hari adaptasi tidak maju otomatis setiap pergantian kalender.
-      </PageHeader>
-      <RoleHint peran={["HSE"]} />
-
-      <div className="mb-4 flex flex-wrap items-baseline justify-between gap-2"><h2 className="font-heading text-lg font-semibold">Kandidat adaptasi <span className="font-normal text-muted-foreground">({kandidat.length})</span></h2><p className="text-sm text-muted-foreground">{kandidat.filter((p) => !sudahKonfirmasi.has(p.kode)).length} belum dikonfirmasi · ditampilkan lebih dulu</p></div>
-      <p className="mb-4 text-xs leading-relaxed text-muted-foreground">Kalender absensi: H = hadir · C = cuti · S = sakit · A = alfa · ? = tidak ada catatan. Kehadiran bukan bukti paparan panas.</p>
-      <div data-guide="adaptation" className="grid gap-4">
-        {kandidat.length === 0 && <p className="rounded-xl bg-card p-6 text-sm text-muted-foreground">Tidak ada kandidat adaptasi dari riwayat saat ini. Data tanpa pemicu ditampilkan di bawah.</p>}
-        {kandidat.map((p) => (
-          <WorkerAdaptation key={p.kode} p={p} />
-        ))}
-      </div>
-
-      <h2 className="mb-4 mt-8 font-heading text-lg font-semibold">Tanpa pemicu adaptasi <span className="font-normal text-muted-foreground">({lain.length})</span></h2>
-      <Card>
-        <CardContent className="divide-y">
-          {lain.length === 0 && <p className="text-sm text-muted-foreground">Semua pekerja memiliki pemicu tinjauan adaptasi.</p>}
-          {lain.map((p) => (
-            <div key={p.kode} className="flex flex-wrap items-center justify-between gap-4 py-3">
-              <div>
-                <div className="font-medium">{p.nama}</div>
-                <div className="text-xs text-muted-foreground">{kandidatUntuk(state, p).keterangan}</div>
-              </div>
-              <Kalender p={p} />
-            </div>
-          ))}
-        </CardContent>
-      </Card>
-
-      <NextStep />
-    </>
-  )
+  const state = scopedWorkspace(workspace,user)
+  const rows = state.pekerja.map(worker=>({worker,confirmation:state.konfirmasi.find(row=>row.pekerjaKode===worker.kode),candidate:kandidatUntuk(state,worker)}))
+  const confirmed = rows.filter(row=>row.confirmation).length
+  const filtered = rows.filter(row=>`${row.worker.nama} ${row.worker.kode}`.toLocaleLowerCase("id").includes(query.toLocaleLowerCase("id")) && (filter==="ALL" || (filter==="PENDING" ? !row.confirmation : !!row.confirmation))).toSorted((a,b)=>Number(!!a.confirmation)-Number(!!b.confirmation))
+  const opened = rows.find(row=>row.worker.kode===selected)
+  return <>
+    <PageHeader title="Adaptasi pekerja" summary="Tinjau riwayat paparan, profil dan hari adaptasi peserta shift. Kehadiran merupakan konteks tinjauan; konfirmasi tetap menjadi keputusan HSE." />
+    <section className="summon-panel" data-guide="adaptation"><div className="panel-heading"><div><h2>Daftar adaptasi</h2><p>{confirmed}/{rows.length} pekerja dikonfirmasi</p></div></div>
+      <div className="grid gap-4 border-b p-5 sm:grid-cols-[minmax(0,1fr)_15rem]"><div className="space-y-2"><Label htmlFor="adaptation-search">Cari pekerja</Label><Input id="adaptation-search" type="search" value={query} onChange={event=>setQuery(event.target.value)} placeholder="Nama atau ID pekerja" /></div><div className="space-y-2"><Label htmlFor="adaptation-status">Status konfirmasi</Label><OptionSelect id="adaptation-status" value={filter} onValueChange={setFilter} options={[{value:"ALL",label:"Semua pekerja"},{value:"PENDING",label:"Belum dikonfirmasi"},{value:"DONE",label:"Sudah dikonfirmasi"}]} /></div></div>
+      <Table aria-label="Daftar adaptasi pekerja"><TableHeader><TableRow><TableHead>Pekerja</TableHead><TableHead>Regu</TableHead><TableHead>Pemicu tinjauan</TableHead><TableHead>Profil terkonfirmasi</TableHead><TableHead>Hari adaptasi</TableHead><TableHead>Aksi</TableHead></TableRow></TableHeader><TableBody>{filtered.map(({worker,confirmation,candidate})=><TableRow key={worker.kode}><TableCell><strong className="font-medium">{worker.nama}</strong><p className="mt-1 text-xs text-muted-foreground">{worker.kode}</p></TableCell><TableCell>{REGU.find(row=>row.kode===worker.reguKode)?.nama}</TableCell><TableCell>{candidate.pemicu ? candidate.pemicu==="PEKERJA_BARU" ? "Pekerja baru" : candidate.pemicu==="RIWAYAT_TIDAK_LENGKAP" ? "Riwayat tidak lengkap" : "Kembali setelah absen" : "Tanpa pemicu"}</TableCell><TableCell>{!confirmation ? "Belum dikonfirmasi" : confirmation.profil==="NORMAL" ? "Normal" : confirmation.profil==="PEKERJA_BARU" ? "Pekerja baru" : "Berpengalaman kembali"}</TableCell><TableCell>{confirmation?.profil==="NORMAL" ? "—" : confirmation?.hariAdaptasi ?? "—"}</TableCell><TableCell><Button variant="outline" aria-label={`Tinjau adaptasi ${worker.nama}`} onClick={()=>setSelected(worker.kode)}>Tinjau adaptasi</Button></TableCell></TableRow>)}{!filtered.length && <TableRow><TableCell colSpan={6} className="py-10 text-center text-muted-foreground">Tidak ada pekerja yang cocok dengan pencarian dan filter.</TableCell></TableRow>}</TableBody></Table>
+    </section>
+    <Dialog open={!!opened} onOpenChange={open=>{if(!open)setSelected("")}}><DialogContent className="sm:max-w-4xl"><DialogHeader><DialogTitle>Tinjauan adaptasi</DialogTitle><DialogDescription>Riwayat dan keputusan untuk {opened?.worker.nama}. Perubahan rencana disimpan sebagai versi baru bila diperlukan.</DialogDescription></DialogHeader>{opened && <WorkerAdaptation key={opened.worker.kode} p={opened.worker} onSaved={()=>setSelected("")} />}</DialogContent></Dialog>
+  </>
 }

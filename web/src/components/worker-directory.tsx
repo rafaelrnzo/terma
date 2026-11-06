@@ -1,5 +1,6 @@
 "use client"
 
+import { OptionSelect } from "@/components/ui/option-select"
 import { useState } from "react"
 import Link from "next/link"
 import { HeartbeatIcon, MagnifyingGlassIcon, UsersThreeIcon } from "@phosphor-icons/react"
@@ -52,8 +53,8 @@ export function WorkerDirectory() {
     <div className="grid min-w-0 gap-4 border-b p-5 sm:grid-cols-2 xl:grid-cols-4">
       <div className="min-w-0 space-y-2"><Label htmlFor="worker-search">Cari nama, ID, atau regu</Label><div className="relative"><MagnifyingGlassIcon aria-hidden className="pointer-events-none absolute top-3 left-3 text-muted-foreground" size={16} /><Input id="worker-search" value={query} onChange={event => { setQuery(event.target.value); setPage(1) }} placeholder="Cari pekerja…" className="pl-9" /></div></div>
       <div className="min-w-0 space-y-2"><Label htmlFor="worker-monitoring-date">Tanggal pemantauan</Label><Input id="worker-monitoring-date" type="date" value={date} onChange={event => { if (event.target.value) { setDate(event.target.value); setPage(1) } }} /></div>
-      <div className="min-w-0 space-y-2"><Label htmlFor="worker-crew">Regu</Label><select id="worker-crew" className="management-select" value={crew} onChange={event => { setCrew(event.target.value); setPage(1) }}><option value="">Semua regu</option>{REGU.filter(row => user.role !== "MANDOR" || row.kode === user.reguKode).map(row => <option key={row.kode} value={row.kode}>{row.nama}</option>)}</select></div>
-      <div className="min-w-0 space-y-2"><Label htmlFor="worker-health-status">Status pemantauan</Label><select id="worker-health-status" className="management-select" value={status} onChange={event => { setStatus(event.target.value); setPage(1) }}><option value="">Semua status</option>{Object.entries(MONITORING_STATUS).map(([key, label]) => <option key={key} value={key}>{label}</option>)}</select></div>
+      <div className="min-w-0 space-y-2"><Label htmlFor="worker-crew">Regu</Label><OptionSelect id="worker-crew" value={crew} onValueChange={value=>{setCrew(value);setPage(1)}} options={[{value:"",label:"Semua regu"},...REGU.filter(row=>user.role!=="MANDOR" || row.kode===user.reguKode).map(row=>({value:row.kode,label:row.nama}))]} /></div>
+      <div className="min-w-0 space-y-2"><Label htmlFor="worker-health-status">Status pemantauan</Label><OptionSelect id="worker-health-status" value={status} onValueChange={value=>{setStatus(value);setPage(1)}} options={[{value:"",label:"Semua status"},...Object.entries(MONITORING_STATUS).map(([value,label])=>({value,label}))]} /></div>
     </div>
     <div className="flex flex-wrap items-center justify-between gap-3 border-b px-5 py-3"><p className="text-xs text-muted-foreground">{tanggalLabel(date)} · {showArchived ? "Arsip pekerja" : "Pekerja aktif"}{!isHse && " · Rincian kondisi hanya untuk Klinik"}</p><div className="flex gap-2">{hasFilters && <Button variant="ghost" size="sm" onClick={() => { setQuery(""); setCrew(""); setStatus(""); setPage(1) }}>Reset filter</Button>}<Button variant="outline" size="sm" onClick={() => { setShowArchived(value => !value); setPage(1) }}>{showArchived ? "Lihat pekerja aktif" : "Lihat arsip"}</Button></div></div>
     <Table className="worker-health-table" aria-label="Data pekerja dan pemantauan kesehatan">

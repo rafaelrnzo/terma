@@ -3,8 +3,9 @@ import type { Role, User } from "./types"
 export const NAV_GROUPS = [
   { label: "Beranda & shift", href: "/ringkasan", routes: [{ href: "/ringkasan", label: "Beranda & shift" }] },
   { label: "Data pekerja", href: "/impor", routes: [{ href: "/impor", label: "Data pekerja" }, { href: "/kesehatan-awal", label: "Baseline perusahaan" }] },
+  { label: "Operasional shift", href: "/rencana", routes: [{ href: "/paparan", label: "Adaptasi pekerja" }, { href: "/rencana", label: "Rencana & persetujuan" }, { href: "/instruksi", label: "Instruksi regu" }, { href: "/tindakan", label: "Pelaksanaan & verifikasi" }] },
   { label: "Forecasting", href: "/forecasting", routes: [{ href: "/forecasting", label: "Peta prakiraan" }] },
-  { label: "Monitoring", href: "/monitoring", routes: [{ href: "/monitoring", label: "Pantau shift" }, { href: "/perangkat", label: "Perangkat IoT" }, { href: "/absensi", label: "Absensi pekerja" }, { href: "/band", label: "Band bergilir" }] },
+  { label: "Monitoring", href: "/monitoring", routes: [{ href: "/monitoring", label: "Pantau shift" }, { href: "/pengukuran", label: "Bacaan WBGT" }, { href: "/perangkat", label: "Perangkat IoT" }, { href: "/absensi", label: "Absensi pekerja" }, { href: "/band", label: "Band bergilir" }] },
   { label: "Laporan & evaluasi", href: "/laporan", routes: [{ href: "/laporan", label: "Laporan shift" }, { href: "/analitik", label: "Analitik shift" }, { href: "/insight", label: "Insight individu" }, { href: "/kesehatan", label: "Rekap paparan" }] },
 ]
 
@@ -19,7 +20,7 @@ export function roleHomePath(user: User) { return ROLE_WORKSPACE[user.role].href
 
 export function navigationFor(user: User | null) {
   if (user?.role === "KLINIK") return NAV_GROUPS.filter(group => ["/ringkasan", "/impor"].includes(group.href))
-  return NAV_GROUPS.filter(group => user?.role !== "MANDOR" || group.href !== "/impor")
+  return NAV_GROUPS.filter(group => (!user || group.routes.some(route=>pageAllowedFor(user,route.href))) && (user?.role !== "MANDOR" || group.href !== "/impor"))
 }
 
 export const SHIFT_ROUTES = ["/paparan", "/pengukuran", "/rencana", "/instruksi", "/tindakan"]
@@ -27,7 +28,8 @@ export function isShiftRoute(path: string) {
   return SHIFT_ROUTES.includes(path) || path.startsWith("/pekerja/") || path.startsWith("/regu/")
 }
 export function navigationGroup(path: string) {
-  if (isShiftRoute(path) || path.startsWith("/shift/") || Object.values(ROLE_WORKSPACE).some(workspace => workspace.href === path)) return NAV_GROUPS[0]
+  if (path.startsWith("/shift/") || Object.values(ROLE_WORKSPACE).some(workspace => workspace.href === path)) return NAV_GROUPS[0]
+  if (path.startsWith("/pekerja/") || path.startsWith("/regu/")) return NAV_GROUPS.find(group=>group.href==="/rencana")
   return NAV_GROUPS.find(group => group.routes.some(route => route.href === path))
 }
 
@@ -37,7 +39,7 @@ export function pageAllowedFor(user: User, path: string) {
   if (path.startsWith("/klinik")) return user.role === "KLINIK"
   const home = Object.entries(ROLE_WORKSPACE).find(([,value])=>value.href===path)
   if (home) return home[0] === user.role
-  if (["/", "/kiosk", "/ringkasan", "/panduan"].includes(path)) return true
+  if (["/", "/kiosk", "/ringkasan"].includes(path)) return true
   if (user.role === "PETUGAS_DATA") return ["/impor","/absensi","/kesehatan-awal","/forecasting","/pengukuran","/perangkat","/monitoring"].includes(path) || path.startsWith("/shift/")
   if (user.role === "KLINIK") return ["/impor","/kesehatan-awal","/kesehatan","/monitoring"].includes(path)
   if (user.role === "MANDOR") return !["/impor","/kesehatan-awal","/paparan","/rencana","/pengukuran"].includes(path)

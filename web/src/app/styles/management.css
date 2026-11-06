@@ -1,5 +1,3 @@
-.management-select { display: block; width: 100%; min-height: 2.5rem; border: 1px solid var(--input); border-radius: var(--radius-md); background: var(--card); color: var(--foreground); padding: .5rem .75rem; font: inherit; font-size: .875rem; }
-.management-select:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
 .worker-health-table { min-width: 72rem; table-layout: fixed; }
 .worker-health-table td { white-space: normal; overflow-wrap: anywhere; vertical-align: top; padding: 1.25rem .75rem; }
 .worker-health-table .worker-identity { align-items: flex-start; }

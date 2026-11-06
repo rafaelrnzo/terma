@@ -1,9 +1,9 @@
 "use client"
 
 import { useRef, useState } from "react"
-import { CopyIcon as Copy, ChatTextIcon as MessageSquare, PaperPlaneTiltIcon as Send, XCircleIcon as XCircle } from "@phosphor-icons/react"
+import { CopyIcon as Copy, ChatTextIcon as MessageSquare, XCircleIcon as XCircle } from "@phosphor-icons/react"
 import { toast } from "sonner"
-import { NextStep, PageHeader, WorkflowEmpty } from "@/components/app-shell"
+import { PageHeader, WorkflowEmpty } from "@/components/app-shell"
 import { RoleHint } from "@/components/role-hint"
 import { DeliveryBadge } from "@/components/status"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
@@ -12,11 +12,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { REGU } from "@/lib/config"
 import { isiPesan, rencanaAktif, useApp, useIzin } from "@/lib/store"
 
-const KANAL = ["WhatsApp", "SMS", "Disampaikan langsung"]
+const KANAL = ["Kotak masuk TERMA", "WhatsApp", "SMS", "Disampaikan langsung"]
 
 export default function InstruksiPage() {
   const { state, user } = useApp()
@@ -25,18 +24,14 @@ export default function InstruksiPage() {
   if (!state.rencanaDihitung)
     return (
       <>
-        <PageHeader no="5" title="Instruksi mandor" />
+        <PageHeader context title="Instruksi mandor" />
         <WorkflowEmpty title="Instruksi menunggu rencana" href="/rencana" label="Buka rencana & persetujuan">Hitung dan setujui rencana terlebih dahulu. Instruksi per regu disusun dari versi yang sudah disetujui HSE.</WorkflowEmpty>
       </>
     )
 
   return (
     <>
-      <PageHeader no="5" title="Instruksi mandor" peran="HSE membagikan · Mandor mengakui" summary="Bagikan rencana yang disetujui secara manual, lalu catat pembagian dan pengakuan mandor secara terpisah.">
-        Ringkasan rencana yang sudah disetujui dibagikan ke mandor. TERMA belum terhubung ke kanal pesan, jadi HSE membagikannya sendiri
-        (salin atau buka WhatsApp) lalu mencatatnya di sini. Statusnya DIBAGIKAN MANUAL, tidak pernah TERKIRIM tanpa bukti kanal. Pengakuan
-        mandor di TERMA dicatat terpisah dan belum berarti tindakan terlaksana.
-      </PageHeader>
+      <PageHeader context title="Instruksi mandor" summary="Kelola instruksi per regu, versi yang dibagikan dan pengakuan penerimaan mandor." />
       <RoleHint peran={user?.role === "MANDOR" ? ["MANDOR"] : ["HSE"]} />
 
       <div data-guide="instructions" className="grid items-start gap-6">
@@ -45,7 +40,7 @@ export default function InstruksiPage() {
         ))}
       </div>
 
-      <NextStep />
+
     </>
   )
 }
@@ -87,7 +82,7 @@ function KartuRegu({ reguKode }: { reguKode: string }) {
         <div className="space-y-5 border-t pt-5 xl:border-t-0 xl:border-l xl:pt-0 xl:pl-6">
         <div>
           <h3 className="text-sm font-semibold">Pembagian & penerimaan</h3>
-          <p className="mt-2 text-sm leading-relaxed text-muted-foreground">TERMA belum terhubung ke kanal pesan. Pengakuan penerimaan belum berarti tindakan terlaksana.</p>
+          <p className="mt-2 text-sm leading-relaxed text-muted-foreground">Instruksi tersedia di kotak masuk regu. Kanal eksternal tetap dicatat manual; pengakuan penerimaan berbeda dari laporan pelaksanaan.</p>
         </div>
         {izin("KIRIM_INSTRUKSI") && rencanaIds.length > 0 && (
           <div className="no-print space-y-3">
@@ -105,18 +100,13 @@ function KartuRegu({ reguKode }: { reguKode: string }) {
               >
                 <Copy /> Salin pesan
               </Button>
-              {state.demo ? <Dialog><DialogTrigger asChild><Button variant="outline"><Send />Pratinjau WhatsApp</Button></DialogTrigger><DialogContent className="sm:max-w-xl"><DialogHeader><DialogTitle>Pratinjau pesan · {g.nama}</DialogTitle><DialogDescription>Periksa isi instruksi sebelum membagikannya. Gunakan Salin pesan, bagikan melalui kanal regu, lalu catat pembagian di TERMA.</DialogDescription></DialogHeader><div className="max-h-80 overflow-y-auto whitespace-pre-wrap rounded-md bg-muted p-4 text-sm leading-relaxed">{teks}</div></DialogContent></Dialog> : <Button variant="outline" asChild>
-                <a href={`https://wa.me/?text=${encodeURIComponent(teks)}`} target="_blank" rel="noopener noreferrer">
-                  <Send /> Buka di WhatsApp
-                </a>
-              </Button>}
             </div>
             <div className="flex flex-wrap items-center gap-2">
               <Select value={kanal} onValueChange={setKanal}>
                 <SelectTrigger className="w-52 bg-card" aria-label="Kanal yang dipakai"><SelectValue /></SelectTrigger>
                 <SelectContent>{KANAL.map((k) => <SelectItem key={k} value={k}>{k}</SelectItem>)}</SelectContent>
               </Select>
-              {versiIni?.status === "DIBAGIKAN_MANUAL" ? <p role="status" className="text-sm text-primary">Pembagian versi ini sudah dicatat.</p> : <Button disabled={!bisaBagikan} onClick={() => dispatch({ type: "BAGIKAN", reguKode, kanal })}>Catat sudah dibagikan</Button>}
+              {versiIni?.status === "DIBAGIKAN_MANUAL" ? <p role="status" className="text-sm text-primary">Pembagian versi ini sudah dicatat.</p> : <Button disabled={!bisaBagikan} onClick={() => dispatch({ type: "BAGIKAN", reguKode, kanal })}>{kanal === "Kotak masuk TERMA" ? "Kirim instruksi ke mandor" : "Catat sudah dibagikan"}</Button>}
             </div>
           </div>
         )}

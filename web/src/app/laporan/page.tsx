@@ -15,7 +15,6 @@ import { kualitasBacaan, rentangJam } from "@/lib/rules"
 import { kandidatUntuk, rencanaAktif, rencanaTanggal, useApp } from "@/lib/store"
 import type { ActionStatus } from "@/lib/types"
 import { currentShift, shiftLabel } from "@/lib/management-state"
-import { ShiftFocusCard } from "@/components/shift-navigator"
 import { scopedWorkspace } from "@/lib/workspace"
 
 const STATUSES: ActionStatus[] = ["RENCANA_TERSEDIA", "ADAPTASI_DIPERLUKAN", "TINJAU_HSE", "BATASI_ATAU_PINDAHKAN"]
@@ -44,9 +43,7 @@ export default function LaporanPage() {
 
   return (
     <>
-      <PageHeader no="7" title="Laporan & audit" peran="HSE" summary="Rekap rencana, tindak lanjut, dan kekosongan data dalam satu laporan shift.">
-        Laporan menampilkan sumber data dan kekosongannya, bukan hanya persentase kepatuhan. Penyebut setiap persentase ditulis jelas.
-      </PageHeader>
+      <PageHeader context title="Laporan & audit" summary="Rekap rencana, tindak lanjut, dan kekosongan data dalam satu laporan shift." />
       {shift && <p className="mb-5 rounded-md border p-4 text-sm">{shift.nama} · {shiftLabel(shift.status)}{shift.status === "CLOSED" ? ` · Ditutup ${shift.ditutupOleh}, ${new Date(shift.ditutupPada!).toLocaleString("id-ID")}` : " · Laporan sementara, shift belum ditutup"}</p>}
       {readiness.required && <div className="mb-5 rounded-md border bg-card p-4 text-sm"><p>Catatan awal shift: {readiness.checked}/{readiness.total} peserta absen. Jawaban kondisi hanya untuk Klinik.</p><Link href="/absensi" className="panel-link no-print mt-2">Lihat catatan kondisi awal sesuai peran</Link></div>}
       <div data-guide="report" className="no-print mb-6">
@@ -54,7 +51,7 @@ export default function LaporanPage() {
         <Button variant="outline" onClick={() => window.print()}><Printer /> Cetak laporan</Button>
       </div>
 
-      <div className="no-print mb-6"><ShiftFocusCard compact /></div>
+
       <div className="space-y-6">
         <Card className="accent-summary report-summary border-0 bg-[image:var(--panel-accent)]">
           <CardHeader>

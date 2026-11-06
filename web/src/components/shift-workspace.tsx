@@ -1,65 +1,38 @@
 "use client"
 
-import { useEffect, useRef, useState, type ReactNode } from "react"
 import Link from "next/link"
-import { ArrowLeftIcon, ArrowRightIcon, CheckIcon, CheckCircleIcon, LockSimpleIcon } from "@phosphor-icons/react"
+import { ArrowLeftIcon, ArrowRightIcon } from "@phosphor-icons/react"
 import { PageHeader } from "@/components/app-shell"
 import { Button } from "@/components/ui/button"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { ShiftForm } from "@/components/shift-form"
 import { ConfirmAction } from "@/components/confirm-action"
-import { ShiftParticipants } from "@/components/shift-participants"
-import { ShiftSensorTask } from "@/components/shift-sensor-task"
-import { ShiftPlanReview } from "@/components/shift-plan-review"
-import { ShiftInstructions } from "@/components/shift-instructions"
-import { ShiftExecution } from "@/components/shift-execution"
-import { ShiftHandoff } from "@/components/shift-handoff"
 import { currentShift, shiftLabel } from "@/lib/management-state"
-import { shiftTaskFlow } from "@/lib/shift-task-flow"
 import { useApp, useIzin } from "@/lib/store"
+import { scopedWorkspace, tanggalLabel } from "@/lib/workspace"
+import { workflow } from "@/lib/workflow"
+import { pageAllowedFor } from "@/lib/navigation"
 import { LABEL_PERAN } from "@/lib/access"
-import { tanggalLabel } from "@/lib/workspace"
+import { REGU, TUGAS, ZONA } from "@/lib/config"
 
-export function ShiftWorkspace({ deviceFigure }: { deviceFigure: ReactNode }) {
-  const { state, user, dispatch } = useApp()
+export function ShiftWorkspace() {
+  const { state: workspace, user, dispatch } = useApp()
   const izin = useIzin()
-  const flow = user ? shiftTaskFlow(state, user) : null
-  const [selected, setSelected] = useState(user?.role === "PETUGAS_DATA" && (flow?.current ?? 0) >= 1 ? 1 : flow?.current ?? 0)
-  const taskRoot = useRef<HTMLElement>(null)
-  const current = flow?.current ?? 0
-  useEffect(() => { setSelected(previous => Math.min(previous, current)) }, [current])
-  const shift = currentShift(state)
-  if (!user || !shift || !flow) return null
-  const step = flow.steps[selected]
-  const nextIndex = flow.steps.findIndex((task,index)=>index > selected && !task.optional)
-  const canWork = step.owners.includes(user.role)
-  const pendingBands = shift.bands?.filter(row=>row.dipakaiPada && !row.dikembalikanPada && !row.dibatalkanPada).length ?? 0
-  const issued = state.rencana.some(plan => plan.disetujuiOleh) || state.tindakan.length > 0
-  const canEdit = shift.status === "DRAFT" && !issued
-  const pendingCrews = [...new Set(flow.actions.filter(action => selected === 3 ? action.status === "DISAMPAIKAN" : action.status === "DIAKUI" || action.status === "BELUM_SELESAI").map(action => action.reguKode))]
-  function navigate(index: number) {
-    setSelected(index)
-    requestAnimationFrame(() => taskRoot.current?.scrollIntoView({ block: "start", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" }))
-  }
+  const shift = currentShift(workspace)
+  if (!user || !shift) return null
+  const state = scopedWorkspace(workspace, user)
+  const progress = workflow(state, user)
+  const plans = state.rencana.filter(plan => !plan.digantikan)
+  const ids = new Set(plans.map(plan => plan.id))
+  const actions = state.tindakan.filter(action => ids.has(action.rencanaId))
+  const editable = shift.status === "DRAFT" && !state.rencana.some(plan => plan.disetujuiOleh) && !state.tindakan.length
   return <>
     <Link href="/ringkasan" className="mb-5 inline-flex items-center gap-2 text-sm text-muted-foreground"><ArrowLeftIcon />Daftar shift</Link>
-    <div className="flex flex-wrap items-start justify-between gap-4"><PageHeader title={shift.nama} summary={`${tanggalLabel(shift.tanggal)} · ${user.nama}, ${LABEL_PERAN[user.role]}`} /><span className="shift-status" data-status={shift.status}>{shiftLabel(shift.status)}</span></div>
-    {shift.status === "CLOSED" ? <section className="summon-panel p-6" data-guide="closed-shift"><CheckCircleIcon size={32} className="mb-4 text-primary" /><h2 className="text-xl font-semibold">Shift selesai.</h2><p className="mt-3 text-sm text-muted-foreground">Ditutup {shift.ditutupOleh} · {shift.ditutupPada && new Date(shift.ditutupPada).toLocaleString("id-ID")}. Peserta, rencana, dan laporan sudah dikunci.</p><div className="mt-5 flex flex-wrap gap-2"><Button asChild><Link href="/laporan">Buka laporan akhir<ArrowRightIcon /></Link></Button><Button asChild variant="outline"><Link href="/ringkasan">Kembali ke daftar shift</Link></Button></div></section> : <>
-      <div className="mb-5 flex flex-wrap items-center justify-between gap-3 rounded-lg border bg-card p-4"><p className="text-sm"><strong>{user.nama} · {LABEL_PERAN[user.role]}</strong><span className="mt-1 block text-muted-foreground">{user.role === "HSE" ? "Anda menyetujui rencana, membagikan instruksi, memverifikasi, dan menutup shift." : user.role === "MANDOR" ? "Anda menerima instruksi dan melaporkan pekerjaan regu sendiri." : "Anda melengkapi bacaan sensor; HSE meninjau serta menyetujui rencana."}</span></p><Link href="/monitoring" className="panel-link">Buka monitoring<ArrowRightIcon size={16} /></Link></div><div className="wizard-layout"><nav aria-label="Urutan tugas shift" className="wizard-rail" data-guide="shift-tasks"><ol>{flow.steps.map((task, index) => <li key={task.key}><button disabled={index > current && !task.optional} aria-current={index === selected ? "step" : undefined} onClick={() => navigate(index)}><span>{task.done ? <CheckIcon size={15} /> : index > current && !task.optional ? <LockSimpleIcon size={13} /> : index + 1}</span><div><strong>{task.title}</strong><small>{task.owners.map(role => LABEL_PERAN[role]).join(" / ")}</small><small>{task.done ? "Selesai" : task.optional ? "Dapat dipantau kapan saja" : index > current ? "Belum dimulai" : task.owners.includes(user.role) ? "Giliran Anda" : "Menunggu penanggung jawab"}</small></div></button></li>)}</ol></nav>
-      <section ref={taskRoot} className="wizard-task summon-panel" data-guide="current-step" aria-labelledby="wizard-task-title"><header className="wizard-task-header"><div><p className="eyebrow">LANGKAH {selected + 1} DARI {flow.steps.length}</p><h2 id="wizard-task-title">{step.title}</h2><p>{step.description}</p></div></header>
-        <div className="wizard-task-body">{!step.done && <ShiftHandoff owners={step.owners} crewCodes={step.owners.includes("MANDOR") ? pendingCrews : undefined} />}
-          {!canWork && !step.done && <p className="mt-4 text-sm leading-relaxed text-muted-foreground">Tugas Anda dimulai saat langkah ini selesai. Gunakan Monitoring untuk melihat bacaan zona, atau kembali ke beranda untuk melihat tugas sesuai peran Anda.</p>}
-          {(canWork || (step.done && user.role === "HSE")) && <>
-          {step.key === "participants" && <ShiftParticipants />}
-          {step.key === "sensors" && <ShiftSensorTask deviceFigure={deviceFigure} done={step.done} progress={step.progress} />}
-          {step.key === "plans" && <ShiftPlanReview />}
-          {step.key === "instructions" && <ShiftInstructions />}
-          {step.key === "execution" && <ShiftExecution />}
-          {step.key === "finish" && <><ShiftExecution verify />{flow.verified && izin("KELOLA_SHIFT") && <div className="wizard-close" data-guide="close-task"><div className="wizard-result"><CheckCircleIcon size={20} /><div><h3>Semua tindakan sudah terverifikasi.</h3><p>Tutup shift untuk menyelesaikan siklus dan mengunci laporan akhir.</p>{pendingBands > 0 && <p>{pendingBands} Band masih dipakai. <Link className="underline" href="/band">Periksa pengembalian Band</Link> sebelum menutup.</p>}</div></div><ConfirmAction disabled={pendingBands > 0} label="Tutup shift & selesaikan" guide="close-shift" title="Tutup shift dan kunci laporan?" description="Semua tindakan sudah diverifikasi. Catatan shift menjadi hanya-baca." onConfirm={() => dispatch({ type: "TUTUP_SHIFT", shiftId: shift.id })} /></div>}</>}
-          </>}
-        </div>
-        <footer className="wizard-task-footer" data-guide="task-next">{selected > 0 ? <Button variant="outline" onClick={() => navigate(selected - 1)}><ArrowLeftIcon />Sebelumnya</Button> : <span />}{(step.done || step.optional) && nextIndex >= 0 && <Button onClick={() => navigate(nextIndex)}>Lanjut: {flow.steps[nextIndex].title}<ArrowRightIcon /></Button>}</footer>
-      </section></div>
-      {canEdit && <details className="mt-8"><summary className="cursor-pointer text-sm text-muted-foreground">Pengaturan draft shift</summary><div className="mt-4 flex flex-wrap gap-2"><ShiftForm key={shift.id} shift={shift} /><ConfirmAction label="Hapus draft" disabled={!izin("KELOLA_SHIFT")} title="Hapus draft shift?" description="Data pada draft dihapus. Master pekerja tetap tersedia." onConfirm={() => dispatch({ type: "HAPUS_SHIFT", shiftId: shift.id })} /></div></details>}
-    </>}
+    <div className="flex flex-wrap items-start justify-between gap-4"><PageHeader title={shift.nama} summary={`${tanggalLabel(shift.tanggal)} · ${state.pekerja.length} pekerja · Lokasi 1`} /><span className="shift-status" data-status={shift.status}>{shiftLabel(shift.status)}</span></div>
+    <div className="mb-6 flex flex-wrap gap-2"><Button asChild><Link href="/monitoring">Monitoring shift<ArrowRightIcon /></Link></Button>{pageAllowedFor(user,"/laporan") && <Button asChild variant="outline"><Link href="/laporan">Laporan shift</Link></Button>}{editable && izin("KELOLA_SHIFT") && <><ShiftForm shift={shift} /><ConfirmAction label="Hapus draft" title="Hapus draft shift?" description="Draft dihapus. Master pekerja tetap tersimpan." onConfirm={() => dispatch({type:"HAPUS_SHIFT",shiftId:shift.id})} /></>}</div>
+    {shift.status === "CLOSED" && <p className="mb-6 rounded-lg border bg-secondary p-4 text-sm" data-guide="closed-shift">Shift ditutup oleh {shift.ditutupOleh} pada {shift.ditutupPada && new Date(shift.ditutupPada).toLocaleString("id-ID")}. Rencana dan laporan dikunci.</p>}
+    <div className="role-metrics" aria-label="Ringkasan shift"><div><span>Peserta</span><strong>{state.pekerja.length}</strong></div><div><span>Rencana disetujui</span><strong>{plans.filter(plan=>plan.disetujuiOleh).length}<small> / {plans.length}</small></strong></div><div><span>Laporan menunggu verifikasi</span><strong>{actions.filter(action=>action.status==="TINDAKAN_DILAPORKAN").length}</strong></div><div><span>Tindakan terverifikasi</span><strong>{actions.filter(action=>action.status==="TERVERIFIKASI").length}<small> / {actions.length}</small></strong></div></div>
+    <section className="summon-panel mb-6" data-guide="shift-modules"><div className="panel-heading"><h2>Status operasional</h2></div><Table aria-label="Modul operasional shift"><TableHeader><TableRow><TableHead>Modul</TableHead><TableHead>Penanggung jawab</TableHead><TableHead>Cakupan</TableHead><TableHead>Status</TableHead><TableHead><span className="sr-only">Aksi</span></TableHead></TableRow></TableHeader><TableBody>{progress.filter(item=>item.href!=="/impor" && pageAllowedFor(user,item.href)).map(item=><TableRow key={item.href}><TableCell className="font-medium">{item.label}</TableCell><TableCell>{item.peran.map(role=>LABEL_PERAN[role]).join(" · ")}</TableCell><TableCell>{item.progress}</TableCell><TableCell><span className="text-xs text-muted-foreground">{item.selesai ? "Lengkap" : item.href==="/laporan" ? "Tersedia" : "Perlu ditindaklanjuti"}</span></TableCell><TableCell><Button asChild variant="outline" size="sm"><Link href={item.href}>Buka modul<ArrowRightIcon /></Link></Button></TableCell></TableRow>)}</TableBody></Table></section>
+    <section className="summon-panel" data-guide="shift-participants"><div className="panel-heading"><h2>Peserta & penugasan</h2><span className="text-xs text-muted-foreground">Snapshot shift · {shift.tanggal}</span></div><Table aria-label="Peserta dan penugasan shift"><TableHeader><TableRow><TableHead>Pekerja</TableHead><TableHead>Regu</TableHead><TableHead>Tugas</TableHead><TableHead>Zona</TableHead><TableHead>Adaptasi</TableHead></TableRow></TableHeader><TableBody>{state.pekerja.map(worker=>{const assignment=state.penugasan.find(row=>row.pekerjaKode===worker.kode);const confirmation=state.konfirmasi.find(row=>row.pekerjaKode===worker.kode);return <TableRow key={worker.kode}><TableCell>{pageAllowedFor(user,`/pekerja/${worker.kode}`) ? <Link href={`/pekerja/${worker.kode}`} className="font-medium text-primary">{worker.nama}</Link> : <strong className="font-medium">{worker.nama}</strong>}<p className="mt-1 text-xs text-muted-foreground">{worker.kode}</p></TableCell><TableCell>{REGU.find(row=>row.kode===worker.reguKode)?.nama}</TableCell><TableCell>{TUGAS.find(row=>row.kode===assignment?.tugasKode)?.nama}</TableCell><TableCell>{ZONA.find(row=>row.kode===assignment?.zonaKode)?.nama}</TableCell><TableCell>{confirmation ? confirmation.profil==="NORMAL" ? "Normal · dikonfirmasi" : `Hari ke-${confirmation.hariAdaptasi}` : "Belum dikonfirmasi"}</TableCell></TableRow>})}</TableBody></Table></section>
   </>
 }

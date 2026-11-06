@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
+import { OptionSelect } from "@/components/ui/option-select"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { acclHistorySuggestion } from "@/lib/accl-history"
 import { currentShift } from "@/lib/management-state"
@@ -87,18 +88,7 @@ export function WorkerAdaptation({ p, compact = false, onSaved }: { p: Pekerja; 
             </div>
             <div className="space-y-1">
               <Label htmlFor={`hari-${p.kode}`}>Hari ke-</Label>
-              <Select value={hari} onValueChange={setHari} disabled={profil === "NORMAL" || !izin("KONFIRMASI_PAPARAN")}>
-                <SelectTrigger id={`hari-${p.kode}`} className="w-full bg-card">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {Array.from({length:paper ? 14 : 5},(_,i)=>i+1).map((d) => (
-                    <SelectItem key={d} value={String(d)}>
-                      {d}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <OptionSelect id={`hari-${p.kode}`} value={hari} onValueChange={setHari} disabled={profil === "NORMAL" || !izin("KONFIRMASI_PAPARAN")} options={Array.from({length:paper ? 14 : 5},(_,i)=>({value:String(i+1),label:String(i+1)}))} searchPlaceholder="Cari hari adaptasi…" />
             </div>
           </div>
           <div className="text-sm">

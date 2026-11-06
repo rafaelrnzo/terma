@@ -101,16 +101,6 @@
 .map-loading { display: grid; place-items: center; background: var(--muted); color: var(--muted-foreground); font-size: 14px; }
 .map-zone-marker { min-height: 44px; padding: 10px 12px; border: 1px solid var(--input); border-radius: 8px; background: var(--card); color: var(--foreground); font: 12px var(--font-open-sans), sans-serif; cursor: pointer; }
 .map-zone-marker[aria-pressed="true"] { background: var(--primary); color: var(--primary-foreground); }
-.driver-popover.terma-tour { padding: 24px; max-width: min(360px, calc(100vw - 24px)); min-width: 0; border-radius: 16px; background: var(--card); color: var(--foreground); font-family: var(--font-open-sans), sans-serif; box-shadow: 0 10px 32px rgb(23 43 77 / 18%); }
-.terma-tour .driver-popover-title { padding-right: 58px; font-family: var(--font-heading), sans-serif; font-size: 18px; line-height: 1.4; }
-.terma-tour .driver-popover-description { margin-top: 12px; color: var(--muted-foreground); font-size: 14px; line-height: 1.6; }
-.terma-tour .driver-popover-close-btn { top: 12px; right: 12px; width: 60px; min-height: 44px; font-size: 12px; color: var(--foreground); text-decoration: underline; text-underline-offset: 4px; }
-.terma-tour .driver-popover-footer { margin-top: 24px; gap: 12px; }
-.terma-tour .driver-popover-footer button { min-height: 44px; padding: 8px 12px; border: 1px solid var(--input); border-radius: 8px; background: var(--card); color: var(--foreground); font-size: 12px; text-shadow: none; }
-.terma-tour .driver-popover-footer button:hover { background: var(--muted); }
-.terma-tour .driver-popover-footer .driver-popover-next-btn { border-color: var(--primary); background: var(--primary); color: var(--primary-foreground); }
-.terma-tour .driver-popover-footer .driver-popover-next-btn:hover { background: var(--primary-hover); }
-.terma-tour .driver-popover-progress-text { color: var(--muted-foreground); font-size: 12px; white-space: nowrap; }
 @media (max-width: 767px) {
   .zone-list { display: flex; overflow-x: auto; padding: 4px; margin: -4px; scroll-snap-type: x proximity; }
   .zone-choice { min-width: 230px; flex: 0 0 auto; width: 230px; scroll-snap-align: start; }
@@ -119,10 +109,9 @@
   .scheme-label { flex-direction: column; gap: 3px; padding: 7px; }
   .isometric-zone { height: 88px; }
   .map-toolbar, .map-caption { padding-left: 16px; padding-right: 16px; }
-  .terma-tour .driver-popover-footer { flex-wrap: wrap; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .iso-platform, .scheme-zone, .driver-popover, .driver-overlay { transition: none !important; animation: none !important; }
+  .iso-platform, .scheme-zone { transition: none !important; animation: none !important; }
 }
 
 @media (min-width: 1024px) and (max-width: 1199px) {

@@ -1,5 +1,6 @@
 "use client"
 
+import { OptionSelect } from "@/components/ui/option-select"
 import { useState, type FormEvent } from "react"
 import { PlusIcon, PencilSimpleIcon } from "@phosphor-icons/react"
 import { Button } from "@/components/ui/button"
@@ -37,10 +38,10 @@ export function WorkerForm({ worker }: { worker?: Pekerja }) {
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2"><Label htmlFor="worker-code">ID pekerja</Label><Input id="worker-code" value={input.kode} disabled={!!worker} onChange={e => field("kode", e.target.value.trim())} required maxLength={32} placeholder="PK001" /><p className="text-xs text-muted-foreground">ID tetap digunakan untuk riwayat shift.</p></div>
           <div className="space-y-2"><Label htmlFor="worker-name">Nama pekerja</Label><Input id="worker-name" value={input.nama} onChange={e => field("nama", e.target.value)} required minLength={2} /></div>
-          <div className="space-y-2"><Label htmlFor="worker-regu">Regu</Label><select id="worker-regu" className="management-select" value={input.reguKode} onChange={e => field("reguKode", e.target.value)}>{REGU.map(row => <option key={row.kode} value={row.kode}>{row.nama}</option>)}</select></div>
+          <div className="space-y-2"><Label htmlFor="worker-regu">Regu</Label><OptionSelect id="worker-regu" value={input.reguKode} onValueChange={value => field("reguKode", value)} options={REGU.map(row => ({value:row.kode,label:row.nama}))} /></div>
           <div className="space-y-2"><Label htmlFor="worker-start">Tanggal mulai bekerja</Label><Input id="worker-start" type="date" value={input.tanggalMulai} onChange={e => field("tanggalMulai", e.target.value)} required /></div>
-          <div className="space-y-2 sm:col-span-2"><Label htmlFor="worker-task">Tugas awal</Label><select id="worker-task" className="management-select" value={input.tugasKode} onChange={e => field("tugasKode", e.target.value)}>{TUGAS.map(row => <option key={row.kode} value={row.kode}>{row.nama}</option>)}</select></div>
-          <div className="space-y-2"><Label htmlFor="worker-zone">Zona awal</Label><select id="worker-zone" className="management-select" value={input.zonaKode} onChange={e => field("zonaKode", e.target.value)}>{ZONA.map(row => <option key={row.kode} value={row.kode}>{row.nama}</option>)}</select></div>
+          <div className="space-y-2 sm:col-span-2"><Label htmlFor="worker-task">Tugas awal</Label><OptionSelect id="worker-task" value={input.tugasKode} onValueChange={value => field("tugasKode", value)} options={TUGAS.map(row => ({value:row.kode,label:row.nama}))} searchPlaceholder="Cari tugas…" /></div>
+          <div className="space-y-2"><Label htmlFor="worker-zone">Zona awal</Label><OptionSelect id="worker-zone" value={input.zonaKode} onValueChange={value => field("zonaKode", value)} options={ZONA.map(row => ({value:row.kode,label:row.nama}))} /></div>
           <div className="space-y-2"><Label htmlFor="worker-apd">APD</Label><Input id="worker-apd" value={input.apd} onChange={e => field("apd", e.target.value)} required /></div>
         </div>
         {worker && <p className="text-sm text-muted-foreground">Perubahan berlaku untuk shift berikutnya. Penugasan di shift yang sudah ada dikelola dari halaman shift tersebut.</p>}

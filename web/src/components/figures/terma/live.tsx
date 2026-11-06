@@ -1,5 +1,6 @@
 "use client"
 
+import { OptionSelect } from "@/components/ui/option-select"
 import { useState, type ReactNode } from "react"
 import NumberFlow from "@number-flow/react"
 import Link from "next/link"
@@ -50,7 +51,7 @@ export function IotLive({ art, focused = false }: { art: ReactNode; focused?: bo
       {reducedMotion && <p className="iot-motion-preference">Gerakan mengikuti pengaturan perangkat. Pilih Aktifkan animasi untuk menyalakannya.</p>}
     </figure>
     <aside className="iot-detail" aria-label="Detail pembacaan perangkat"><div className="iot-detail-title"><p className="eyebrow">{selection === "all" ? "BACAAN TERBARU" : "DETAIL PERANGKAT"}</p><h3>{name}</h3><p>{selection === "water" ? "WS-01 · Titik air minum utama" : selection === "band" ? `TB-01 · ${wearer?.nama ?? "Unit band 01"}` : selection === "gateway" ? "GW-01 · Gateway lokasi" : `TST-${zone} · ${ZONA.find(item => item.kode === zone)?.nama}`}</p></div>
-      {(selection === "all" || selection === "station") && <><Metric label="WBGT / ISBB" value={frame.wbgt} unit="°C" hero /><div className="iot-metric-pair"><Metric label="Suhu udara" value={frame.air} unit="°C" /><Metric label="Kelembapan" value={frame.humidity} unit="% RH" /></div><label className="iot-zone-label" htmlFor="iot-zone">Station zona</label><select id="iot-zone" className="management-select" value={zone} onChange={event => setZone(event.target.value)}>{ZONA.map(item => <option key={item.kode} value={item.kode}>{item.nama}</option>)}</select></>}
+      {(selection === "all" || selection === "station") && <><Metric label="WBGT / ISBB" value={frame.wbgt} unit="°C" hero /><div className="iot-metric-pair"><Metric label="Suhu udara" value={frame.air} unit="°C" /><Metric label="Kelembapan" value={frame.humidity} unit="% RH" /></div><label className="iot-zone-label" htmlFor="iot-zone">Station zona</label><OptionSelect id="iot-zone" value={zone} onValueChange={setZone} options={ZONA.map(item=>({value:item.kode,label:item.nama}))} /></>}
       {selection === "station" && <StationAnatomy />}
       {selection === "water" && <><Metric label="Kunjungan tercatat" value={frame.visits} unit="tap" hero /><p className="iot-detail-copy">{frame.visits ? `${visitor?.nama ?? "Kartu terdaftar #014"} · kunjungan terakhir diterima gateway.` : "Pembaca RFID siap menerima kartu pekerja."}</p><Button className="w-full" onClick={tap}><IdentificationCardIcon />Tap kartu pekerja</Button><p className="iot-detail-footnote">Tap mencatat kunjungan ke titik minum.</p></>}
       {selection === "band" && <><Metric label="Detak jantung" value={frame.heartRate} unit="bpm" hero /><div className="iot-metric-pair"><Metric label="Suhu kulit" value={frame.skinTemperature} unit="°C" /><Metric label="Baterai" value={frame.battery} unit="%" /></div><p className="iot-detail-copy">PPG dan suhu kulit dikirim melalui BLE. Indikator cahaya mengikuti denyut pembacaan.</p><BandSignal large /></>}
