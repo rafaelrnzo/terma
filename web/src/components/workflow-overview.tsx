@@ -1,25 +1,21 @@
 "use client"
 
 import Link from "next/link"
-import { ArrowRightIcon, CheckIcon, UsersThreeIcon, ClipboardTextIcon, BroadcastIcon, FlagCheckeredIcon } from "@phosphor-icons/react"
+import { ClockIcon, ArrowRightIcon } from "@phosphor-icons/react"
 import { useApp } from "@/lib/store"
-import { managementOf } from "@/lib/management-state"
 import type { ShiftRecord } from "@/lib/management-types"
-import { shiftTaskFlow } from "@/lib/shift-task-flow"
 
 export function WorkflowOverview({ shift }: { shift?: ShiftRecord }) {
-  const { state, user } = useApp()
-  const flow = user && shift ? shiftTaskFlow({ ...state, ...shift.workspace, tanggal: shift.tanggal, management: { ...managementOf(state), activeId: shift.id } }, user) : null
+  const { user } = useApp()
+  const hub = shift ? `/shift/${shift.id}` : "/ringkasan"
   const steps = [
-    { title: "Siapkan data", actor: "Petugas data · Pekerja · HSE", detail: "Pekerja, baseline perusahaan, absen, dan kondisi tubuh.", icon: UsersThreeIcon, href: user?.role === "MANDOR" ? "/ringkasan" : "/impor", done: !!flow?.steps[0].done && !!flow.steps[1].done },
-    { title: "Setujui rencana", actor: "HSE", detail: "Buat shift, tinjau adaptasi, lalu terbitkan rencana.", icon: ClipboardTextIcon, href: shift ? `/shift/${shift.id}` : "/ringkasan", done: !!flow?.steps[2].done },
-    { title: "Jalankan & pantau", actor: "Mandor · HSE", detail: "Terima instruksi, pantau zona, laporkan pekerjaan.", icon: BroadcastIcon, href: shift ? `/shift/${shift.id}` : "/ringkasan", done: !!flow?.steps[4].done },
-    { title: "Verifikasi & selesai", actor: "HSE", detail: "Periksa laporan, tutup shift, simpan hasil akhir.", icon: FlagCheckeredIcon, href: shift?.status === "CLOSED" ? "/laporan" : shift ? `/shift/${shift.id}` : "/ringkasan", done: shift?.status === "CLOSED" },
+    ["05.30","Persiapan & draf","Admin Data · Sistem","Data HR, absensi kemarin, penugasan dan prakiraan menjadi draf pagi.",user?.role === "PETUGAS_DATA" ? "/impor" : hub],
+    ["06.30","HSE menyetujui","HSE","Tinjau merah/kuning, batas aklimatisasi dan versi rencana.",hub],
+    ["06.45","Instruksi regu","HSE → Mandor","Bagikan versi disetujui; mandor mengakui penerapan jadwal.",hub],
+    ["07.00","Check-in pekerja","Pekerja → Klinik","Scan identitas, jawab kondisi. Alasan kurang sehat hanya untuk Klinik.",user?.role === "KLINIK" ? "/klinik" : "/kiosk"],
+    ["Sepanjang shift","Pantau & perbarui","Mandor · HSE","Bacaan zona, kunjungan minum dan Band; perketatan kembali ke HSE.",user?.role === "PETUGAS_DATA" ? "/perangkat" : "/monitoring"],
+    ["17.00","Lapor & verifikasi","Mandor → HSE","Catat menit aktual, periksa selisih, verifikasi dan tutup.",hub],
+    ["Bulanan","Evaluasi paparan","Klinik","Akumulasi paparan dan tindak lanjut pemeriksaan.","/kesehatan"],
   ]
-  const current = steps.findIndex(step => !step.done)
-  return <section className="journey-overview summon-panel" aria-labelledby="journey-title" data-guide="workflow-map">
-    <div className="journey-heading"><div><p className="eyebrow">DARI MULAI SAMPAI SELESAI</p><h2 id="journey-title">Alur satu shift</h2></div><span className="journey-finish">Selesai ketika shift ditutup HSE</span></div>
-    <ol className="journey-steps">{steps.map((step, index) => <li key={step.title} data-current={current === index} data-done={step.done}><Link href={step.href} aria-current={current === index && flow ? "step" : undefined}><span className="journey-number">{step.done ? <CheckIcon size={17} /> : index + 1}</span><step.icon className="journey-icon" size={23} weight={current === index ? "fill" : "regular"} /><strong>{step.title}</strong><small>{step.actor}</small><p>{step.detail}</p><ArrowRightIcon className="journey-arrow" size={16} /></Link></li>)}</ol>
-    <p className="journey-context"><Link href="/forecasting">Forecasting</Link> membantu persiapan jadwal. <Link href="/monitoring">Monitoring</Link> dipakai saat shift berjalan. Hasil tersimpan di <Link href="/laporan">Laporan & evaluasi</Link>.</p>
-  </section>
+  return <section className="summon-panel mb-6" data-guide="workflow-map" aria-labelledby="day-flow-title"><div className="panel-heading"><div><p className="eyebrow"><ClockIcon size={15} aria-hidden />SATU HARI DENGAN TERMA</p><h2 id="day-flow-title">Rencana dahulu, check-in saat pekerja datang.</h2></div></div><ol className="day-flow">{steps.map(([time,title,actor,description,href])=><li key={time}><span className="font-mono text-xs text-primary">{time}</span><h3 className="mt-2 text-sm font-semibold">{title}</h3><p className="mt-1 text-xs text-muted-foreground">{actor}</p><p className="mt-3 text-sm leading-relaxed">{description}</p><Link href={href} className="panel-link mt-3">Buka<ArrowRightIcon size={14} aria-hidden /></Link></li>)}</ol><p className="border-t px-5 py-4 text-xs leading-relaxed text-muted-foreground">Waktu mengikuti diagram alur. Pembacaan perangkat dan keputusan dicatat saat tersedia; persetujuan tidak dijalankan otomatis.</p></section>
 }

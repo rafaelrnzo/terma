@@ -24,7 +24,7 @@ export function RoleStart({ ongoing, workerCount }: { ongoing?: ShiftRecord; wor
   switch (user.role) {
     case "PETUGAS_DATA":
       return <StartPanel title={!workerCount ? "Mulai dengan data pekerja" : "Lengkapi data sebelum ditinjau HSE"} icon={<ThermometerIcon size={26} />} actions={<><Button asChild><Link href="/impor">Kelola data pekerja<ArrowRightIcon /></Link></Button>{shiftLink}</>}>
-        {!workerCount ? "Tambahkan identitas, regu, tugas, dan zona awal pekerja. HSE menggunakan data ini untuk membuat shift." : ongoing ? "Periksa data perusahaan dan buka tugas Sensor. Bacaan perangkat dan cuaca BMKG tersinkron otomatis. HSE bertanggung jawab atas persetujuan rencana." : "Data pekerja siap. HSE perlu membuat draft shift sebelum Anda melengkapi bacaan WBGT dan prakiraan untuk shift tersebut."}
+        {!workerCount ? "Tambahkan identitas, regu, tugas, dan zona awal pekerja. HSE menggunakan data ini untuk membuat shift." : ongoing ? "Periksa data perusahaan dan buka tugas Sensor. Cuaca BMKG diperbarui saat tersedia; bacaan perangkat dipisahkan dari rekaman adaptor lokal. HSE bertanggung jawab atas persetujuan rencana." : "Data pekerja siap. HSE perlu membuat draft shift sebelum Anda melengkapi bacaan WBGT dan prakiraan untuk shift tersebut."}
       </StartPanel>
     case "MANDOR": {
       const waiting = !task || !task.owners.includes("MANDOR")

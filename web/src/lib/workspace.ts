@@ -4,7 +4,7 @@ import type { AppState } from "./store"
 import type { User } from "./types"
 
 export const SURFACES = [
-  { href: "/absensi", label: "Absensi & kondisi awal", detail: "Kehadiran pekerja, check-in kondisi tubuh, dan tinjauan HSE" },
+  { href: "/absensi", label: "Absensi & kondisi awal", detail: "Cakupan kehadiran; jawaban kondisi tubuh hanya untuk Klinik" },
   { href: "/kesehatan-awal", label: "Baseline kesehatan perusahaan", detail: "Ringkasan pemeriksaan dan pembatasan kerja untuk ditinjau HSE" },
   { href: "/forecasting", label: "Forecasting · peta prakiraan", detail: "Prakiraan cuaca, suhu dan kelembapan per periode untuk persiapan shift" },
   { href: "/monitoring", label: "Monitoring shift", detail: "Peta WBGT per zona, kualitas bacaan, dan progres pelaksanaan regu" },

@@ -1,32 +1,17 @@
 "use client"
 
-import { useState, type FormEvent } from "react"
-import { ArrowLeftIcon, HeartbeatIcon } from "@phosphor-icons/react"
+import { useState } from "react"
+import { ArrowLeftIcon, CheckCircleIcon, HeartbeatIcon } from "@phosphor-icons/react"
 import { Button } from "@/components/ui/button"
-import { BODY_COMPLAINTS, type BodyCondition, type BodyComplaint } from "@/lib/worker-readiness"
+import type { BodyCondition, BodyComplaint } from "@/lib/worker-readiness"
 
-const conditions = [
-  { value: "BAIK", label: "Merasa baik", detail: "Tidak ada keluhan saat ini" },
-  { value: "KURANG_BUGAR", label: "Kurang bugar", detail: "Merasa lelah atau kurang fit" },
-  { value: "ADA_KELUHAN", label: "Ada keluhan", detail: "Sampaikan yang Anda rasakan" },
-] satisfies { value: BodyCondition; label: string; detail: string }[]
+const reasons: BodyComplaint[] = ["Demam", "Diare/muntah", "Kurang tidur", "Lain"]
 
 export function KioskQuestions({ onSave, onBack }: { onSave: (condition: BodyCondition, complaints: BodyComplaint[]) => void; onBack: () => void }) {
-  const [condition, setCondition] = useState<BodyCondition | null>(null)
-  const [complaints, setComplaints] = useState<BodyComplaint[]>([])
-  const [error, setError] = useState("")
-  function submit(event: FormEvent) {
-    event.preventDefault()
-    if (!condition || condition === "ADA_KELUHAN" && !complaints.length) { setError("Pilih keluhan yang Anda rasakan."); return }
-    setError("")
-    onSave(condition, condition === "BAIK" ? [] : complaints)
-  }
-  return <form onSubmit={submit} className="space-y-5">
-    <fieldset><legend className="sr-only">Kondisi tubuh hari ini</legend><div className="condition-options">{conditions.map(option => <label key={option.value} data-selected={condition === option.value}><input type="radio" name="body-condition" checked={condition === option.value} onChange={() => { setCondition(option.value); setComplaints([]); setError("") }} /><HeartbeatIcon size={25} weight={condition === option.value ? "fill" : "regular"} /><strong>{option.label}</strong><small>{option.detail}</small></label>)}</div></fieldset>
-    {condition && condition !== "BAIK" && <fieldset className="complaint-options"><legend>Keluhan yang dirasakan {condition === "KURANG_BUGAR" && "(bila ada)"}</legend>{BODY_COMPLAINTS.map(complaint => <label key={complaint}><input type="checkbox" checked={complaints.includes(complaint)} onChange={event => { setError(""); setComplaints(previous => event.target.checked ? [...previous, complaint] : previous.filter(value => value !== complaint)) }} />{complaint}</label>)}</fieldset>}
-    {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
-    <p className="kiosk-device-note">Jawaban kondisi tubuh ditinjau HSE sebelum bekerja.</p>
-    <Button type="submit" className="w-full" disabled={!condition}>Simpan absen & kondisi tubuh</Button>
-    <Button type="button" variant="ghost" onClick={onBack}><ArrowLeftIcon />Ganti cara absen / pekerja</Button>
-  </form>
+  const [unwell,setUnwell] = useState(false)
+  return <div className="space-y-5">
+    <p className="kiosk-device-note">Jawaban hanya tersedia untuk Klinik. Mandor melihat status dan arahan kerja.</p>
+    {unwell ? <><h2 className="text-lg font-semibold">Apa yang Anda rasakan?</h2><div className="grid grid-cols-2 gap-3">{reasons.map(reason=><Button key={reason} variant="outline" className="h-24 whitespace-normal text-base" onClick={()=>onSave("ADA_KELUHAN",[reason])}>{reason}</Button>)}</div><Button variant="ghost" onClick={()=>setUnwell(false)}><ArrowLeftIcon />Kembali ke kondisi</Button></> : <div className="grid grid-cols-2 gap-4"><Button className="h-36 flex-col gap-3 whitespace-normal text-base" onClick={()=>onSave("BAIK",[])}><CheckCircleIcon className="size-8" aria-hidden />Ya, merasa baik</Button><Button variant="outline" className="h-36 flex-col gap-3 whitespace-normal text-base" onClick={()=>setUnwell(true)}><HeartbeatIcon className="size-8" aria-hidden />Kurang sehat</Button></div>}
+    <Button type="button" variant="ghost" onClick={onBack}><ArrowLeftIcon />Ganti pekerja</Button>
+  </div>
 }

@@ -11,8 +11,9 @@ export function RoleHome({ role }: { role?: Role }) {
   const { user } = useApp()
   const router = useRouter()
   useEffect(() => {
-    if (user && role !== user.role) router.replace(roleHomePath(user) + window.location.search)
+    if (user && !role) router.replace(roleHomePath(user) + window.location.search)
   }, [user, role, router])
-  if (!user || role !== user.role) return <p role="status" className="text-sm text-muted-foreground">Membuka ruang kerja sesuai peran…</p>
+  if (user && role && role !== user.role) return <p role="alert">Tidak punya akses ke ruang kerja peran ini.</p>
+  if (!user || !role) return <p role="status" className="text-sm text-muted-foreground">Membuka ruang kerja sesuai peran…</p>
   return <WorkspaceHome />
 }

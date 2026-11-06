@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
-import type { ActionLifecycle, ActionStatus, DataOrigin, DataQuality, DeliveryStatus } from "@/lib/types"
+import type { ActionLifecycle, ActionStatus, DataOrigin, DataQuality, DeliveryStatus, RiskColour } from "@/lib/types"
 
 const STATUS: Record<ActionStatus, { label: string; variant: "tersedia" | "adaptasi" | "tinjau" | "batasi" }> = {
   RENCANA_TERSEDIA: { label: "RENCANA TERSEDIA", variant: "tersedia" },
@@ -80,4 +80,9 @@ export function DeliveryBadge({ status }: { status: DeliveryStatus }) {
       {status === "DIBAGIKAN_MANUAL" ? "DIBAGIKAN MANUAL" : status === "GAGAL" ? "GAGAL · belum tersampaikan" : "TERKIRIM"}
     </Badge>
   )
+}
+
+export function RiskBadge({ colour }: { colour: RiskColour }) {
+  const label = { HIJAU: "Hijau", KUNING: "Kuning", MERAH: "Merah", DATA_KURANG: "Data kurang" }
+  return <Badge variant={colour === "MERAH" ? "riskRed" : colour === "KUNING" ? "riskYellow" : colour === "HIJAU" ? "riskGreen" : "outline"}>{label[colour]}</Badge>
 }

@@ -4,6 +4,9 @@
 import type { Pekerja, Role, User } from "./types"
 
 export type Aksi =
+  | "KELOLA_BAND"
+  | "SERAH_BAND"
+  | "KELOLA_KLINIK"
   | "KELOLA_BASELINE"
   | "TINJAU_KONDISI"
   | "KELOLA_PEKERJA"
@@ -22,7 +25,10 @@ export type Aksi =
   | "VERIFIKASI"
 
 const IZIN: Record<Aksi, Role[]> = {
-  KELOLA_BASELINE: ["HSE"],
+  KELOLA_BAND: ["HSE"],
+  SERAH_BAND: ["MANDOR"],
+  KELOLA_KLINIK: ["KLINIK"],
+  KELOLA_BASELINE: ["HSE", "KLINIK"],
   TINJAU_KONDISI: ["HSE"],
   KELOLA_PEKERJA: ["HSE", "PETUGAS_DATA"],
   KELOLA_SHIFT: ["HSE"],
@@ -74,6 +80,7 @@ export function lihatRegu(user: User, reguKode: string) {
 }
 
 export const LABEL_PERAN: Record<Role, string> = {
+  KLINIK: "Klinik",
   HSE: "HSE",
   MANDOR: "Mandor",
   PETUGAS_DATA: "Petugas data",

@@ -62,6 +62,7 @@ export function shiftJourney(state: AppState, user: User) {
 
 export function guideRoutes(role: Role) {
   switch (role) {
+    case "KLINIK": return ["/klinik", "/impor", "/kesehatan"]
     case "HSE": return ["/impor", "/paparan", "/pengukuran", "/rencana", "/instruksi", "/tindakan", "/laporan"]
     case "PETUGAS_DATA": return ["/impor", "/pengukuran", "/ringkasan"]
     case "MANDOR": return ["/instruksi", "/tindakan"]

@@ -1,6 +1,6 @@
 import { managementOf, checkpointShift, workspaceSnapshot } from "./management-state"
+import { recompute } from "./store-plans"
 import { workflow } from "./workflow"
-import { readinessProgress } from "./worker-readiness"
 import { audit, notice, now, tanggalValid, aktor } from "./store-utils"
 import type { AppState } from "./store-state"
 import type { ManagementAction, ShiftRecord, ShiftWorkspace } from "./management-types"
@@ -56,9 +56,9 @@ export function manageShift(s: AppState, a: Exclude<ManagementAction, { type: "S
     if (invalid) return notice(s, "error", invalid)
     const workspace = shiftWorkspace(saved, a.tanggal, a.workerCodes)
     const readiness = { checkins: [], reviews: [], baselines: (management.healthBaselines ?? []).filter(row => a.workerCodes.includes(row.pekerjaKode)).map(row => ({ ...row })) }
-    const shift: ShiftRecord = { id: a.tanggal, tanggal: a.tanggal, nama: a.nama.trim(), status: "DRAFT", dibuatOleh: user.nama, dibuatPada: now(), workspace, readiness }
+    const shift: ShiftRecord = { id: a.tanggal, tanggal: a.tanggal, nama: a.nama.trim(), status: "DRAFT", calculationVersion: "PDF_V0", dibuatOleh: user.nama, dibuatPada: now(), workspace, readiness }
     const next = { ...saved, ...workspace, tanggal: a.tanggal, management: { ...management, activeId: shift.id, shifts: [...management.shifts, shift] } }
-    return notice(audit(next, "BUAT_SHIFT", `${shift.id}: ${shift.nama}, ${workspace.pekerja.length} peserta. Snapshot master disimpan.`), "ok", "Draft shift dibuat. Mulai dari persiapan pekerja dan bacaan panas.")
+    return notice(audit(recompute({ ...next, rencanaDihitung: true }), "BUAT_SHIFT", `${shift.id}: ${shift.nama}, ${workspace.pekerja.length} peserta. Snapshot master disimpan.`), "ok", "Draft shift dibuat. Mulai dari persiapan pekerja dan bacaan panas.")
   }
   const shift = management.shifts.find(item => item.id === a.shiftId)
   if (!shift) return notice(s, "error", "Shift tidak ditemukan.")
@@ -84,13 +84,13 @@ export function manageShift(s: AppState, a: Exclude<ManagementAction, { type: "S
   if (management.activeId !== shift.id) return notice(s, "error", "Buka shift yang akan diproses terlebih dahulu.")
   const steps = workflow(s, user)
   if (a.type === "TERBITKAN_SHIFT") {
-    if (!readinessProgress(s).ready) return notice(s, "error", "Absensi dan tinjauan kondisi awal belum lengkap. Periksa peserta sebelum menerbitkan shift.")
     if (shift.status !== "DRAFT") return notice(s, "error", "Hanya draft yang dapat diterbitkan.")
     if (!steps[3].selesai) return notice(s, "error", "Hitung dan setujui seluruh rencana peserta sebelum menerbitkan shift.")
     const next = { ...saved, management: { ...management, shifts: management.shifts.map(item => item.id === shift.id ? { ...item, status: "ACTIVE" as const, diterbitkanPada: now() } : item) } }
     return notice(audit(next, "TERBITKAN_SHIFT", `${shift.id}: rencana disetujui, siap dibagikan kepada mandor.`), "ok", "Shift diterbitkan. Selanjutnya bagikan instruksi kepada mandor.")
   }
   if (shift.status !== "ACTIVE") return notice(s, "error", "Hanya shift berjalan yang dapat ditutup.")
+  if (shift.bands?.some(row=>row.dipakaiPada && !row.dikembalikanPada && !row.dibatalkanPada)) return notice(s,"error","Catat pengembalian dan pembersihan seluruh Band yang masih dipakai sebelum menutup shift.")
   if (!steps[5].selesai) return notice(s, "error", "Shift belum dapat ditutup: seluruh rencana aktif harus disetujui dan semua tindakannya terverifikasi.")
   const next = { ...saved, management: { ...management, shifts: management.shifts.map(item => item.id === shift.id ? { ...item, status: "CLOSED" as const, ditutupPada: now(), ditutupOleh: user.nama } : item) } }
   return notice(audit(next, "TUTUP_SHIFT", `${shift.id}: ditutup oleh ${user.nama}; snapshot dan laporan menjadi hanya-baca.`), "ok", "Shift selesai dan ditutup. Laporan akhir dapat dibuka atau dicetak.")

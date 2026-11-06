@@ -1,3 +1,5 @@
+> Alur dan batas akses di bawah bersifat historis bila berbeda dari [rekonsiliasi PDF pengguna, 6 November 2026](source-flow-reconciliation.md). Check-in kini berlangsung setelah instruksi pagi; jawaban kondisi hanya untuk Klinik.
+
 # One working surface per shift
 
 Problem: all five task cards and their buttons remained open at once; approvals opened worker profiles, and reporting/instructions required unrelated routes. IoT controls mixed monitoring/playback with saving shift readings. Repeated guidance did not remove those choices.

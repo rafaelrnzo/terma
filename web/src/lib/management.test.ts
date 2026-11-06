@@ -13,7 +13,7 @@ const add = { type: "SIMPAN_PEKERJA", input: worker } satisfies Action
 const create = { type: "BUAT_SHIFT", tanggal: date, nama: "Shift pagi", workerCodes: [worker.kode] } satisfies Action
 function draft() { return run(emptyWorkspaceState(date), add, create) }
 function approved() {
-  let state = run(draft(), { type: "CATAT_CHECKIN", pekerjaKode: worker.kode, kondisi: "BAIK", keluhan: [] }, { type: "TINJAU_KONDISI", pekerjaKode: worker.kode, hasil: "LANJUT_TINJAU_RENCANA", catatan: "Tindak lanjut awal ditinjau HSE sesuai SOP perusahaan" }, { type: "KONFIRMASI", pekerjaKode: worker.kode, profil: "PEKERJA_BARU", hari: 1 })
+  let state = run(draft(), { type: "CATAT_CHECKIN", persetujuan: true, pekerjaKode: worker.kode, kondisi: "BAIK", keluhan: [] }, { type: "TINJAU_KONDISI", pekerjaKode: worker.kode, hasil: "LANJUT_TINJAU_RENCANA", catatan: "Tindak lanjut awal ditinjau HSE sesuai SOP perusahaan" }, { type: "KONFIRMASI", pekerjaKode: worker.kode, profil: "PEKERJA_BARU", hari: 1 })
   const csv = "zona,tanggal,jam_mulai,isbb,id_alat,pencatat,kalibrasi,asal,waktu_catat\n" + Array.from({ length: 8 }, (_, i) => `GUDANG,${date},${i + 8},26,WBGT01,HSE,2026-10-01,REPLAY,${date}T${String(i + 8).padStart(2, "0")}:00:00+07:00`).join("\n")
   state = run(state, { type: "IMPOR_PENGUKURAN", csv, source: "readings.csv" }, { type: "HITUNG_RENCANA" })
   for (const plan of rencanaAktif(state)) state = reducer(state, { type: "SETUJUI", rencanaId: plan.id })
@@ -151,7 +151,7 @@ describe("explicit shift lifecycle", () => {
     expect(state.notice?.tipe).toBe("error")
   })
   it("checkpoints drafts when switching and denies another crew access", () => {
-    let state = run(draft(), { type: "CATAT_CHECKIN", pekerjaKode: worker.kode, kondisi: "BAIK", keluhan: [] }, { type: "TINJAU_KONDISI", pekerjaKode: worker.kode, hasil: "LANJUT_TINJAU_RENCANA", catatan: "Tindak lanjut awal ditinjau HSE sesuai SOP perusahaan" }, { type: "KONFIRMASI", pekerjaKode: worker.kode, profil: "NORMAL", hari: 1 }, { ...create, tanggal: "2026-11-01" }, { type: "BUKA_SHIFT", shiftId: date })
+    let state = run(draft(), { type: "CATAT_CHECKIN", persetujuan: true, pekerjaKode: worker.kode, kondisi: "BAIK", keluhan: [] }, { type: "TINJAU_KONDISI", pekerjaKode: worker.kode, hasil: "LANJUT_TINJAU_RENCANA", catatan: "Tindak lanjut awal ditinjau HSE sesuai SOP perusahaan" }, { type: "KONFIRMASI", pekerjaKode: worker.kode, profil: "NORMAL", hari: 1 }, { ...create, tanggal: "2026-11-01" }, { type: "BUKA_SHIFT", shiftId: date })
     expect(state.konfirmasi[0].profil).toBe("NORMAL")
     state = run(state, { type: "LOGIN", userId: "mandor-sari" }, { type: "BUKA_SHIFT", shiftId: "2026-11-01" })
     expect(state.tanggal).toBe(date)

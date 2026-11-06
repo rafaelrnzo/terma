@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { WarningIcon as AlertTriangle, ArrowsLeftRightIcon as ArrowRightLeft, CheckCircleIcon as CheckCircle2 } from "@phosphor-icons/react"
-import { QualityBadge, StatusChip } from "@/components/status"
+import { QualityBadge, StatusChip, RiskBadge } from "@/components/status"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
@@ -39,7 +39,7 @@ export function RencanaCard({ r, mode = "hse" }: { r: Rencana; mode?: "hse" | "m
           <div className="flex max-w-full flex-col items-start gap-2 sm:items-end">
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-xs text-muted-foreground">Status tindakan</span>
-              <StatusChip status={r.status} />
+              {r.riskColour ? <RiskBadge colour={r.riskColour} /> : <StatusChip status={r.status} />}
             </div>
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-xs text-muted-foreground">Kualitas data</span>
@@ -56,6 +56,7 @@ export function RencanaCard({ r, mode = "hse" }: { r: Rencana; mode?: "hse" | "m
         )}
       </CardHeader>
       <CardContent className="space-y-4">
+        {r.personalScore !== undefined && mode === "hse" && <p className="text-sm">Skor P <strong>{r.personalScore}</strong> · {r.medicalDataAvailable ? "Faktor medis berizin digunakan tanpa menampilkan rinciannya" : "Tanpa data medis berizin"}</p>}
         <div className="grid gap-4 border-y py-4 sm:grid-cols-3 sm:gap-6">
           <Limit label="Batas harian (adaptasi)" value={`${r.batasHarianMenit} menit`} sub={r.batasHarianMenit === 0 ? "tidak ada paparan sampai ditinjau" : `${r.persenAdaptasi}% dari 480 menit`} />
           <Limit label="Batas interval (NAB)" value={`${r.intervals.reduce((s, i) => s + i.kerjaMaksMenit, 0)} menit`} sub="jumlah maks per jam dari aturan" />

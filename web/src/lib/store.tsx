@@ -92,5 +92,5 @@ export function useApp() {
 /** UI permission check. Mirrors the reducer's check so buttons are disabled instead of failing. */
 export function useIzin() {
   const { user, state } = useApp()
-  return (aksi: Aksi, reguKode?: string) => !!user && boleh(user, aksi, reguKode) && (!isClosedShift(state) || aksi === "KELOLA_PEKERJA" || aksi === "KELOLA_SHIFT" || aksi === "ATUR_TANGGAL")
+  return (aksi: Aksi, reguKode?: string) => !!user && boleh(user, aksi, reguKode) && (!isClosedShift(state) || aksi === "KELOLA_KLINIK" || aksi === "KELOLA_BASELINE" || aksi === "KELOLA_PEKERJA" || aksi === "KELOLA_SHIFT" || aksi === "ATUR_TANGGAL")
 }

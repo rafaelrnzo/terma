@@ -5,7 +5,7 @@ import { readinessProgress, type BaselineInput } from "./worker-readiness"
 
 const date = "2026-10-31"
 const baseline: BaselineInput = { pekerjaKode: "W01", tanggalPemeriksaan: "2026-10-01", berlakuSampai: "2027-10-01", status: "DENGAN_PEMBATASAN", pembatasan: "Ikuti pembatasan kerja dari pemeriksa perusahaan", sumber: "Ringkasan pemeriksaan perusahaan MCU-001" }
-const checkin = { type: "CATAT_CHECKIN", pekerjaKode: "W01", kondisi: "ADA_KELUHAN", keluhan: ["Pusing"] } satisfies Action
+const checkin = { type: "CATAT_CHECKIN", persetujuan: true, pekerjaKode: "W01", kondisi: "ADA_KELUHAN", keluhan: ["Pusing"] } satisfies Action
 const review = { type: "TINJAU_KONDISI", pekerjaKode: "W01", hasil: "LANJUT_TINJAU_RENCANA", catatan: "Keluhan diklarifikasi dan tindak lanjut dicatat sesuai SOP" } satisfies Action
 const run = (state: AppState, ...actions: Action[]) => actions.reduce(reducer, state)
 function master() { return reducer(emptyWorkspaceState(date), { type: "SIMPAN_PEKERJA", input: { kode: "W01", nama: "Adi", reguKode: "COR", tanggalMulai: date, tugasKode: "PEMERIKSAAN", zonaKode: "GUDANG", apd: "Standar" } }) }

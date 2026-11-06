@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import { ShiftHealthReview } from "@/components/shift-health-review"
 import { WorkerAdaptation } from "@/components/worker-adaptation"
 import { UbahPenugasan } from "@/components/rencana-card"
 import { Button } from "@/components/ui/button"
@@ -19,7 +18,7 @@ export function ShiftParticipants() {
   const pending = candidates.filter(worker => !state.konfirmasi.some(row => row.pekerjaKode === worker.kode))
   const current = candidates.find(worker => worker.kode === reviewCode) ?? pending[0]
   const assignment = state.penugasan.find(row => row.pekerjaKode === current?.kode)
-  return <div data-guide="adaptation" className="space-y-5"><ShiftHealthReview /><p className="wizard-progress" role="status">{state.pekerja.length} peserta · {candidates.length - pending.length}/{candidates.length} konfirmasi adaptasi selesai</p>
+  return <div data-guide="adaptation" className="space-y-5"><p className="wizard-progress" role="status">{state.pekerja.length} peserta · {candidates.length - pending.length}/{candidates.length} konfirmasi adaptasi selesai</p>
     {current ? <><div className="flex flex-wrap items-center justify-between gap-3"><p className="text-sm text-muted-foreground">Konfirmasi pekerja ini untuk melanjutkan ke peserta berikutnya.</p>{assignment && izin("UBAH_PENUGASAN") && <UbahPenugasan pekerjaKode={current.kode} zonaAwal={assignment.zonaKode} tugasAwal={assignment.tugasKode} />}</div><WorkerAdaptation key={current.kode} p={current} compact onSaved={() => setReviewCode(null)} /></> : <div className="wizard-result"><div><h3>Peserta sudah siap.</h3><p>Seluruh konfirmasi yang diperlukan tersimpan. Berikutnya periksa sensor.</p></div></div>}
     <details><summary className="cursor-pointer text-sm text-muted-foreground">Daftar peserta dan penugasan ({state.pekerja.length})</summary><div className="mt-4 divide-y">{state.pekerja.map(worker => {
       const row = state.penugasan.find(item => item.pekerjaKode === worker.kode)

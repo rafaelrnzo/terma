@@ -4,7 +4,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useLayoutEffect, useRef } from "react"
 import { SquaresFourIcon, UsersThreeIcon, CloudSunIcon, BroadcastIcon, FileTextIcon } from "@phosphor-icons/react"
-import { navigationFor, navigationGroup, roleHomePath, ROLE_WORKSPACE } from "@/lib/navigation"
+import { navigationFor, navigationGroup, roleHomePath, ROLE_WORKSPACE, pageAllowedFor } from "@/lib/navigation"
 import { useApp } from "@/lib/store"
 import { cn } from "@/lib/utils"
 
@@ -43,7 +43,7 @@ export function Navigation({ mobile, onNavigate }: { mobile?: boolean; onNavigat
         <Link href={href} onClick={onNavigate} data-active={active} aria-current={path === href ? "page" : undefined} className={cn("nav-item gap-3", active && "nav-item-active")}>
           <span className="selectable-icon"><Icon className="icon-outline size-4" aria-hidden /><Icon className="icon-fill size-4" weight="fill" aria-hidden /></span>{item.href === "/ringkasan" && user ? ROLE_WORKSPACE[user.role].nav : item.label}
         </Link>
-        {(mobile || active) && item.routes.length > 1 && <div className="sidebar-subroutes">{item.routes.map(route => <Link key={route.href} href={route.href} onClick={onNavigate} className="nav-item" aria-current={path === route.href ? "page" : undefined}>{route.label}</Link>)}</div>}
+        {(mobile || active) && item.routes.length > 1 && <div className="sidebar-subroutes">{item.routes.filter(route=>!user || pageAllowedFor(user,route.href)).map(route => <Link key={route.href} href={route.href} onClick={onNavigate} className="nav-item" aria-current={path === route.href ? "page" : undefined}>{route.label}</Link>)}</div>}
       </div>
     })}
   </nav>

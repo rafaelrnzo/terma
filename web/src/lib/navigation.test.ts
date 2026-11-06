@@ -4,7 +4,7 @@ import { USERS } from "./config"
 
 describe("role workspaces", () => {
   it("lands each role on its own surface", () => {
-    expect(USERS.map(user => roleHomePath(user))).toEqual(["/hse", "/mandor", "/mandor", "/admin"])
+    expect(USERS.map(user => roleHomePath(user))).toEqual(["/hse", "/mandor", "/mandor", "/admin", "/klinik"])
     for (const user of USERS) expect(navigationGroup(roleHomePath(user))).toBe(NAV_GROUPS[0])
     expect(navigationGroup("/")).toBeUndefined()
   })

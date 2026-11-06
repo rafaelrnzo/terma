@@ -19,6 +19,9 @@ const badgeVariants = cva(
           "hover:bg-muted hover:text-muted-foreground dark:hover:bg-muted/50",
         link: "text-primary underline-offset-4 hover:underline",
         // TERMA action-status variants (DESIGN.md). Always rendered with a text label.
+        riskGreen: "border-success/20 bg-success/10 text-success",
+        riskYellow: "border-warning/20 bg-warning/10 text-warning",
+        riskRed: "border-destructive/20 bg-destructive/10 text-destructive",
         tersedia: "rounded-sm bg-status-tersedia/10 text-status-tersedia",
         adaptasi: "rounded-sm bg-status-adaptasi/10 text-status-adaptasi",
         tinjau: "rounded-sm bg-status-tinjau/10 text-status-tinjau",

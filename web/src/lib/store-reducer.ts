@@ -1,9 +1,12 @@
+import { ingestPersonalTelemetry } from "./personal-telemetry"
+import { manageBand } from "./band-management"
+import { manageClinic } from "./clinic"
 import { isManagementAction, currentShift, checkpointShift, ensureManagement, isClosedShift, mutableShiftAction, managementOf } from "./management-state"
 import { syncCompanyData } from "./company-data"
 import { manageWorker } from "./worker-management"
 import { shiftActionError } from "./shift-action-validation"
 import { ingestStationReadings } from "./device-ingestion"
-import { saveBaseline, recordReadiness, readinessProgress } from "./worker-readiness"
+import { saveBaseline, recordReadiness } from "./worker-readiness"
 import { manageShift, openShift } from "./shift-management"
 import { AksesDitolak, wajib, type Aksi } from "./access"
 import { ATURAN_FIXTURE } from "./config"
@@ -18,6 +21,14 @@ import type { AppState, Action } from "./store-state"
 import type { KonfirmasiPaparan, PengukuranWBGT, Tindakan, Pengiriman } from "./types"
 
 const IZIN_AKSI: Partial<Record<Action["type"], Aksi>> = {
+  TERIMA_TELEMETRI_PEKERJA: "INPUT_PENGUKURAN",
+  ATUR_BAND: "KELOLA_BAND",
+  SERAH_BAND: "SERAH_BAND",
+  KEMBALI_BAND: "SERAH_BAND",
+  AKSES_PROFIL_MEDIS: "KELOLA_KLINIK",
+  PERSETUJUAN_MEDIS: "KELOLA_KLINIK",
+  SIMPAN_PROFIL_MEDIS: "KELOLA_KLINIK",
+  TINDAK_LANJUT_KLINIK: "KELOLA_KLINIK",
   SIMPAN_BASELINE: "KELOLA_BASELINE",
   TINJAU_KONDISI: "TINJAU_KONDISI",
   MUAT_DEMO: "MUAT_DEMO",
@@ -55,6 +66,14 @@ function reguDari(s: AppState, a: Action): string | undefined {
 
 function inner(s: AppState, a: Exclude<Action, ManagementAction | WeatherAction | { type: "SINKRON_PERUSAHAAN" }>): AppState {
   switch (a.type) {
+    case "TERIMA_TELEMETRI_PEKERJA": return ingestPersonalTelemetry(s, a.events)
+    case "ATUR_BAND":
+    case "SERAH_BAND":
+    case "KEMBALI_BAND": return manageBand(s, a)
+    case "AKSES_PROFIL_MEDIS":
+    case "PERSETUJUAN_MEDIS":
+    case "SIMPAN_PROFIL_MEDIS":
+    case "TINDAK_LANJUT_KLINIK": return manageClinic(s, a)
     case "SIMPAN_BASELINE": return saveBaseline(s, a.input)
     case "CATAT_CHECKIN":
     case "TINJAU_KONDISI": return recordReadiness(s, a)
@@ -194,8 +213,9 @@ export function reducer(s: AppState, a: Action): AppState {
       throw e
     }
   }
+  if (a.type === "AKSES_PROFIL_MEDIS" || a.type === "PERSETUJUAN_MEDIS" || a.type === "SIMPAN_PROFIL_MEDIS" || a.type === "TINDAK_LANJUT_KLINIK") return checkpointShift(manageClinic(s, a))
   if (a.type === "SIMPAN_BASELINE") return saveBaseline(s, a.input)
-  if (a.type === "SETUJUI" && !readinessProgress(s).ready) return notice(s, "error", "Lengkapi absensi, kondisi awal, dan tinjauan HSE seluruh peserta sebelum menyetujui rencana.")
+
   if (isManagementAction(a)) {
     if (a.type === "SIMPAN_PEKERJA" || a.type === "HAPUS_PEKERJA" || a.type === "ARSIP_PEKERJA") return manageWorker(s, a)
     return manageShift(s, a)

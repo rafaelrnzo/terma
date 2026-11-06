@@ -78,3 +78,6 @@
 @keyframes kiosk-rfid { from { opacity: .3; scale: .8; } to { opacity: .05; scale: 1.1; } }
 @media (max-width: 640px) { .kiosk-shift-label > span:last-child { width: 100%; margin-left: 1rem; } .kiosk-entry-modes button { grid-template-columns: 1fr; padding: .75rem; } .kiosk-entry-modes small { grid-column: 1; } .kiosk-progress { gap: .375rem; } .kiosk-progress li { flex-direction: column; align-items: flex-start; } .kiosk-entry-actions > * { width: 100%; } .kiosk-camera-view { aspect-ratio: 1; } }
 @media (prefers-reduced-motion: reduce) { .kiosk-method-indicator, .kiosk-worker-card { transition: opacity 100ms; } .camera-face-frame > i, [data-scanning=true] .reader-rings i { animation: none; } [data-scanning=true] .kiosk-worker-card { transform: none; } }
+.kiosk-card:has(.kiosk-success[data-risk=HIJAU]) { background: color-mix(in oklch, var(--success) 9%, var(--card)); border-color: var(--success); }
+.kiosk-card:has(.kiosk-success[data-risk=KUNING]) { background: color-mix(in oklch, var(--warning) 9%, var(--card)); border-color: var(--warning); }
+.kiosk-card:has(.kiosk-success[data-risk=MERAH]) { background: color-mix(in oklch, var(--destructive) 9%, var(--card)); border-color: var(--destructive); }

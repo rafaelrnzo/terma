@@ -1,5 +1,8 @@
 .management-select { display: block; width: 100%; min-height: 2.5rem; border: 1px solid var(--input); border-radius: var(--radius-md); background: var(--card); color: var(--foreground); padding: .5rem .75rem; font: inherit; font-size: .875rem; }
 .management-select:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+.worker-health-table { min-width: 72rem; table-layout: fixed; }
+.worker-health-table td { white-space: normal; overflow-wrap: anywhere; vertical-align: top; padding: 1.25rem .75rem; }
+.worker-health-table .worker-identity { align-items: flex-start; }
 .workflow-start { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; padding: 1.5rem; }
 .workflow-start h2 { margin-top: .75rem; font-size: 1.375rem; font-weight: 600; letter-spacing: -.03em; }
 .workflow-start p:not(.eyebrow) { max-width: 38rem; margin-top: .75rem; color: var(--muted-foreground); font-size: .875rem; line-height: 1.7; }
@@ -25,3 +28,7 @@
 .shift-stage strong { font-size: .75rem; }
 @media (max-width: 1100px) { .worker-master-row { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } .worker-master-row > :last-child { grid-column: 1 / -1; } .shift-stages { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @media (max-width: 640px) { .workflow-start, .shift-list-row { flex-direction: column; align-items: flex-start; } .workflow-map { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem; } .worker-master-row { grid-template-columns: minmax(0, 1fr); gap: .875rem; } .workflow-task { padding: 1.125rem; } .shift-stages { grid-template-columns: minmax(0, 1fr); } .shift-stage { min-height: 3.5rem; } }
+.day-flow { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.25rem; padding: 1.25rem; }
+.day-flow li { min-width: 0; border-left: 2px solid var(--border); padding-left: 1rem; }
+@media (max-width: 1000px) { .day-flow { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .day-flow { grid-template-columns: minmax(0, 1fr); } }

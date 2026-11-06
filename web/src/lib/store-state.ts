@@ -1,3 +1,6 @@
+import type { PersonalTelemetryAction } from "./personal-telemetry"
+import type { BandAction } from "./band-management"
+import type { ClinicAction } from "./clinic"
 import { hariIni } from "./config"
 import type { ManagementAction, ManagementState } from "./management-types"
 import type { WeatherAction, WeatherState } from "./bmkg"
@@ -48,6 +51,9 @@ export function stateAwal(tanggal = hariIni()): AppState {
 }
 
 export type Action =
+  | PersonalTelemetryAction
+  | BandAction
+  | ClinicAction
   | ManagementAction
   | ReadinessAction
   | WeatherAction

@@ -1,3 +1,6 @@
+import type { PersonalDeviceEvent } from "./personal-telemetry"
+import type { BandAllocation } from "./band-management"
+import type { ClinicState } from "./clinic"
 import type { CompanySync } from "./company-data"
 import type { AppState } from "./store-state"
 import type { Pekerja, Penugasan } from "./types"
@@ -14,7 +17,10 @@ export interface ShiftRecord {
   diterbitkanPada?: string
   ditutupPada?: string
   ditutupOleh?: string
+  calculationVersion?: "PDF_V0"
   contoh?: boolean
+  personalTelemetry?: PersonalDeviceEvent[]
+  bands?: BandAllocation[]
   readiness?: ShiftReadiness
   workspace: ShiftWorkspace
 }
@@ -24,6 +30,7 @@ export interface ManagementState {
   shifts: ShiftRecord[]
   activeId: string | null
   healthBaselines?: HealthBaseline[]
+  clinic?: ClinicState
   companySync?: CompanySync
 }
 export interface WorkerInput {

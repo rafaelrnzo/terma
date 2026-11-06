@@ -1,3 +1,6 @@
+import { acclHistorySuggestion } from "./accl-history"
+import { calculatePaperPlan } from "./paper-rules"
+import { currentShift } from "./management-state"
 import { ATURAN_FIXTURE, LOKASI, REGU, TUGAS } from "./config"
 import { deteksiKandidat, hitungRencana, namaZona, rentangJam } from "./rules"
 import { audit, now } from "./store-utils"
@@ -5,7 +8,11 @@ import type { AppState } from "./store-state"
 import type { Pekerja, Rencana } from "./types"
 
 export function kandidatUntuk(s: AppState, p: Pekerja) {
-  return deteksiKandidat(p, s.kehadiran, s.tanggal)
+  const paper=currentShift(s)?.calculationVersion === "PDF_V0"
+  const candidate=deteksiKandidat(p, s.kehadiran, s.tanggal, paper ? 8 : 7)
+  const suggested=paper ? acclHistorySuggestion(s,p.kode) : null
+  if(suggested && suggested.day<=7 && candidate.pemicu!=="KEMBALI_TANPA_PAPARAN") return {...candidate,pemicu:"PEKERJA_BARU" as const,saranProfil:suggested.profile,keterangan:`Lanjut adaptasi dari ${suggested.previousDate}; usulan hari ke-${suggested.day} berdasarkan catatan hadir. HSE mengonfirmasi sebelum rencana diterapkan.`}
+  return candidate
 }
 
 export function rencanaAktif(s: AppState) {
@@ -24,7 +31,8 @@ export function recompute(s: AppState): AppState {
     const pn = s.penugasan.find((x) => x.pekerjaKode === p.kode)
     if (!pn) continue
     const tugas = TUGAS.find((t) => t.kode === pn.tugasKode)!
-    const hasil = hitungRencana({
+    const paper = currentShift(s)?.calculationVersion === "PDF_V0"
+    const hasil = (paper ? calculatePaperPlan(s, p) : null) ?? hitungRencana({
       tanggal: s.tanggal,
       pekerja: p,
       penugasan: pn,
@@ -35,9 +43,21 @@ export function recompute(s: AppState): AppState {
       prakiraan: s.prakiraan,
       aturan: ATURAN_FIXTURE,
     })
-    const sig = JSON.stringify([pn.zonaKode, pn.tugasKode, hasil.status, hasil.kualitas, hasil.batasHarianMenit, hasil.intervals.map((i) => [i.kualitas, i.kerjaDirencanakan])])
     const current = rencana.find((r) => r.pekerjaKode === p.kode && r.tanggal === s.tanggal && !r.digantikan)
-    const base = { ...hasil, sig, tanggal: s.tanggal, zonaKode: pn.zonaKode, tugasKode: pn.tugasKode, aturanVersi: ATURAN_FIXTURE.versi, dibuat: now(), pekerjaKode: p.kode }
+    // Once approved, data changes may tighten, never silently relax the accepted schedule.
+    const approvedLimit = rencana.filter(row => row.pekerjaKode === p.kode && row.tanggal === s.tanggal && row.disetujuiOleh).toSorted((a,b)=>b.version-a.version)[0]
+    if (paper && approvedLimit) {
+      hasil.batasHarianMenit = Math.min(hasil.batasHarianMenit, approvedLimit.batasHarianMenit)
+      let remaining = hasil.batasHarianMenit
+      for (const interval of hasil.intervals) {
+        const old = approvedLimit.intervals.find(row => row.jamMulai === interval.jamMulai)
+        interval.kerjaDirencanakan = Math.min(interval.kerjaDirencanakan, old?.kerjaDirencanakan ?? 0, remaining)
+        remaining -= interval.kerjaDirencanakan
+      }
+      hasil.totalKerjaMenit = hasil.intervals.reduce((sum,row)=>sum+row.kerjaDirencanakan,0)
+    }
+    const sig = JSON.stringify([pn.zonaKode, pn.tugasKode, hasil.status, hasil.kualitas, hasil.batasHarianMenit, "personalScore" in hasil ? hasil.personalScore : null, "medicalDataAvailable" in hasil ? hasil.medicalDataAvailable : null, hasil.intervals.map((i) => [i.kualitas, i.isbb, i.kerjaDirencanakan])])
+    const base = { ...hasil, sig, tanggal: s.tanggal, zonaKode: pn.zonaKode, tugasKode: pn.tugasKode, aturanVersi: paper ? "flow-pdf-v0" : ATURAN_FIXTURE.versi, dibuat: now(), pekerjaKode: p.kode }
     if (!current) {
       rencana.push({ ...base, id: `${p.kode}-v1@${s.tanggal}`, version: 1 })
       continue
@@ -73,12 +93,13 @@ export function isiPesan(s: AppState, reguKode: string): { teks: string; rencana
   const sumber = [...new Set(rs.map((r) => `${namaZona(r.zonaKode)}: ${r.kualitas.replace(/_/g, " ")}`))].join("; ")
   const baris = rs.map((r) => {
     const p = s.pekerja.find((x) => x.kode === r.pekerjaKode)!
-    return `• ${p.nama} · ${r.status.replace(/_/g, " ")}. ${deskripsiTindakan(r, p).join(" ")}`
+    const schedule = r.intervals.map(interval => `${String(interval.jamMulai).padStart(2,"0")}.00 ${interval.kerjaDirencanakan} menit kerja/${60-interval.kerjaDirencanakan} menit istirahat`).join("; ")
+    return `• ${p.nama} · ${r.riskColour ?? r.status.replace(/_/g, " ")}. ${deskripsiTindakan(r, p).join(" ")}${r.riskColour ? `\n  Jadwal: ${schedule}.` : ""}`
   })
   const teks = [
     ...(s.demo && s.demo.versi !== "workspace-v3" ? ["SUMBER: DATA CONTOH HISTORIS"] : []),
     `TERMA · ${regu.nama}, ${LOKASI}, ${s.tanggal}.`,
-    `Sumber: ${sumber || "Belum tersedia"}; aturan ${ATURAN_FIXTURE.versi}${ATURAN_FIXTURE.isFixture ? " (belum disahkan)" : ""}.`,
+    `Sumber: ${sumber || "Belum tersedia"}; aturan ${[...new Set(rs.map(plan=>plan.aturanVersi))].join(", ") || ATURAN_FIXTURE.versi} (parameter v0).`,
     ...baris,
     "Mohon akui penerimaan di TERMA lalu catat tindakan dan waktunya. Pengakuan pesan belum berarti tindakan terlaksana.",
     "Pesan ini tidak menyatakan pekerja sehat atau aman secara medis. Keluhan atau dugaan darurat: ikuti SOP lokasi, jangan menunggu aplikasi.",

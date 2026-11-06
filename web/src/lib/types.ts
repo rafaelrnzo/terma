@@ -25,7 +25,7 @@ export type ActionLifecycle =
 
 export type AcclProfile = "PEKERJA_BARU" | "BERPENGALAMAN_KEMBALI"
 export type Workload = "RINGAN" | "SEDANG" | "BERAT" | "SANGAT_BERAT"
-export type Role = "HSE" | "MANDOR" | "PETUGAS_DATA"
+export type Role = "HSE" | "MANDOR" | "PETUGAS_DATA" | "KLINIK"
 export type AttendanceStatus = "HADIR" | "CUTI" | "SAKIT" | "ALFA"
 /** No messaging integration yet: a shared message is DIBAGIKAN_MANUAL, never TERKIRIM without channel proof. */
 export type DeliveryStatus = "DIBAGIKAN_MANUAL" | "TERKIRIM" | "GAGAL"
@@ -140,9 +140,17 @@ export interface IntervalPlan {
   kerjaMaksMenit: number // interval limit (NAB)
   kerjaDirencanakan: number // after applying daily limit
   catatan: string
+  riskColour?: RiskColour
+  baseMinutes?: number
+  drinkInterval?: number
 }
 
+export type RiskColour = "HIJAU" | "KUNING" | "MERAH" | "DATA_KURANG"
+
 export interface Rencana {
+  riskColour?: RiskColour
+  personalScore?: number
+  medicalDataAvailable?: boolean
   id: string // `${pekerjaKode}-v${version}@${tanggal}`
   tanggal: string
   pekerjaKode: string

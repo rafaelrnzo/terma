@@ -66,6 +66,7 @@ export function deteksiKandidat(
   p: Pekerja,
   kehadiran: Kehadiran[],
   tanggalRencana: string,
+  absenceThreshold = 7,
 ): KandidatAdaptasi {
   // Today's roster and future attendance cannot establish prior exposure history.
   const milik = kehadiran.filter((k) => k.pekerjaKode === p.kode && k.tanggal < tanggalRencana).sort((a, b) => a.tanggal.localeCompare(b.tanggal))
@@ -101,7 +102,7 @@ export function deteksiKandidat(
       saranProfil: "PEKERJA_BARU",
       keterangan: `Mulai penugasan ${p.tanggalMulai}, belum ada riwayat hadir. Tanggal mulai saja tidak membuktikan adaptasi.`,
     }
-  if (hariTanpaHadir >= 7)
+  if (hariTanpaHadir >= absenceThreshold)
     return {
       pekerjaKode: p.kode,
       pemicu: "KEMBALI_TANPA_PAPARAN",

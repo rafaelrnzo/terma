@@ -1,10 +1,11 @@
 import { currentShift, managementOf } from "./management-state"
 import { audit, notice, now, tanggalValid } from "./store-utils"
+import { recompute } from "./store-plans"
 import { hariIni } from "./config"
 import { isCheckinMethod, type CheckinMethod } from "./kiosk-entry"
 import type { AppState } from "./store-state"
 
-export const BODY_COMPLAINTS = ["Pusing", "Lemas", "Mual", "Sakit kepala", "Kram otot", "Keluhan lain"] as const
+export const BODY_COMPLAINTS = ["Pusing", "Lemas", "Mual", "Sakit kepala", "Kram otot", "Keluhan lain", "Demam", "Diare/muntah", "Kurang tidur", "Lain"] as const
 export type BodyComplaint = typeof BODY_COMPLAINTS[number]
 export type BodyCondition = "BAIK" | "KURANG_BUGAR" | "ADA_KELUHAN"
 export type WorkHealthStatus = "TANPA_PEMBATASAN" | "DENGAN_PEMBATASAN" | "PERLU_TINJAU"
@@ -23,6 +24,7 @@ export interface WorkerCheckin {
   pekerjaKode: string
   kondisi: BodyCondition
   metode?: CheckinMethod
+  persetujuan?: boolean
   keluhan: BodyComplaint[]
   waktu: string
 }
@@ -35,7 +37,7 @@ export interface ReadinessReview {
 }
 export interface ShiftReadiness { checkins: WorkerCheckin[]; baselines: HealthBaseline[]; reviews: ReadinessReview[] }
 export type ReadinessAction =
-  | { type: "CATAT_CHECKIN"; pekerjaKode: string; kondisi: BodyCondition; keluhan: BodyComplaint[]; metode?: CheckinMethod }
+  | { type: "CATAT_CHECKIN"; pekerjaKode: string; kondisi: BodyCondition; keluhan: BodyComplaint[]; metode?: CheckinMethod; persetujuan?: boolean }
   | { type: "TINJAU_KONDISI"; pekerjaKode: string; hasil: ReadinessReview["hasil"]; catatan: string }
   | { type: "SIMPAN_BASELINE"; input: BaselineInput }
 
@@ -65,22 +67,24 @@ export function saveBaseline(state: AppState, input: BaselineInput): AppState {
 
 export function recordReadiness(state: AppState, action: Exclude<ReadinessAction, { type: "SIMPAN_BASELINE" }>): AppState {
   const shift = currentShift(state)
-  if (!shift?.readiness || shift.status !== "DRAFT" || state.rencana.some(plan => plan.disetujuiOleh)) return notice(state, "error", "Check-in dan tinjauan awal hanya dapat dicatat pada draft sebelum persetujuan rencana.")
+  if (!shift?.readiness || shift.status === "CLOSED") return notice(state, "error", "Check-in hanya dapat dicatat pada shift yang belum ditutup.")
   if (action.type === "CATAT_CHECKIN" && shift.tanggal > hariIni()) return notice(state, "error", "Absen belum dibuka untuk tanggal shift yang akan datang.")
   const worker = state.pekerja.find(row => row.kode === action.pekerjaKode)
   if (!worker) return notice(state, "error", "ID pekerja tidak terdaftar pada shift ini.")
   const readiness = shift.readiness
   if (action.type === "CATAT_CHECKIN") {
+    const consented = managementOf(state).shifts.some(row => row.readiness?.checkins.some(checkin => checkin.pekerjaKode === worker.kode && checkin.persetujuan === true))
+    if (shift.calculationVersion === "PDF_V0" && !consented && action.persetujuan !== true) return notice(state, "error", "Persetujuan penggunaan jawaban kondisi diperlukan pada check-in pertama.")
     if (action.metode !== undefined && !isCheckinMethod(action.metode)) return notice(state, "error", "Metode absen tidak dikenal.")
     if (!["BAIK", "KURANG_BUGAR", "ADA_KELUHAN"].includes(action.kondisi) || !Array.isArray(action.keluhan) || action.keluhan.some(complaint => !BODY_COMPLAINTS.includes(complaint)) || new Set(action.keluhan).size !== action.keluhan.length || (action.kondisi === "BAIK" && action.keluhan.length > 0) || (action.kondisi === "ADA_KELUHAN" && !action.keluhan.length)) return notice(state, "error", "Pilih kondisi tubuh dan keluhan dengan benar.")
     const previous = readiness.checkins.find(row => row.pekerjaKode === worker.kode)
     if (previous?.kondisi === action.kondisi && previous.keluhan.join("|") === action.keluhan.join("|")) return notice(state, "info", "Absen Anda sudah tercatat. Tidak ada catatan ganda.")
-    const checkin: WorkerCheckin = { pekerjaKode: worker.kode, kondisi: action.kondisi, keluhan: [...action.keluhan], metode: action.metode, waktu: now() }
+    const checkin: WorkerCheckin = { pekerjaKode: worker.kode, kondisi: action.kondisi, keluhan: [...action.keluhan], metode: action.metode, persetujuan: consented || action.persetujuan === true, waktu: now() }
     const updated = { ...readiness, checkins: [...readiness.checkins.filter(row => row.pekerjaKode !== worker.kode), checkin], reviews: readiness.reviews.filter(row => row.pekerjaKode !== worker.kode) }
     const kehadiran = [...state.kehadiran.filter(row => row.pekerjaKode !== worker.kode || row.tanggal !== shift.tanggal), { pekerjaKode: worker.kode, tanggal: shift.tanggal, status: "HADIR" as const, source: "Check-in kondisi awal pekerja" }]
     const management = managementOf(state)
     const next = { ...state, kehadiran, management: { ...management, shifts: management.shifts.map(row => row.id === shift.id ? { ...row, readiness: updated } : row) } }
-    return notice(audit(next, "CHECKIN_PEKERJA", `${worker.kode}: kehadiran dan kondisi awal tercatat.`, worker.kode), "ok", "Absen dan kondisi awal tersimpan. Ikuti arahan HSE sebelum mulai bekerja.")
+    return notice(audit(recompute(next), "CHECKIN_PEKERJA", `${worker.kode}: kehadiran dan kondisi awal tercatat.`, worker.kode), "ok", "Absen dan kondisi awal tersimpan. Ikuti instruksi mandor. Jawaban kondisi hanya tersedia untuk Klinik.")
   }
   if (!readiness.checkins.some(row => row.pekerjaKode === worker.kode)) return notice(state, "error", "Pekerja perlu absen dan mengisi kondisi tubuh terlebih dahulu.")
   if (!["LANJUT_TINJAU_RENCANA", "TUNDA_PENUGASAN"].includes(action.hasil) || action.catatan.trim().length < 5 || action.catatan.length > 1000) return notice(state, "error", "Catat tindak lanjut HSE minimal lima karakter.")

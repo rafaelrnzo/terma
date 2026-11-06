@@ -46,7 +46,7 @@ describe("local telemetry adapter", () => {
   it("never auto-approves plans when new device readings trigger recomputation", () => {
     let state = draft()
     for (const worker of state.pekerja) {
-      state = reducer(state, { type: "CATAT_CHECKIN", pekerjaKode: worker.kode, kondisi: "BAIK", keluhan: [] })
+      state = reducer(state, { type: "CATAT_CHECKIN", persetujuan: true, pekerjaKode: worker.kode, kondisi: "BAIK", keluhan: [] })
       state = reducer(state, { type: "TINJAU_KONDISI", pekerjaKode: worker.kode, hasil: "LANJUT_TINJAU_RENCANA", catatan: "Kondisi awal ditinjau HSE sesuai SOP" })
     }
     state = reducer(state, { type: "HITUNG_RENCANA" })

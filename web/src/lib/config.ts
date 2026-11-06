@@ -19,7 +19,10 @@ export const USERS: User[] = [
   { id: "mandor-budi", username: "budi", nama: "Budi", role: "MANDOR", reguKode: "COR" },
   { id: "mandor-sari", username: "sari", nama: "Sari", role: "MANDOR", reguKode: "BEK" },
   { id: "data-tono", username: "tono", nama: "Tono", role: "PETUGAS_DATA" },
+  { id: "klinik-dewi", username: "dewi", nama: "Dewi", role: "KLINIK" },
 ]
+
+export const BAND_UNITS: string[] = ["BAND-01", "BAND-02"]
 
 export const REGU: Regu[] = [
   { kode: "COR", nama: "Regu Cor", mandorId: "mandor-budi" },

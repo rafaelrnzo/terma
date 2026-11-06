@@ -12,8 +12,8 @@ function draft() {
 describe("camera and card attendance provenance", () => {
   it("persists each entry method without duplicating worker attendance", () => {
     for (const metode of ["KAMERA", "PRATINJAU_KAMERA", "TAP_KARTU"] satisfies ("KAMERA" | "PRATINJAU_KAMERA" | "TAP_KARTU")[]) {
-      let state = reducer(draft(), { type: "CATAT_CHECKIN", pekerjaKode: "CMP001", kondisi: "BAIK", keluhan: [], metode })
-      state = reducer(state, { type: "CATAT_CHECKIN", pekerjaKode: "CMP001", kondisi: "BAIK", keluhan: [], metode })
+      let state = reducer(draft(), { type: "CATAT_CHECKIN", persetujuan: true, pekerjaKode: "CMP001", kondisi: "BAIK", keluhan: [], metode })
+      state = reducer(state, { type: "CATAT_CHECKIN", persetujuan: true, pekerjaKode: "CMP001", kondisi: "BAIK", keluhan: [], metode })
       const restored = readDemoState(JSON.stringify(state))
       expect(currentShift(restored)?.readiness?.checkins).toHaveLength(1)
       expect(currentShift(restored)?.readiness?.checkins[0].metode).toBe(metode)
@@ -21,9 +21,9 @@ describe("camera and card attendance provenance", () => {
     }
   })
   it("accepts older entries without a method and rejects untrusted method values", () => {
-    const state = reducer(draft(), { type: "CATAT_CHECKIN", pekerjaKode: "CMP001", kondisi: "BAIK", keluhan: [] })
+    const state = reducer(draft(), { type: "CATAT_CHECKIN", persetujuan: true, pekerjaKode: "CMP001", kondisi: "BAIK", keluhan: [] })
     expect(() => readDemoState(JSON.stringify(state))).not.toThrow()
-    const withMethod = reducer(draft(), { type: "CATAT_CHECKIN", pekerjaKode: "CMP001", kondisi: "BAIK", keluhan: [], metode: "KAMERA" })
+    const withMethod = reducer(draft(), { type: "CATAT_CHECKIN", persetujuan: true, pekerjaKode: "CMP001", kondisi: "BAIK", keluhan: [], metode: "KAMERA" })
     expect(() => readDemoState(JSON.stringify(withMethod).replace('"metode":"KAMERA"', '"metode":"UNKNOWN"'))).toThrow("Invalid shift readiness")
     expect(isCheckinMethod("FACE_RECOGNIZED" )).toBe(false)
   })

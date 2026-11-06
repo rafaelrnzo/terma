@@ -1,0 +1,61 @@
+.body-monitor { min-width: 0; border: 1px solid var(--border); border-radius: var(--radius-xl); overflow: hidden; background: var(--card); }
+.body-monitor-heading { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .75rem; padding: 1.25rem; border-bottom: 1px solid var(--border); }
+.body-monitor-heading h3 { font-size: 1.125rem; font-weight: 600; letter-spacing: -.025em; }
+.body-monitor-count { border: 1px solid var(--border); border-radius: var(--radius-md); padding: .4rem .6rem; font-size: .75rem; color: var(--muted-foreground); }
+.body-monitor-grid { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); }
+.body-map-card.iso { position: relative; min-width: 0; align-self: start; background: var(--secondary); --anatomy-paper:var(--card); --anatomy-face:var(--card); --anatomy-top:var(--card); --anatomy-shade-0:color-mix(in oklch,var(--muted-foreground) 22%,var(--card)); --anatomy-shade-1:color-mix(in oklch,var(--muted-foreground) 15%,var(--card)); --anatomy-shade-2:color-mix(in oklch,var(--muted-foreground) 9%,var(--card)); --anatomy-shade-3:color-mix(in oklch,var(--muted-foreground) 4%,var(--card)); --anatomy-hi:var(--muted-foreground); --anatomy-mid:var(--muted-foreground); --anatomy-lo:var(--border); --anatomy-faint:var(--border); --anatomy-lit:var(--primary); }
+.dark .body-map-card.iso { --anatomy-paper:color-mix(in oklch,var(--foreground) 20%,var(--card)); --anatomy-face:var(--anatomy-paper); --anatomy-top:color-mix(in oklch,var(--foreground) 38%,var(--card)); --anatomy-shade-0:color-mix(in oklch,var(--foreground) 15%,var(--card)); --anatomy-shade-1:color-mix(in oklch,var(--foreground) 22%,var(--card)); --anatomy-shade-2:color-mix(in oklch,var(--foreground) 29%,var(--card)); --anatomy-shade-3:color-mix(in oklch,var(--foreground) 36%,var(--card)); }
+.body-map-toolbar, .body-map-footer { display: flex; align-items: center; justify-content: space-between; gap: .5rem; padding: .75rem 1rem; color: var(--muted-foreground); font-size: .75rem; }
+.body-map-footer { border-top: 1px solid var(--border); }
+.body-svg { max-height: 480px; }
+.body-svg [data-body-part=rear-torso-casting] { opacity: .18; }
+.body-svg [data-region=base] { opacity: .65; }
+.body-map-card[data-selected-region=kidneys] [data-region=kidneys] .iso-fill,
+.body-map-card[data-selected-region=heat] [data-region=heat] .iso-fill,
+.body-map-card[data-selected-region=band] [data-region=band] .iso-fill,
+.body-map-card[data-selected-region=hydration] [data-region=hydration] .iso-fill,
+.body-map-card[data-selected-region=exposure] [data-region=exposure] .iso-fill { fill: color-mix(in oklch,var(--primary) 18%,var(--card)); }
+.body-map-card[data-selected-region=kidneys] [data-region=kidneys] .iso-line,
+.body-map-card[data-selected-region=heat] [data-region=heat] .iso-line,
+.body-map-card[data-selected-region=band] [data-region=band] .iso-line,
+.body-map-card[data-selected-region=hydration] [data-region=hydration] .iso-line,
+.body-map-card[data-selected-region=exposure] [data-region=exposure] .iso-line { stroke: var(--primary); }
+.body-marker { cursor: pointer; outline: none; color: var(--muted-foreground); }
+.body-marker[data-tone=attention] { color: var(--warning); }
+.body-marker[data-tone=recorded] { color: var(--primary); }
+.body-marker-hit { fill: transparent; stroke: none; }
+.body-marker-halo { fill: currentColor; opacity: .1; stroke: none; transform-origin: center; transform-box: fill-box; }
+.body-marker-ring { fill: var(--card); stroke: currentColor; stroke-width: 1.5; }
+.body-marker-dot { fill: currentColor; stroke: none; }
+.body-marker[data-selected=true] .body-marker-ring, .body-marker:focus-visible .body-marker-ring { stroke-width: 3; }
+.body-marker[data-selected=true] .body-marker-halo { opacity: .22; }
+.body-monitor[data-visible=true] .body-marker[data-tone=attention] .body-marker-halo { animation: body-signal-pulse 2.8s var(--ease-out) infinite; }
+@keyframes body-signal-pulse { 0%,100% { opacity: .1; scale: .9; } 50% { opacity: .22; scale: 1.12; } }
+.body-signal-column { min-width: 0; padding: 1rem; border-left: 1px solid var(--border); }
+.body-signal-list { position: relative; display: grid; gap: .375rem; }
+.body-signal-indicator { position: absolute; top: 0; left: 0; width: 100%; border: 1px solid color-mix(in oklch,var(--primary) 35%,var(--border)); background: var(--accent); border-radius: var(--radius-lg); pointer-events: none; transition: transform 200ms var(--ease-slide), height 200ms var(--ease-slide); }
+.body-signal-button { z-index: 1; display: grid; grid-template-columns: 20px minmax(0,1fr) auto; align-items: start; gap: .25rem .6rem; min-height: 3.75rem; text-align: left; padding: .6rem .75rem; border-radius: var(--radius-lg); background: transparent; cursor: pointer; transition: transform 150ms var(--ease-out); }
+.body-signal-button strong { display: block; font-size: .875rem; font-weight: 500; }
+.body-signal-button small { display: block; margin-top: .25rem; font-size: .75rem; color: var(--muted-foreground); }
+.body-signal-state { grid-column: 3; grid-row: 1; max-width: 7rem; text-align: right; color: var(--muted-foreground); font-size: .75rem; }
+.body-signal-button[data-tone=attention] .body-signal-state { color: var(--warning); }
+.body-signal-button[aria-pressed=true] strong { color: var(--primary); }
+.body-signal-button:active { transform: scale(.98); }
+.body-signal-button:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+.body-signal-detail { margin-top: 1rem; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1rem; font-size: .8125rem; line-height: 1.65; }
+.body-signal-detail h4 { font-size: .875rem; font-weight: 600; margin-bottom: .5rem; }
+.body-signal-detail dl { margin-top: 1rem; color: var(--muted-foreground); }
+.body-signal-detail dl > div + div { margin-top: .5rem; }
+.body-signal-detail dt { font-size: .75rem; }
+.body-signal-detail dd { color: var(--foreground); overflow-wrap: anywhere; }
+.body-signal-action { margin-top: 1rem; border-top: 1px solid var(--border); padding-top: .75rem; }
+.body-monitor-caption, .body-clinical-note { border-top: 1px solid var(--border); padding: .875rem 1.25rem; font-size: .75rem; line-height: 1.7; color: var(--muted-foreground); }
+@media (max-width: 1000px) { .body-signal-state { grid-column: 2; grid-row: auto; text-align: left; max-width: none; } }
+@media (max-width: 760px) { .body-monitor-grid { grid-template-columns: minmax(0,1fr); } .body-signal-column { border-left: 0; border-top: 1px solid var(--border); } .body-svg { max-height: 510px; } }
+@media (prefers-reduced-motion: reduce) { .body-marker-halo { animation: none !important; } .body-signal-indicator { transition: opacity 100ms; } .body-signal-button:active { transform: none; } }
+
+.body-map-card[data-selected-region=kidneys] [data-region=kidneys],
+.body-map-card[data-selected-region=heat] [data-region=heat],
+.body-map-card[data-selected-region=band] [data-region=band],
+.body-map-card[data-selected-region=hydration] [data-region=hydration],
+.body-map-card[data-selected-region=exposure] [data-region=exposure] { --anatomy-shade-0:color-mix(in oklch,var(--primary) 42%,var(--card)); --anatomy-shade-1:color-mix(in oklch,var(--primary) 29%,var(--card)); --anatomy-shade-2:color-mix(in oklch,var(--primary) 19%,var(--card)); --anatomy-shade-3:color-mix(in oklch,var(--primary) 10%,var(--card)); }

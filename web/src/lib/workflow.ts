@@ -19,7 +19,7 @@ export function workflow(s: AppState, user: User): WorkflowStep[] {
   const pekerja = lingkupPekerja(user, s.pekerja)
   const ids = new Set(pekerja.map((p) => p.kode))
   const penugasan = s.penugasan.filter((p) => ids.has(p.pekerjaKode))
-  const lengkap = pekerja.filter((p) => penugasan.some((a) => a.pekerjaKode === p.kode) && (p.tanggalMulai === s.tanggal || s.kehadiran.some((k) => k.pekerjaKode === p.kode && k.tanggal <= s.tanggal))).length
+  const lengkap = pekerja.filter((p) => penugasan.some((a) => a.pekerjaKode === p.kode) && p.tanggalMulai <= s.tanggal).length
   const kandidat = pekerja.filter((p) => kandidatUntuk(s, p).pemicu)
   const dikonfirmasi = kandidat.filter((p) => s.konfirmasi.some((k) => k.pekerjaKode === p.kode)).length
   const zona = penugasan.length ? [...new Set(penugasan.map((p) => p.zonaKode))] : ZONA.map((z) => z.kode)

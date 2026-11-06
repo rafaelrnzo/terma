@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { acclHistorySuggestion } from "@/lib/accl-history"
+import { currentShift } from "@/lib/management-state"
 import { persenAdaptasi } from "@/lib/rules"
 import { kandidatUntuk, useApp, useIzin } from "@/lib/store"
 import type { AcclProfile, Pekerja } from "@/lib/types"
@@ -29,8 +31,9 @@ export function WorkerAdaptation({ p, compact = false, onSaved }: { p: Pekerja; 
   const k = kandidatUntuk(state, p)
   const konf = state.konfirmasi.find((x) => x.pekerjaKode === p.kode)
   const [profil, setProfil] = useState<AcclProfile | "NORMAL">(konf?.profil ?? k.saranProfil)
-  const [hari, setHari] = useState(String(konf?.hariAdaptasi ?? 1))
-  const persen = persenAdaptasi(profil, Number(hari))
+  const [hari, setHari] = useState(String(konf?.hariAdaptasi ?? (currentShift(state)?.calculationVersion === "PDF_V0" ? acclHistorySuggestion(state,p.kode)?.day : undefined) ?? 1))
+  const paper = currentShift(state)?.calculationVersion === "PDF_V0"
+  const persen = paper && profil !== "NORMAL" ? Math.min(100, Number(hari) * 20) : persenAdaptasi(profil, Number(hari))
 
   return (
     <Card data-compact={compact} className={cn(!konf && "border-status-tinjau")}>
@@ -76,7 +79,7 @@ export function WorkerAdaptation({ p, compact = false, onSaved }: { p: Pekerja; 
                 <SelectContent>
                   {(["PEKERJA_BARU", "BERPENGALAMAN_KEMBALI", "NORMAL"] as const).map((x) => (
                     <SelectItem key={x} value={x}>
-                      {LABEL_PROFIL[x]}
+                      {paper && x === "BERPENGALAMAN_KEMBALI" ? "Berpengalaman kembali (20%, +20 poin/hari)" : LABEL_PROFIL[x]}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -89,7 +92,7 @@ export function WorkerAdaptation({ p, compact = false, onSaved }: { p: Pekerja; 
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {[1, 2, 3, 4, 5].map((d) => (
+                  {Array.from({length:paper ? 14 : 5},(_,i)=>i+1).map((d) => (
                     <SelectItem key={d} value={String(d)}>
                       {d}
                     </SelectItem>

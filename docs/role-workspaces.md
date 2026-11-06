@@ -1,3 +1,5 @@
+> Alur dan batas akses di bawah bersifat historis bila berbeda dari [rekonsiliasi PDF pengguna, 6 November 2026](source-flow-reconciliation.md). Check-in kini berlangsung setelah instruksi pagi; jawaban kondisi hanya untuk Klinik.
+
 # Ruang peran dan alur TERMA
 
 Diperbarui 6 November 2026. Acuan: proposal DeveloperDay2026, [Google Docs kebutuhan](https://docs.google.com/document/d/1UTxFQ2EdwfWitttrZUgQ2hsZY3bLZM31DXF4VBfyxIw/edit), tiga gambar yang dikirim pengguna, serta klarifikasi tentang tiga role, absen kondisi tubuh, dan baseline kesehatan perusahaan. [Artefak Claude](https://claude.ai/artifact/2tEtEYLtWfc61XPdSCWnMn) tertahan halaman verifikasi, sehingga isinya belum menjadi sumber yang terverifikasi.
