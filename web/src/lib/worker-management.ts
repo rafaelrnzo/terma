@@ -3,6 +3,7 @@ import { managementOf } from "./management-state"
 import { audit, notice, tanggalValid } from "./store-utils"
 import type { AppState } from "./store-state"
 import type { ManagementAction, WorkerInput } from "./management-types"
+import { CARD_UID } from "./iot"
 
 export function workerInputError(input: WorkerInput) {
   if (!/^[A-Za-z0-9_-]{2,32}$/.test(input.kode)) return "ID pekerja harus 2–32 huruf, angka, tanda hubung, atau garis bawah."
@@ -12,6 +13,7 @@ export function workerInputError(input: WorkerInput) {
   if (!TUGAS.some(item => item.kode === input.tugasKode)) return "Pilih tugas yang tersedia."
   if (!ZONA.some(item => item.kode === input.zonaKode)) return "Pilih zona yang tersedia."
   if (!input.apd.trim()) return "APD wajib diisi."
+  if (input.kartuUid && !CARD_UID.test(input.kartuUid)) return "UID kartu ditulis seperti A1:B2:C3:D4 (heksadesimal, dipisah titik dua)."
   return ""
 }
 
@@ -29,7 +31,8 @@ export function manageWorker(s: AppState, a: Extract<ManagementAction, { type: "
     if (a.previousCode && !old) return notice(s, "error", "Pekerja yang akan diubah tidak ditemukan.")
     if (old && ((old.revision ?? 1) !== a.expectedRevision || old.kode !== a.input.kode)) return notice(s, "error", "Data pekerja sudah berubah atau ID diganti. Buka ulang formulir.")
     if (!old && management.workers.some(worker => worker.kode === a.input.kode)) return notice(s, "error", "ID pekerja sudah digunakan.")
-    const worker = { kode: a.input.kode, nama: a.input.nama.trim(), reguKode: a.input.reguKode, tanggalMulai: a.input.tanggalMulai, source: "Formulir pekerja", origin: "MANUAL", revision: (old?.revision ?? 0) + 1, diarsipkan: old?.diarsipkan ?? false } satisfies AppState["pekerja"][number]
+    if (a.input.kartuUid && management.workers.some(worker => worker.kartuUid === a.input.kartuUid && worker.kode !== a.input.kode)) return notice(s, "error", "UID kartu sudah dipakai pekerja lain.")
+    const worker = { kode: a.input.kode, nama: a.input.nama.trim(), reguKode: a.input.reguKode, tanggalMulai: a.input.tanggalMulai, source: "Formulir pekerja", origin: "MANUAL", revision: (old?.revision ?? 0) + 1, diarsipkan: old?.diarsipkan ?? false, kartuUid: a.input.kartuUid || undefined } satisfies AppState["pekerja"][number]
     const assignment = { pekerjaKode: worker.kode, tugasKode: a.input.tugasKode, zonaKode: a.input.zonaKode, apd: a.input.apd.trim(), apdBerubah: a.input.apd !== "Standar", version: (management.assignments.find(item => item.pekerjaKode === worker.kode)?.version ?? 0) + 1 }
     const next = { ...s, management: { ...management, workers: old ? management.workers.map(item => item.kode === old.kode ? worker : item) : [...management.workers, worker], assignments: [...management.assignments.filter(item => item.pekerjaKode !== worker.kode), assignment] } }
     return notice(audit(next, old ? "UBAH_PEKERJA" : "TAMBAH_PEKERJA", `${worker.kode}: ${worker.nama}. Perubahan master berlaku pada shift baru; snapshot shift terdahulu dipertahankan.`), "ok", old ? "Data pekerja diperbarui. Shift yang sudah dibuat tetap menggunakan snapshot sebelumnya." : "Pekerja ditambahkan. Selanjutnya pilih pekerja ini saat membuat shift.")

@@ -1,26 +1,26 @@
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-import { FlatCompat } from "@eslint/eslintrc";
+import { defineConfig, globalIgnores } from "eslint/config";
+import nextVitals from "eslint-config-next/core-web-vitals";
+import nextTs from "eslint-config-next/typescript";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-});
-
-const eslintConfig = [
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
+export default defineConfig([
+  ...nextVitals,
+  ...nextTs,
   {
-    ignores: [
-      "node_modules/**",
-      "scripts/anatomy/vendor/**",
-      ".next/**",
-      "out/**",
-      "build/**",
-      "next-env.d.ts",
-    ],
+    // React Compiler rules arrived with eslint-config-next 16. Existing effects sync external
+    // systems (matchMedia, localStorage, URL) and the camera hook returns a ref; kept as warnings
+    // until those components are refactored, so the upgrade does not rewrite QA'd UI.
+    files: ["src/**/*.{ts,tsx}"],
+    rules: {
+      "react-hooks/set-state-in-effect": "warn",
+      "react-hooks/refs": "warn",
+    },
   },
-];
-
-export default eslintConfig;
+  globalIgnores([
+    "node_modules/**",
+    "scripts/anatomy/vendor/**",
+    ".next/**",
+    "out/**",
+    "build/**",
+    "next-env.d.ts",
+  ]),
+]);

@@ -9,6 +9,7 @@ import { userById, tanggalValid } from "./store-utils"
 import { reducer } from "./store-reducer"
 import { validateManagement } from "./management-validation"
 import { useBmkgSync } from "./use-bmkg-sync"
+import { useIotSync } from "./use-iot-sync"
 import type { User } from "./types"
 
 export { stateAwal, PENGGUNA_AWAL, type AppState, type Action } from "./store-state"
@@ -43,6 +44,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [storageBlocked, setStorageBlocked] = useState(false)
   const [saveAttempt, setSaveAttempt] = useState(0)
   const refreshWeather = useBmkgSync(ready, dispatch)
+  useIotSync(ready, dispatch)
 
   useEffect(() => {
     try {

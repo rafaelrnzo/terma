@@ -6,6 +6,7 @@ import { syncCompanyData } from "./company-data"
 import { manageWorker } from "./worker-management"
 import { shiftActionError } from "./shift-action-validation"
 import { ingestStationReadings } from "./device-ingestion"
+import { ingestIot } from "./iot"
 import { saveBaseline, recordReadiness } from "./worker-readiness"
 import { manageShift, openShift } from "./shift-management"
 import { AksesDitolak, wajib, type Aksi } from "./access"
@@ -64,7 +65,7 @@ function reguDari(s: AppState, a: Action): string | undefined {
   return undefined
 }
 
-function inner(s: AppState, a: Exclude<Action, ManagementAction | WeatherAction | { type: "SINKRON_PERUSAHAAN" }>): AppState {
+function inner(s: AppState, a: Exclude<Action, ManagementAction | WeatherAction | { type: "SINKRON_PERUSAHAAN" } | { type: "TERIMA_IOT" }>): AppState {
   switch (a.type) {
     case "TERIMA_TELEMETRI_PEKERJA": return ingestPersonalTelemetry(s, a.events)
     case "ATUR_BAND":
@@ -192,6 +193,8 @@ function inner(s: AppState, a: Exclude<Action, ManagementAction | WeatherAction 
 
 export function reducer(s: AppState, a: Action): AppState {
   if (a.type === "SINKRON_PERUSAHAAN") return syncCompanyData(s)
+  // Devices authenticate at /api/iot, independent of the role signed in on this browser.
+  if (a.type === "TERIMA_IOT") return ingestIot(s, a.events)
   if (a.type === "CUACA_MULAI") return { ...s, weather: { ...s.weather, status: "loading", error: undefined } }
   if (a.type === "CUACA_GAGAL") return { ...s, weather: { ...s.weather, status: "error", error: a.pesan } }
   if (a.type === "CUACA_DITERIMA") {

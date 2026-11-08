@@ -6,6 +6,7 @@ import { HeartbeatIcon } from "@phosphor-icons/react/dist/csr/Heartbeat"
 import { Button } from "@/components/ui/button"
 import { BASELINE_LABEL, BASELINE_VALIDITY_LABEL, CONDITION_LABEL, workerHealthHistory, type WorkerHealthRow } from "@/lib/worker-health"
 import { managementOf } from "@/lib/management-state"
+import { bodyMonitoring } from "@/lib/body-monitoring"
 import { useApp } from "@/lib/store"
 import { tanggalLabel } from "@/lib/workspace"
 
@@ -15,6 +16,17 @@ export function WorkerHealthDetail({ row, date }: { row: WorkerHealthRow; date: 
   const { user } = useApp()
   if (!user || !["HSE", "KLINIK"].includes(user.role) || !row.health) return null
   return <Button asChild size="sm" variant="outline" aria-label={`Pantau kesehatan ${row.worker.nama}`}><Link href={`/pemantauan/${encodeURIComponent(row.worker.kode)}?tanggal=${encodeURIComponent(date)}`}><HeartbeatIcon aria-hidden />Pantau</Link></Button>
+}
+
+/** Latest TERMA Band reading for the directory row; same model and privacy as the Pantau page (values only for Klinik). */
+export function WorkerBandStatus({ code, date }: { code: string; date: string }) {
+  const { state, user } = useApp()
+  const band = user ? bodyMonitoring(state, user, code, date)?.signals.find(signal => signal.key === "band") : undefined
+  if (!band) return null
+  return <div>
+    <p className={band.tone === "attention" ? "text-status-tinjau" : band.tone === "unknown" ? "text-muted-foreground" : undefined}>{band.value}</p>
+    <p className="mt-1 text-xs text-muted-foreground">{band.observedAt ? `${new Date(band.observedAt).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Jakarta" })} · ${band.source}` : band.source}</p>
+  </div>
 }
 
 export function WorkerHealthContent({ row, date }: { row: WorkerHealthRow; date: string }) {

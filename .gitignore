@@ -32,3 +32,6 @@ coverage/
 # Local browser verification artifacts
 .playwright-cli/
 web/output/
+
+# Firmware WiFi credentials and device key
+firmware/**/secrets.h

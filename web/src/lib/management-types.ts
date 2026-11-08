@@ -41,6 +41,7 @@ export interface WorkerInput {
   tugasKode: string
   zonaKode: string
   apd: string
+  kartuUid?: string
 }
 export type ManagementAction =
   | { type: "SIMPAN_PEKERJA"; input: WorkerInput; previousCode?: string; expectedRevision?: number }

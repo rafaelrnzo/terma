@@ -64,6 +64,7 @@ export interface Pekerja {
   origin: DataOrigin
   revision?: number
   diarsipkan?: boolean
+  kartuUid?: string // RFID UID read by TERMA Water Station, e.g. "A1:B2:C3:D4"
 }
 
 export interface Kehadiran {

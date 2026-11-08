@@ -23,7 +23,7 @@ export function WorkerForm({ worker, openOnMount = false, onClose }: { worker?: 
   const [open, setOpen] = useState(openOnMount)
   const close = () => { setOpen(false); onClose?.() }
   const [error, setError] = useState("")
-  const initial = (): WorkerInput => ({ kode: worker?.kode ?? "", nama: worker?.nama ?? "", reguKode: worker?.reguKode ?? "COR", tanggalMulai: worker?.tanggalMulai ?? hariIni(), tugasKode: assignment?.tugasKode ?? "PEMERIKSAAN", zonaKode: assignment?.zonaKode ?? "GUDANG", apd: assignment?.apd ?? "Standar" })
+  const initial = (): WorkerInput => ({ kode: worker?.kode ?? "", nama: worker?.nama ?? "", reguKode: worker?.reguKode ?? "COR", tanggalMulai: worker?.tanggalMulai ?? hariIni(), tugasKode: assignment?.tugasKode ?? "PEMERIKSAAN", zonaKode: assignment?.zonaKode ?? "GUDANG", apd: assignment?.apd ?? "Standar", kartuUid: worker?.kartuUid ?? "" })
   const [input, setInput] = useState(initial)
   function field(key: keyof WorkerInput, value: string) { setInput(previous => ({ ...previous, [key]: value })) }
   function submit(event: FormEvent) {
@@ -41,6 +41,7 @@ export function WorkerForm({ worker, openOnMount = false, onClose }: { worker?: 
           <div className="space-y-2"><Label htmlFor="worker-code">ID pekerja</Label><Input id="worker-code" value={input.kode} disabled={!!worker} onChange={e => field("kode", e.target.value.trim())} required maxLength={32} placeholder="PK001" /><p className="text-xs text-muted-foreground">ID tetap digunakan untuk riwayat shift.</p></div>
           <div className="space-y-2"><Label htmlFor="worker-name">Nama pekerja</Label><Input id="worker-name" value={input.nama} onChange={e => field("nama", e.target.value)} required minLength={2} /></div>
           <div className="space-y-2"><Label htmlFor="worker-regu">Regu</Label><OptionSelect id="worker-regu" value={input.reguKode} onValueChange={value => field("reguKode", value)} options={REGU.map(row => ({value:row.kode,label:row.nama}))} /></div>
+          <div className="space-y-2"><Label htmlFor="worker-card">UID kartu RFID (opsional)</Label><Input id="worker-card" value={input.kartuUid ?? ""} onChange={e => field("kartuUid", e.target.value.trim().toUpperCase())} placeholder="A1:B2:C3:D4" autoComplete="off" spellCheck={false} /></div>
           <div className="space-y-2"><Label htmlFor="worker-start">Tanggal mulai bekerja</Label><Input id="worker-start" type="date" value={input.tanggalMulai} onChange={e => field("tanggalMulai", e.target.value)} required /></div>
           <div className="space-y-2 sm:col-span-2"><Label htmlFor="worker-task">Tugas awal</Label><OptionSelect id="worker-task" value={input.tugasKode} onValueChange={value => field("tugasKode", value)} options={TUGAS.map(row => ({value:row.kode,label:row.nama}))} searchPlaceholder="Cari tugas…" /></div>
           <div className="space-y-2"><Label htmlFor="worker-zone">Zona awal</Label><OptionSelect id="worker-zone" value={input.zonaKode} onValueChange={value => field("zonaKode", value)} options={ZONA.map(row => ({value:row.kode,label:row.nama}))} /></div>

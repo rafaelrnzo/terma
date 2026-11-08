@@ -24,23 +24,33 @@ function signature(row: PersonalDeviceEvent) {
 }
 
 /** Adapter boundary: events retain worker/device/time/provenance; no aggregate device animation becomes a personal reading. */
-export function ingestPersonalTelemetry(s: AppState, events: PersonalDeviceEvent[], receivedAt=Date.now()): AppState {
+export function mergePersonalTelemetry(s: AppState, events: PersonalDeviceEvent[], receivedAt=Date.now()): { state: AppState; added: number } | { error: string } {
   const shift=currentShift(s)
-  if (!shift || shift.status === "CLOSED") return notice(s,"error","Buka shift yang belum ditutup untuk menerima telemetri pekerja.")
-  if (!Array.isArray(events) || !events.length || events.some(row=>!validPersonalEvent(row))) return notice(s,"error","Format telemetri pekerja tidak valid.")
+  if (!shift || shift.status === "CLOSED") return { error: "Buka shift yang belum ditutup untuk menerima telemetri pekerja." }
+  if (!Array.isArray(events) || !events.length || events.some(row=>!validPersonalEvent(row))) return { error: "Format telemetri pekerja tidak valid." }
   for (const event of events) {
     const eventDate=new Date(event.observedAt).toLocaleDateString("en-CA",{timeZone:"Asia/Jakarta"})
-    if (!s.pekerja.some(worker=>worker.kode===event.pekerjaKode) || eventDate!==shift.tanggal || Date.parse(event.observedAt)>receivedAt+60000) return notice(s,"error","Periksa peserta dan waktu pengukuran telemetri.")
-    if (event.type==="BAND_READING" && (!hasConsent(s,event.pekerjaKode,"BAND") || !shift.bands?.some(row=>row.bandId===event.deviceId && row.pekerjaKode===event.pekerjaKode && row.dipakaiPada && Date.parse(row.dipakaiPada)<=Date.parse(event.observedAt) && (!row.dikembalikanPada || Date.parse(event.observedAt)<=Date.parse(row.dikembalikanPada))))) return notice(s,"error","Bacaan Band harus sesuai persetujuan dan periode pemakaian pekerja.")
+    if (!s.pekerja.some(worker=>worker.kode===event.pekerjaKode) || eventDate!==shift.tanggal || Date.parse(event.observedAt)>receivedAt+60000) return { error: "Periksa peserta dan waktu pengukuran telemetri." }
+    if (event.type==="BAND_READING" && !bandWornWithConsent(s,event.deviceId,event.pekerjaKode,event.observedAt)) return { error: "Bacaan Band harus sesuai persetujuan dan periode pemakaian pekerja." }
   }
   const existing=shift.personalTelemetry ?? []
   const byId=new Map(existing.map(event=>[event.id,event]))
   for(const event of events) {
     const previous=byId.get(event.id)
-    if(previous && signature(previous)!==signature(event)) return notice(s,"error","ID kejadian telemetri digunakan untuk data yang berbeda.")
+    if(previous && signature(previous)!==signature(event)) return { error: "ID kejadian telemetri digunakan untuk data yang berbeda." }
     byId.set(event.id,event)
   }
   const m=managementOf(s)
-  const updated={...s,management:{...m,shifts:m.shifts.map(row=>row.id===shift.id ? {...row,personalTelemetry:[...byId.values()]} : row)}}
-  return notice(audit(updated,"TELEMETRI_PEKERJA",`${byId.size-existing.length} kejadian pekerja diterima; sumber dan waktu pengukuran dipertahankan.`),"ok","Telemetri pekerja tersimpan.")
+  return { added: byId.size-existing.length, state: {...s,management:{...m,shifts:m.shifts.map(row=>row.id===shift.id ? {...row,personalTelemetry:[...byId.values()]} : row)}} }
+}
+
+export function bandWornWithConsent(s: AppState, bandId: string, code: string, observedAt: string) {
+  const at=Date.parse(observedAt)
+  return hasConsent(s,code,"BAND") && !!currentShift(s)?.bands?.some(row=>row.bandId===bandId && row.pekerjaKode===code && row.dipakaiPada && Date.parse(row.dipakaiPada)<=at && (!row.dikembalikanPada || at<=Date.parse(row.dikembalikanPada)))
+}
+
+export function ingestPersonalTelemetry(s: AppState, events: PersonalDeviceEvent[], receivedAt=Date.now()): AppState {
+  const merged=mergePersonalTelemetry(s,events,receivedAt)
+  if ("error" in merged) return notice(s,"error",merged.error)
+  return notice(audit(merged.state,"TELEMETRI_PEKERJA",`${merged.added} kejadian pekerja diterima; sumber dan waktu pengukuran dipertahankan.`),"ok","Telemetri pekerja tersimpan.")
 }
