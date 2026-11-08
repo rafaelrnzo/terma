@@ -152,7 +152,9 @@ export function kualitasBacaan(
   bacaan: PengukuranWBGT[],
   prakiraan: PrakiraanCuaca[],
 ): { kualitas: DataQuality; reading?: PengukuranWBGT } {
-  const r = bacaan.find((b) => b.zonaKode === zonaKode && b.tanggal === tanggal && b.jamMulai === h)
+  const found = bacaan.find((b) => b.zonaKode === zonaKode && b.tanggal === tanggal && b.jamMulai === h)
+  // A Station hour counts only once 8 of its 12 five-minute slots have data; until then it is not a measurement.
+  const r = found?.slot && found.slot.filter(item => item.n > 0).length < 8 ? undefined : found
   if (r) {
     if (usiaBacaanMenit(r) > AMBANG_USIA_BACAAN_MENIT) return { kualitas: "KEDALUWARSA", reading: r }
     return { kualitas: r.origin === "REPLAY" ? "REPLAY" : "TERUKUR", reading: r }

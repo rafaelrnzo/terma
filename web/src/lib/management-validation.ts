@@ -1,3 +1,4 @@
+import { validAlertAction } from "./shift-alerts"
 import { validPlacement } from "./station-placement"
 import { validPersonalEvent } from "./personal-telemetry"
 import type { AppState } from "./store-state"
@@ -19,7 +20,7 @@ function baselines(value: HealthBaseline[]) {
 function readiness(value: ShiftReadiness) {
   return value && baselines(value.baselines) && objects(value.checkins) && objects(value.reviews) &&
     new Set(value.checkins.map(row => row.pekerjaKode)).size === value.checkins.length && new Set(value.reviews.map(row => row.pekerjaKode)).size === value.reviews.length &&
-    value.checkins.every(row => (row.metode === undefined || isCheckinMethod(row.metode)) && (row.persetujuan === undefined || typeof row.persetujuan === "boolean") && typeof row.pekerjaKode === "string" && ["BAIK", "KURANG_BUGAR", "ADA_KELUHAN"].includes(row.kondisi) && Array.isArray(row.keluhan) && row.keluhan.every(complaint => BODY_COMPLAINTS.includes(complaint)) && Number.isFinite(Date.parse(row.waktu))) &&
+    value.checkins.every(row => (row.pulang === undefined || Number.isFinite(Date.parse(row.pulang))) && (row.metode === undefined || isCheckinMethod(row.metode)) && (row.persetujuan === undefined || typeof row.persetujuan === "boolean") && typeof row.pekerjaKode === "string" && ["BAIK", "KURANG_BUGAR", "ADA_KELUHAN"].includes(row.kondisi) && Array.isArray(row.keluhan) && row.keluhan.every(complaint => BODY_COMPLAINTS.includes(complaint)) && Number.isFinite(Date.parse(row.waktu))) &&
     value.reviews.every(row => typeof row.pekerjaKode === "string" && ["LANJUT_TINJAU_RENCANA", "TUNDA_PENUGASAN"].includes(row.hasil) && typeof row.catatan === "string" && typeof row.oleh === "string" && Number.isFinite(Date.parse(row.waktu)))
 }
 /** Reject incomplete snapshots before the provider can overwrite a recoverable saved workspace. */
@@ -36,6 +37,7 @@ export function validateManagement(state: AppState) {
   if (!objects(m.workers) || !objects(m.assignments) || !objects(m.shifts)) throw new Error("Invalid management collections")
   if (m.companySync !== undefined && (!m.companySync || !["LOCAL_ADAPTER", "WORKSPACE"].includes(m.companySync.source) || !Number.isFinite(Date.parse(m.companySync.syncedAt)))) throw new Error("Invalid company connection")
   if (m.healthBaselines !== undefined && !baselines(m.healthBaselines)) throw new Error("Invalid health baselines")
+  if (m.shifts.some(shift => shift.alertActions !== undefined && (!Array.isArray(shift.alertActions) || !shift.alertActions.every(validAlertAction)))) throw new Error("Invalid alert actions")
   if (m.stationPlacements !== undefined && (!Array.isArray(m.stationPlacements) || !m.stationPlacements.every(validPlacement))) throw new Error("Invalid station placements")
   if (m.shifts.some(shift => shift.personalTelemetry !== undefined && (!Array.isArray(shift.personalTelemetry) || shift.personalTelemetry.some(row=>!validPersonalEvent(row))))) throw new Error("Invalid personal telemetry")
   if (m.shifts.some(shift => shift.bands !== undefined && (!objects(shift.bands) || shift.bands.some(row=>typeof row.id !== "string" || typeof row.bandId !== "string" || typeof row.pekerjaKode !== "string" || !Number.isFinite(Date.parse(row.ditugaskanPada)))))) throw new Error("Invalid Band allocations")

@@ -1,3 +1,4 @@
+import type { ShiftAlertAction } from "./shift-alerts"
 import type { StationPlacementAction } from "./station-placement"
 import type { IotEvent } from "./iot"
 import type { PersonalTelemetryAction } from "./personal-telemetry"
@@ -71,6 +72,7 @@ export type Action =
   | { type: "INPUT_BACAAN"; zonaKode: string; jamMulai: number; isbb: number; idAlat: string; kalibrasi: string }
   | { type: "TERIMA_IOT"; events: IotEvent[] }
   | StationPlacementAction
+  | ShiftAlertAction
   | { type: "HITUNG_RENCANA" }
   | { type: "SETUJUI"; rencanaId: string }
   | { type: "UBAH_PENUGASAN"; pekerjaKode: string; zonaKode: string; tugasKode: string }

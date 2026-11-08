@@ -5,7 +5,6 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { managementOf } from "@/lib/management-state"
 import { stationWbgt, type IotEvent } from "@/lib/iot"
-import { IOT_URL } from "@/lib/iot-client"
 import { useIotEvents } from "@/lib/use-iot-events"
 import { useApp } from "@/lib/store"
 
@@ -31,7 +30,7 @@ export function LiveDevices() {
       <CardDescription>Data nyata dari alat lewat WiFi, langsung saat dikirim · server {connected === false ? "tidak terhubung" : "terhubung"}.</CardDescription>
     </CardHeader>
     <CardContent>
-      {connected === false ? <p className="text-sm text-muted-foreground">Server IoT ({IOT_URL}) belum dapat dihubungi. Jalankan terma-iot, lalu halaman tersambung sendiri.</p>
+      {connected === false ? <p className="text-sm text-muted-foreground">Server IoT belum dapat dihubungi. Halaman tersambung sendiri setelah server IoT aktif.</p>
         : !devices.length ? <p className="text-sm text-muted-foreground">Belum ada perangkat yang mengirim data. Pastikan alat dan laptop berada di WiFi yang sama.</p>
         : <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{devices.map(id => {
           const own = events.filter(event => event.deviceId === id)

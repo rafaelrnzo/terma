@@ -4,7 +4,7 @@ import { bandWornWithConsent, mergePersonalTelemetry, type PersonalDeviceEvent }
 import { recompute } from "./store-plans"
 import { notice } from "./store-utils"
 import type { AppState } from "./store-state"
-import { placementZone } from "./station-placement"
+import { placementOf } from "./station-placement"
 import type { PengukuranWBGT } from "./types"
 
 /** Device posts as validated and stamped by terma-iot (Raya46/terma-iot reading.go). */
@@ -23,13 +23,13 @@ export function stullWetBulb(t: number, rh: number) {
 }
 
 /**
- * ISBB without a black globe. ponytail: Tg≈Ta (shade assumption), so 0.7·Tnwb + 0.3·Ta
- * under-reads in direct sun; add a globe sensor or a site calibration offset when one is available.
+ * ISBB without a black-globe sensor. Outdoors ISBB = 0.7·Tnwb + 0.2·Tg + 0.1·Ta; with Tg = Ta + Δ that is
+ * 0.7·Tnwb + 0.3·Ta + 0.2·Δ, where Δ (globe minus air, °C) is set per Station placement: 0 in shade.
  */
-export function stationWbgt(reading: Extract<IotReading, { type: "station" }>) {
+export function stationWbgt(reading: Extract<IotReading, { type: "station" }>, globeDelta = 0) {
   const wick = reading.wetBulbC !== null && reading.wetBulbC <= reading.airC + 1 ? reading.wetBulbC : null
   const wetBulb = wick ?? stullWetBulb(reading.airC, reading.humidityPct)
-  return { isbb: Math.round((0.7 * wetBulb + 0.3 * reading.airC) * 10) / 10, wick: wick !== null }
+  return { isbb: Math.round((0.7 * wetBulb + 0.3 * reading.airC + 0.2 * globeDelta) * 10) / 10, wick: wick !== null }
 }
 
 const jakarta = (iso: string) => {
@@ -37,20 +37,41 @@ const jakarta = (iso: string) => {
   return { tanggal: date.toLocaleDateString("en-CA", { timeZone: "Asia/Jakarta" }), jam: Number(date.toLocaleString("en-US", { timeZone: "Asia/Jakarta", hour: "2-digit", hourCycle: "h23" })) }
 }
 
+/** A valid hour needs at least this many of its twelve 5-minute slots. */
+export const MIN_HOUR_SLOTS = 8
+const round1 = (value: number) => Math.round(value * 10) / 10
+
+/**
+ * Station readings become one ISBB per zone and hour: the mean of 5-minute slot means, valid once
+ * at least 8 of 12 slots are filled; the hour's maximum is kept for reports. Each row remembers the
+ * last event it counted, so replayed events are never counted twice.
+ */
 function stationRows(s: AppState, events: IotEvent[]) {
   let bacaan = s.bacaan, changed = false
   for (const event of events) {
     if (event.type !== "station") continue
     const { tanggal, jam } = jakarta(event.receivedAt)
     if (tanggal !== s.tanggal || !JAM_SHIFT.includes(jam)) continue
-    const { isbb, wick } = stationWbgt(event)
-    const zone = placementZone(s, event.deviceId) ?? event.zone
-    const slot = (row: PengukuranWBGT) => row.zonaKode === zone && row.tanggal === tanggal && row.jamMulai === jam
-    const old = bacaan.find(slot)
-    // Human entries win; within the hour the device keeps the highest (most protective) value.
-    if (old && (old.origin === "MANUAL" || (old.idAlat === event.deviceId && old.isbb >= isbb))) continue
-    const row: PengukuranWBGT = { zonaKode: zone, tanggal, jamMulai: jam, isbb, idAlat: event.deviceId, pencatat: "TERMA Station", kalibrasi: wick ? "Tanpa globe: 0,7·Tnw(sumbu basah) + 0,3·Ta" : "Tanpa globe: 0,7·Tw(Stull, DHT11) + 0,3·Ta", origin: "AKTUAL", waktuCatat: event.receivedAt }
-    bacaan = [...bacaan.filter(item => !slot(item)), row]
+    const placement = placementOf(s, event.deviceId)
+    const delta = placement?.selisihGlobe ?? 0
+    const { isbb, wick } = stationWbgt(event, delta)
+    const zone = placement?.zonaKode ?? event.zone
+    const same = (row: PengukuranWBGT) => row.zonaKode === zone && row.tanggal === tanggal && row.jamMulai === jam
+    const old = bacaan.find(same)
+    if (old?.origin === "MANUAL") continue // a person's measurement wins
+    const own = old?.idAlat === event.deviceId && old.slot ? old : undefined
+    if (own?.sampelTerakhir && event.receivedAt <= own.sampelTerakhir) continue
+    const slot = own?.slot ? own.slot.map(item => ({ ...item })) : Array.from({ length: 12 }, () => ({ jumlah: 0, n: 0 }))
+    const index = Math.floor(new Date(event.receivedAt).getUTCMinutes() / 5)
+    slot[index].jumlah += isbb
+    slot[index].n += 1
+    const means = slot.filter(item => item.n > 0).map(item => item.jumlah / item.n)
+    const row: PengukuranWBGT = {
+      zonaKode: zone, tanggal, jamMulai: jam, isbb: round1(means.reduce((sum, value) => sum + value, 0) / means.length),
+      isbbMaks: round1(Math.max(...means)), slot, sampelTerakhir: event.receivedAt,
+      idAlat: event.deviceId, pencatat: "TERMA Station", kalibrasi: `${wick ? "0,7·Tnw(sumbu basah)" : "0,7·Tw(Stull, DHT11)"} + 0,3·Ta${delta ? ` + 0,2·Δglobe ${String(delta).replace(".", ",")} °C` : " (teduh, tanpa globe)"}`, origin: "AKTUAL", waktuCatat: event.receivedAt,
+    }
+    bacaan = [...bacaan.filter(item => !same(item)), row]
     changed = true
   }
   return changed ? bacaan : null

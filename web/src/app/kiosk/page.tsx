@@ -8,6 +8,7 @@ import { ArrowLeftIcon } from "@phosphor-icons/react/dist/csr/ArrowLeft"
 import { Button } from "@/components/ui/button"
 import { Wordmark } from "@/components/wordmark"
 import { KioskIdentity } from "@/components/kiosk/kiosk-identity"
+import { KioskCheckout } from "@/components/kiosk/kiosk-checkout"
 import { KioskQuestions } from "@/components/kiosk/kiosk-questions"
 import { hariIni } from "@/lib/config"
 import { currentShift } from "@/lib/management-state"
@@ -50,9 +51,10 @@ function KioskSession() {
 
 export default function KioskPage() {
   const { state, ready } = useApp()
+  const [mode, setMode] = useState<"masuk" | "pulang">("masuk")
   const shift = currentShift(state)
   const locked = !shift?.readiness || shift.status === "CLOSED" || shift.tanggal > hariIni()
   return <main className="kiosk-page"><header><Wordmark /><span>ABSEN PEKERJA</span></header><div className="kiosk-card summon-panel">
-    {!ready ? <p role="status">Memuat shift…</p> : locked ? <div className="kiosk-locked"><h1>Absen belum dibuka</h1><p>Petugas membuka shift tanggal ini sebelum check-in. Absen tetap tersedia setelah rencana disetujui, sampai shift ditutup.</p><Button asChild variant="outline"><Link href="/ringkasan"><ArrowLeftIcon />Kembali ke ruang kerja</Link></Button></div> : <KioskSession key={shift.id} />}
+    {!ready ? <p role="status">Memuat shift…</p> : locked ? <div className="kiosk-locked"><h1>Absen belum dibuka</h1><p>Petugas membuka shift tanggal ini sebelum check-in. Absen tetap tersedia setelah rencana disetujui, sampai shift ditutup.</p><Button asChild variant="outline"><Link href="/ringkasan"><ArrowLeftIcon />Kembali ke ruang kerja</Link></Button></div> : <><div className="mb-5 flex gap-2" role="group" aria-label="Jenis absen">{(["masuk", "pulang"] as const).map(value => <Button key={value} size="sm" variant={mode === value ? "default" : "outline"} aria-pressed={mode === value} onClick={() => setMode(value)}>{value === "masuk" ? "Absen masuk" : "Absen pulang"}</Button>)}</div>{mode === "masuk" ? <KioskSession key={shift.id} /> : <KioskCheckout />}</>}
   </div><footer>TERMA · Check-in kondisi awal<Link href="/ringkasan">Kembali ke ruang petugas</Link></footer></main>
 }

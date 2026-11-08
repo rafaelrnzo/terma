@@ -1,11 +1,12 @@
 import { describe, expect, it } from "vitest"
 import { NAV_GROUPS, SHIFT_ROUTES, navigationGroup, navigationFor, roleHomePath, isShiftRoute, pageAllowedFor } from "./navigation"
-import { USERS } from "./config"
+import { SYSTEM_USER_ID, USERS } from "./config"
 
 describe("role workspaces", () => {
   it("lands each role on its own surface", () => {
-    expect(USERS.map(user => roleHomePath(user))).toEqual(["/hse", "/mandor", "/mandor", "/admin", "/klinik"])
-    for (const user of USERS) expect(navigationGroup(roleHomePath(user))).toBe(NAV_GROUPS[0])
+    const people = USERS.filter(user => user.id !== SYSTEM_USER_ID) // the system account never signs in
+    expect(people.map(user => roleHomePath(user))).toEqual(["/hse", "/mandor", "/mandor", "/admin", "/klinik"])
+    for (const user of people) expect(navigationGroup(roleHomePath(user))).toBe(NAV_GROUPS[0])
     expect(navigationGroup("/")).toBeUndefined()
   })
   it("keeps operational pages in a single shift context", () => {

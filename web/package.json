@@ -11,7 +11,8 @@
     "lint": "eslint",
     "test": "vitest run",
     "figure:body": "node scripts/anatomy/body/build.mjs",
-    "figure:body:audit": "node scripts/anatomy/body/build.mjs --audit"
+    "figure:body:audit": "node scripts/anatomy/body/build.mjs --audit",
+    "set-password": "node scripts/set-password.mjs"
   },
   "dependencies": {
     "@number-flow/react": "^0.6.2",

@@ -1,0 +1,29 @@
+# TERMA on one VPS: web (UI + shared workspace + login) and terma-iot (device intake).
+# Set WEB_IMAGE / IOT_IMAGE to the digests printed by the image workflows, and secrets in deploy/.env.
+# Put HTTPS in front of web:3000 (e.g. Caddy). Devices post plain HTTP to port 8080.
+services:
+  web:
+    image: ${WEB_IMAGE:?set WEB_IMAGE=ghcr.io/rafaelrnzo/terma-web@sha256:...}
+    restart: unless-stopped
+    environment:
+      TERMA_IOT_URL: http://iot:8080
+      TERMA_IOT_KEY: ${TERMA_IOT_KEY:?set in deploy/.env}
+      TERMA_SESSION_SECRET: ${TERMA_SESSION_SECRET:?set in deploy/.env (>= 32 characters)}
+    ports:
+      - "127.0.0.1:3000:3000"
+    volumes:
+      - terma-web-data:/data
+    depends_on:
+      - iot
+  iot:
+    image: ${IOT_IMAGE:?set IOT_IMAGE=ghcr.io/raya46/terma-iot@sha256:...}
+    restart: unless-stopped
+    environment:
+      TERMA_IOT_KEY: ${TERMA_IOT_KEY}
+    ports:
+      - "8080:8080"
+    volumes:
+      - terma-iot-data:/data
+volumes:
+  terma-web-data:
+  terma-iot-data:

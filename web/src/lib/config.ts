@@ -14,12 +14,15 @@ export const JAM_SHIFT = [8, 9, 10, 11, 12, 13, 14, 15] // hourly intervals 08.0
 export const AMBANG_USIA_BACAAN_MENIT = 120
 
 /** People at this site. The active user is picked in the header; roles limit what each can change. */
+export const SYSTEM_USER_ID = "sistem-terma"
 export const USERS: User[] = [
   { id: "hse-ratna", username: "ratna", nama: "Ratna", role: "HSE" },
   { id: "mandor-budi", username: "budi", nama: "Budi", role: "MANDOR", reguKode: "COR" },
   { id: "mandor-sari", username: "sari", nama: "Sari", role: "MANDOR", reguKode: "BEK" },
   { id: "data-tono", username: "tono", nama: "Tono", role: "PETUGAS_DATA" },
   { id: "klinik-dewi", username: "dewi", nama: "Dewi", role: "KLINIK" },
+  // Server jobs (05.30 draft) act as this account; it can never sign in (see lib/server/auth.ts).
+  { id: SYSTEM_USER_ID, username: "sistem", nama: "Sistem TERMA (otomatis)", role: "HSE" },
 ]
 
 export const BAND_UNITS: string[] = ["BAND-01", "BAND-02"]

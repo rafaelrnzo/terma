@@ -48,6 +48,7 @@ export function LaporDialog({ t }: { t: Tindakan }) {
             <Input id="mn" type="number" min={0} max={480} value={menit} onChange={(e) => setMenit(e.target.value)} />
             <p className="text-xs text-muted-foreground">Rencana: {t.menitDirencanakan} menit. Laporan tidak mengubah batas rencana.</p>
           </div>
+          <p className="rounded-md border bg-secondary p-3 text-xs">Laporan ini hanya untuk keselamatan pekerja dari panas. Data tidak dipakai untuk menilai kinerja atau memotong upah, jadi isi sesuai yang benar-benar terjadi.</p>
           {!dijalankan && (
             <div className="space-y-1">
               <Label htmlFor="al">Alasan tidak dijalankan (wajib)</Label>

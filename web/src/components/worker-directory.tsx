@@ -6,7 +6,7 @@ import { MagnifyingGlassIcon } from "@phosphor-icons/react/dist/csr/MagnifyingGl
 import { UsersThreeIcon } from "@phosphor-icons/react/dist/csr/UsersThree"
 import { CompanyConnection } from "@/components/company-connection"
 import { WorkerHealthDetail } from "@/components/worker-health-detail"
-import { WorkerBandCell } from "@/components/band-assignment"
+import { BandSuggestionButton, WorkerBandCell } from "@/components/band-assignment"
 import { ReviewStateBadge } from "@/components/status"
 import { Badge } from "@/components/ui/badge"
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table"
@@ -62,6 +62,7 @@ export function WorkerDirectory({ initialDate }: { initialDate?: string }) {
       <div className="min-w-0 space-y-2"><Label htmlFor="worker-health-status">Status pemantauan</Label><OptionSelect id="worker-health-status" value={status} onValueChange={value=>{setStatus(value);setPage(1)}} options={[{value:"",label:"Semua status"},...Object.entries(MONITORING_STATUS).map(([value,label])=>({value,label}))]} /></div>
     </div>
     {hasFilters && <div className="flex justify-end border-b px-5 py-2"><Button variant="ghost" size="sm" onClick={() => { setQuery(""); setCrew(""); setStatus(""); setPage(1) }}>Reset filter</Button></div>}
+    {showBand && <div className="flex justify-end px-5 pb-3"><BandSuggestionButton /></div>}
     <Table className="worker-health-table" aria-label="Data pekerja dan pemantauan kesehatan">
       <TableHeader><TableRow><TableHead>Pekerja</TableHead><TableHead>Penugasan awal</TableHead><TableHead>Dokumen pemeriksaan</TableHead><TableHead>{isHse ? "Check-in" : "Check-in"}</TableHead><TableHead>Pemantauan HSE</TableHead>{showBand && <TableHead>TERMA Band</TableHead>}<TableHead>Aksi</TableHead></TableRow></TableHeader>
       <TableBody>{paginated.map(row => {

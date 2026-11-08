@@ -16,6 +16,7 @@ export function StationPlacementPanel({ picked }: { picked: { lat: number; lng: 
   const { state, user, dispatch } = useApp()
   const [deviceId, setDeviceId] = useState("TST-01")
   const [zone, setZone] = useState(ZONA[0].kode)
+  const [globe, setGlobe] = useState("0")
   const [typed, setTyped] = useState<{ lat: string; lng: string } | null>(null)
   const [locating, setLocating] = useState("")
   const [lastPick, setLastPick] = useState(picked)
@@ -34,7 +35,7 @@ export function StationPlacementPanel({ picked }: { picked: { lat: number; lng: 
   }
   function submit(event: FormEvent) {
     event.preventDefault()
-    dispatch({ type: "SIMPAN_PENEMPATAN_STATION", deviceId, zonaKode: zone, lat: Number(coords.lat), lng: Number(coords.lng) })
+    dispatch({ type: "SIMPAN_PENEMPATAN_STATION", deviceId, zonaKode: zone, lat: Number(coords.lat), lng: Number(coords.lng), selisihGlobe: Number(globe.replace(",", ".")) })
     setTyped(null)
   }
   return <section className="summon-panel mt-6" aria-labelledby="station-placement-title">
@@ -44,14 +45,16 @@ export function StationPlacementPanel({ picked }: { picked: { lat: number; lng: 
       <div className="space-y-2"><Label htmlFor="placement-zone">Zona kerja</Label><OptionSelect id="placement-zone" value={zone} onValueChange={setZone} options={ZONA.map(row => ({ value: row.kode, label: row.nama }))} /></div>
       <div className="space-y-2"><Label htmlFor="placement-lat">Lintang</Label><Input id="placement-lat" inputMode="decimal" value={coords.lat} onChange={event => setTyped({ ...coords, lat: event.target.value })} placeholder="-6.17600" required /></div>
       <div className="space-y-2"><Label htmlFor="placement-lng">Bujur</Label><Input id="placement-lng" inputMode="decimal" value={coords.lng} onChange={event => setTyped({ ...coords, lng: event.target.value })} placeholder="106.82700" required /></div>
+      <div className="space-y-2 sm:col-span-2 xl:col-span-4"><Label htmlFor="placement-globe">Selisih bola hitam − udara (°C)</Label><Input id="placement-globe" inputMode="decimal" value={globe} onChange={event => setGlobe(event.target.value)} className="max-w-40" /><p className="text-xs text-muted-foreground">0 untuk lokasi teduh. Untuk zona terbuka isi dari satu kali pengukuran alat ISBB (Tg − Ta); TERMA memakai 0,7·Tnw + 0,3·Ta + 0,2·selisih.</p></div>
       <Button type="submit">Simpan penempatan</Button>
       <div className="flex flex-wrap items-center gap-3 sm:col-span-2 xl:col-span-5"><Button type="button" variant="outline" size="sm" onClick={useDeviceLocation}><MapPinIcon />Gunakan lokasi perangkat ini</Button><p className="text-xs text-muted-foreground" role="status">{locating || "Atau klik titik pemasangan pada peta di atas."}</p></div>
     </form>}
-    <Table aria-label="Station terpasang"><TableHeader><TableRow><TableHead>Station</TableHead><TableHead>Zona</TableHead><TableHead>Koordinat</TableHead><TableHead>Dipasang</TableHead>{canEdit && <TableHead>Aksi</TableHead>}</TableRow></TableHeader>
+    <Table aria-label="Station terpasang"><TableHeader><TableRow><TableHead>Station</TableHead><TableHead>Zona</TableHead><TableHead>Koordinat</TableHead><TableHead>Selisih globe</TableHead><TableHead>Dipasang</TableHead>{canEdit && <TableHead>Aksi</TableHead>}</TableRow></TableHeader>
       <TableBody>{rows.map(row => <TableRow key={row.deviceId}>
         <TableCell className="font-medium">{row.deviceId}</TableCell>
         <TableCell>{ZONA.find(item => item.kode === row.zonaKode)?.nama ?? row.zonaKode}</TableCell>
         <TableCell className="tabular-nums">{row.lat.toFixed(5)}, {row.lng.toFixed(5)}</TableCell>
+        <TableCell className="tabular-nums">{row.selisihGlobe ? `${String(row.selisihGlobe).replace(".", ",")} °C` : "Teduh (0)"}</TableCell>
         <TableCell>{new Date(row.dipasangPada).toLocaleString("id-ID", { dateStyle: "medium", timeStyle: "short" })} · {row.oleh}</TableCell>
         {canEdit && <TableCell><Button size="sm" variant="ghost" onClick={() => dispatch({ type: "HAPUS_PENEMPATAN_STATION", deviceId: row.deviceId })}>Lepas</Button></TableCell>}
       </TableRow>)}</TableBody></Table>

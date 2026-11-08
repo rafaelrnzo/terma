@@ -3,6 +3,7 @@ import { emptyWorkspaceState, reducer, readDemoState, rencanaAktif } from "./sto
 import { currentBandAllocations } from "./band-management"
 import { hariIni } from "./config"
 import { currentShift } from "./management-state"
+import { kualitasBacaan } from "./rules"
 import { stationWbgt, stullWetBulb, type IotEvent, type IotReading } from "./iot"
 import type { Action, AppState } from "./store-state"
 
@@ -20,13 +21,24 @@ describe("low-budget TERMA devices", () => {
     expect(stullWetBulb(20, 50)).toBeCloseTo(13.7, 1) // Stull (2011) worked example
     expect(stationWbgt({ type: "station", deviceId: "TST-01", zone: "COR_B", airC: 32, humidityPct: 60, wetBulbC: 26 })).toEqual({ isbb: 27.8, wick: true })
     expect(stationWbgt({ type: "station", deviceId: "TST-01", zone: "COR_B", airC: 32, humidityPct: 60, wetBulbC: 34 }).wick).toBe(false)
+    // Open zone: 0.2 × (globe − air) on top; 10 °C hotter globe adds 2 °C.
+    expect(stationWbgt({ type: "station", deviceId: "TST-01", zone: "COR_B", airC: 32, humidityPct: 60, wetBulbC: 26 }, 10).isbb).toBe(29.8)
   })
 
-  it("records Station readings as AKTUAL hourly ISBB, keeping the hour's maximum and manual entries", () => {
+  it("averages 5-minute slots into an hourly ISBB that counts only with 8 of 12 slots, keeping manual entries", () => {
     const date = "2026-11-06"
     const station = (wetBulbC: number, at: string) => event({ type: "station", deviceId: "TST-01", zone: "COR_B", airC: 32, humidityPct: 60, wetBulbC }, at)
-    let s = iot(shift(date), station(26, `${date}T10:05:00+07:00`), station(25, `${date}T10:40:00+07:00`), station(26, `${date}T20:00:00+07:00`))
-    expect(s.bacaan.filter(row => row.idAlat === "TST-01")).toEqual([expect.objectContaining({ zonaKode: "COR_B", jamMulai: 10, isbb: 27.8, origin: "AKTUAL" })])
+    // 10:00 slot: two samples (27.8 and 27.1 → 27.45); 10:05 slot: 27.8. Hour mean = (27.45 + 27.8) / 2.
+    const first = [station(26, `${date}T10:00:10+07:00`), station(25, `${date}T10:00:40+07:00`), station(26, `${date}T10:05:00+07:00`), station(26, `${date}T20:00:00+07:00`)]
+    let s = iot(shift(date), ...first)
+    const hour = () => s.bacaan.find(row => row.idAlat === "TST-01" && row.jamMulai === 10)!
+    expect(hour()).toMatchObject({ zonaKode: "COR_B", isbb: 27.6, isbbMaks: 27.8, origin: "AKTUAL" })
+    expect(s.bacaan.filter(row => row.idAlat === "TST-01")).toHaveLength(1)
+    expect(kualitasBacaan("COR_B", date, 10, s.bacaan, []).kualitas).toBe("TIDAK_TERSEDIA") // 2 of 12 slots: not yet a measurement
+    s = iot(s, ...first) // replayed after a restart: nothing counted twice
+    expect(hour().slot?.reduce((sum, item) => sum + item.n, 0)).toBe(3)
+    s = iot(s, ...[10, 15, 20, 25, 30, 35].map(minute => station(26, `${date}T10:${minute}:00+07:00`)))
+    expect(kualitasBacaan("COR_B", date, 10, s.bacaan, []).kualitas).toBe("TERUKUR")
     s = run(s, { type: "LOGIN", userId: "hse-ratna" }, { type: "INPUT_BACAAN", zonaKode: "COR_B", jamMulai: 11, isbb: 29, idAlat: "QUEST", kalibrasi: "C-1" })
     s = iot(s, station(28, `${date}T11:10:00+07:00`))
     expect(s.bacaan.find(row => row.zonaKode === "COR_B" && row.jamMulai === 11)?.origin).toBe("MANUAL")

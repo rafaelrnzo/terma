@@ -8,8 +8,8 @@ import type { IotEvent } from "./iot"
 const date = "2026-10-31"
 const hse = USERS[0], foreman = USERS[1]
 const run = (state: AppState, ...actions: Action[]) => actions.reduce(reducer, state)
-/** Station readings for every zone and shift hour, as terma-iot delivers them. */
-const stationDay: Action = { type: "TERIMA_IOT", events: ZONA.flatMap((zone, z) => JAM_SHIFT.map((hour, h): IotEvent => ({ type: "station", deviceId: `TST-${zone.kode}`, zone: zone.kode, airC: 31, humidityPct: 60, wetBulbC: 25, seq: z * 100 + h + 1, receivedAt: new Date(`${date}T${String(hour).padStart(2, "0")}:10:00+07:00`).toISOString() }))) }
+/** Station readings for every zone and shift hour (8 five-minute slots, the minimum for a valid hour), as terma-iot delivers them. */
+const stationDay: Action = { type: "TERIMA_IOT", events: ZONA.flatMap((zone, z) => JAM_SHIFT.flatMap((hour, h) => Array.from({ length: 8 }, (_, slot): IotEvent => ({ type: "station", deviceId: `TST-${zone.kode}`, zone: zone.kode, airC: 31, humidityPct: 60, wetBulbC: 25, seq: z * 1000 + h * 10 + slot + 1, receivedAt: new Date(`${date}T${String(hour).padStart(2, "0")}:${String(slot * 5).padStart(2, "0")}:00+07:00`).toISOString() })))) }
 function draft(twoCrews = false) {
   let state = emptyWorkspaceState(date)
   for (const [kode, reguKode] of twoCrews ? [["W01", "COR"], ["W02", "BEK"]] : [["W01", "COR"]]) state = reducer(state, { type: "SIMPAN_PEKERJA", input: { kode, nama: kode, reguKode, tanggalMulai: date, tugasKode: "PEMERIKSAAN", zonaKode: "GUDANG", apd: "Standar" } })

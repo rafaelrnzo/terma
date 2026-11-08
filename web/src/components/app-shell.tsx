@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { usePathname, useRouter } from "next/navigation"
+import { usePathname } from "next/navigation"
 import { useEffect, useState, type ReactNode } from "react"
 import { toast } from "sonner"
 import { ArrowRightIcon as ArrowRight } from "@phosphor-icons/react/dist/csr/ArrowRight"
@@ -10,10 +10,9 @@ import { ArrowUpRightIcon as ArrowUpRight } from "@phosphor-icons/react/dist/csr
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Toaster } from "@/components/ui/sonner"
 import { LABEL_PERAN } from "@/lib/access"
-import { LOKASI, REGU, USERS } from "@/lib/config"
+import { LOKASI, REGU } from "@/lib/config"
 import { useApp } from "@/lib/store"
 import { cn } from "@/lib/utils"
 import { Navigation } from "@/components/workspace-navigation"
@@ -23,32 +22,22 @@ import { ThemeToggle } from "@/components/ui-provider"
 import { WorkspaceTools } from "@/components/workspace-tools"
 import { StepContext } from "@/components/shift-context"
 import { Wordmark } from "@/components/wordmark"
+import { LoginScreen } from "@/components/login-screen"
 import { navigationGroup, isShiftRoute, roleHomePath, pageAllowedFor } from "@/lib/navigation"
 import { currentShift } from "@/lib/management-state"
 
 function UserSelect({ mobile = false }: { mobile?: boolean }) {
-  const { user, dispatch } = useApp()
-  const router = useRouter()
-  const path = usePathname()
-  const id = mobile ? "pengguna-mobile" : "pengguna"
+  const { user, logout } = useApp()
   const crew = REGU.find(row => row.kode === user?.reguKode)
-  return <div data-tour={mobile ? "role-mobile" : "role"} className={mobile ? "min-w-0 sm:hidden" : "hidden sm:block"}>
-    <label htmlFor={id} className="sr-only">Ganti akun</label>
-    <Select value={user?.id} onValueChange={(v) => {
-      if (v === user?.id) return
-      dispatch({ type: "LOGIN", userId: v })
-      const next = USERS.find(person => person.id === v)
-      if (next && !pageAllowedFor(next,path)) router.push(roleHomePath(next))
-      if (next) toast.success(`Akun aktif: ${next.nama} · ${LABEL_PERAN[next.role]}`)
-    }}>
-      <SelectTrigger id={id} className="account-trigger"><SelectValue>{user && <span className="account-identity"><span className="account-avatar" aria-hidden>{user.nama.slice(0, 1)}</span><span><strong>{user.nama}</strong><small>{LABEL_PERAN[user.role]}{crew ? ` · ${crew.nama}` : " · Seluruh lokasi"}</small></span></span>}</SelectValue></SelectTrigger>
-      <SelectContent position="popper">{USERS.map((u) => <SelectItem key={u.id} value={u.id}>{u.nama} · {LABEL_PERAN[u.role]}{u.reguKode ? " " + REGU.find((g) => g.kode === u.reguKode)?.nama : ""}</SelectItem>)}</SelectContent>
-    </Select>
+  if (!user) return null
+  return <div data-tour={mobile ? "role-mobile" : "role"} className={mobile ? "flex min-w-0 items-center gap-2 sm:hidden" : "hidden items-center gap-2 sm:flex"}>
+    <span className="account-trigger account-identity"><span className="account-avatar" aria-hidden>{user.nama.slice(0, 1)}</span><span><strong>{user.nama}</strong><small>{LABEL_PERAN[user.role]}{crew ? ` · ${crew.nama}` : ""}</small></span></span>
+    <Button variant="ghost" size="sm" onClick={() => { void logout(); toast.success("Anda sudah keluar.") }}>Keluar</Button>
   </div>
 }
 
 export function AppShell({ children }: { children: ReactNode }) {
-  const { state, user, ready, storageError, retryStorage } = useApp()
+  const { state, user, ready, signedOut, syncError, retrySync } = useApp()
   const path = usePathname()
   const activeShift = currentShift(state)
   const shift = activeShift && (user?.role !== "MANDOR" || activeShift.workspace.pekerja.some(worker => worker.reguKode === user.reguKode)) ? activeShift : undefined
@@ -63,7 +52,9 @@ export function AppShell({ children }: { children: ReactNode }) {
     else toast.info(n.pesan)
   }, [state.notice])
   // The introduction is readable without entering the operational workspace or waiting for storage.
-  if (path === "/" || path === "/kiosk") return <>{children}</>
+  if (path === "/") return <>{children}</>
+  if (ready && signedOut) return <LoginScreen />
+  if (path === "/kiosk") return <>{children}</>
   const group = navigationGroup(path)
   return (
     <div className="app-frame">
@@ -101,7 +92,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       </header>
       <main id="konten-utama" tabIndex={-1} className="app-main outline-none">
         {group && group.routes.length > 1 && <nav aria-label={group.label} className="no-print mb-6 flex flex-wrap gap-2 border-b pb-3 lg:hidden">{group.routes.filter(route=>!user || pageAllowedFor(user,route.href)).map(route => <Link key={route.href} href={route.href} aria-current={path === route.href ? "page" : undefined} className={cn("nav-item", path === route.href && "nav-item-active")}>{route.label}</Link>)}</nav>}
-        {storageError && <div role="alert" className="mb-6 rounded-md border border-destructive p-4 text-sm"><p>{storageError}</p><Button className="mt-3" variant="outline" onClick={retryStorage}>Coba simpan lagi</Button></div>}
+        {syncError && <div role="alert" className="mb-6 rounded-md border border-destructive p-4 text-sm"><p>{syncError}</p><Button className="mt-3" variant="outline" onClick={retrySync}>Coba simpan lagi</Button></div>}
         {ready && <ShiftRouteContext />}
         <div key={`${path}:${user?.id}`} className="page-enter">{ready ? user && !pageAllowedFor(user, path) ? <WorkflowEmpty title="Tidak punya akses" href={roleHomePath(user)} label="Kembali ke ruang kerja">Halaman ini tersedia untuk peran yang berwenang. Akun Anda tetap {user.nama} · {LABEL_PERAN[user.role]}.</WorkflowEmpty> : needsShift && !shift ? <WorkflowEmpty title="Buka shift terlebih dahulu" href="/ringkasan" label="Ke daftar shift">Pilih shift yang ingin dikerjakan.</WorkflowEmpty> : blockedExecution ? <WorkflowEmpty title="Terbitkan shift sebelum pelaksanaan" href={user?.role === "HSE" ? "/rencana" : roleHomePath(user!)} label="Lihat rencana shift">Selesaikan persetujuan rencana, lalu terbitkan shift.</WorkflowEmpty> : <>{shift?.status === "CLOSED" && needsShift && <p role="status" className="mb-5 rounded-md border bg-secondary p-4 text-sm">Shift sudah ditutup. Catatan berikut hanya dapat dibaca.</p>}{children}</> : <RouteLoading />}</div>
       </main>

@@ -1,13 +1,12 @@
 import { describe, expect, it } from "vitest"
 import { syncCompanyData } from "./company-data"
 import { USERS } from "./config"
-import { initialDemoState, readDemoState, DEMO_STORAGE_KEY, emptyWorkspaceState, reducer } from "./store"
+import { initialDemoState, readDemoState, emptyWorkspaceState, reducer } from "./store"
 import { attentionItems, searchWorkspace, tanggalLabel, scopedWorkspace } from "./workspace"
 
 describe("mock workspace", () => {
   const s = initialDemoState("2026-10-25")
   it("starts populated and isolated from existing operational storage", () => {
-    expect(DEMO_STORAGE_KEY).not.toBe("terma-v1")
     expect(s.demo?.tanggal).toBe("2026-10-25")
     expect(s.pekerja).toHaveLength(8)
     expect(s.rencana).toHaveLength(8)

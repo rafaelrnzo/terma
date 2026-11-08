@@ -1,87 +1,92 @@
 "use client"
 
-import { createContext, useContext, useEffect, useMemo, useReducer, useState, type ReactNode } from "react"
-import { ensureManagement, isClosedShift } from "./management-state"
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react"
+import { isClosedShift } from "./management-state"
 import { boleh, type Aksi } from "./access"
 import { hariIni } from "./config"
 import { stateAwal, type AppState, type Action } from "./store-state"
-import { userById, tanggalValid } from "./store-utils"
+import { notice, userById } from "./store-utils"
 import { reducer } from "./store-reducer"
-import { validateManagement } from "./management-validation"
 import { useBmkgSync } from "./use-bmkg-sync"
-import { useIotSync } from "./use-iot-sync"
 import type { User } from "./types"
 
 export { stateAwal, PENGGUNA_AWAL, type AppState, type Action } from "./store-state"
-export function emptyWorkspaceState(tanggal = hariIni()): AppState {
-  return { ...stateAwal(tanggal), demo: { versi: "workspace-v3", tanggal }, management: { workers: [], assignments: [], shifts: [], activeId: null } }
-}
-
+export { emptyWorkspaceState, readDemoState } from "./workspace-document"
 export { userById } from "./store-utils"
 export { reducer } from "./store-reducer"
 export { rencanaAktif, rencanaTanggal, kandidatUntuk, isiPesan } from "./store-plans"
 
-// Isolated mock workspace: never read or overwrite the previous terma-v1 dataset.
-export const DEMO_STORAGE_KEY = "terma-demo-v2"
 export function initialDemoState(tanggal = hariIni()) {
   return { ...reducer(stateAwal(tanggal), { type: "MUAT_DEMO" }), notice: undefined }
 }
-export function readDemoState(raw: string): AppState {
-  const parsed = JSON.parse(raw) as AppState
-  if (!parsed.demo || !tanggalValid(parsed.tanggal) || !userById(parsed.sesi?.userId)) throw new Error("Invalid demo workspace")
-  for (const key of ["pekerja", "kehadiran", "penugasan", "konfirmasi", "bacaan", "prakiraan", "rencana", "tindakan", "pengiriman", "imporLog", "audit"] as const) {
-    if (!Array.isArray(parsed[key]) || parsed[key].some(item => !item || typeof item !== "object")) throw new Error("Invalid demo collection")
-  }
-  validateManagement(parsed)
-  return { ...parsed, weather: undefined, notice: undefined }
-}
-const Ctx = createContext<{ state: AppState; dispatch: (a: Action) => void; user: User | null; ready: boolean; storageError: string; retryStorage: () => void; refreshWeather: () => Promise<void> } | null>(null)
+const Ctx = createContext<{ state: AppState; dispatch: (a: Action) => void; user: User | null; ready: boolean; signedOut: boolean; signedIn: () => void; logout: () => Promise<void>; syncError: string; retrySync: () => void; refreshWeather: () => Promise<void> } | null>(null)
+
+/** Actions that only change this screen; everything else runs on the server as the signed-in user. */
+const LOCAL_ONLY = new Set<Action["type"]>(["HYDRATE", "CUACA_MULAI", "CUACA_GAGAL"])
 
 export function AppProvider({ children }: { children: ReactNode }) {
-  const [state, dispatch] = useReducer(reducer, undefined, () => stateAwal())
+  const [state, setState] = useState<AppState>(() => stateAwal())
   const [ready, setReady] = useState(false)
-  const [storageError, setStorageError] = useState("")
-  const [storageBlocked, setStorageBlocked] = useState(false)
-  const [saveAttempt, setSaveAttempt] = useState(0)
-  const refreshWeather = useBmkgSync(ready, dispatch)
-  useIotSync(ready, dispatch)
+  const [signedOut, setSignedOut] = useState(false)
+  const [syncError, setSyncError] = useState("")
+  const [reload, setReload] = useState(0)
 
-  useEffect(() => {
+  const load = useCallback(async () => {
     try {
-      const raw = localStorage.getItem(DEMO_STORAGE_KEY)
-      dispatch({ type: "HYDRATE", state: raw ? ensureManagement(readDemoState(raw)) : emptyWorkspaceState() })
-    } catch {
-      // Keep unreadable data intact. The temporary demo remains usable without overwriting it.
-      dispatch({ type: "HYDRATE", state: emptyWorkspaceState() })
-      setStorageBlocked(true)
-      setStorageError("Data tersimpan tidak dapat dibaca. Perubahan sementara belum disimpan. Muat ulang setelah masalah penyimpanan diperbaiki; data lama tetap dipertahankan.")
-    }
+      const response = await fetch("/api/workspace", { cache: "no-store" })
+      if (response.status === 401) { setSignedOut(true); setReady(true); return }
+      if (!response.ok) throw new Error()
+      // SAFETY: the server projects the workspace it validated on load and after every action.
+      const body = await response.json() as { state: AppState }
+      setState(previous => ({ ...body.state, weather: previous.weather, notice: undefined }))
+      setSignedOut(false)
+      setSyncError("")
+    } catch { setSyncError("Server TERMA belum dapat dihubungi. Data terakhir tetap ditampilkan; perubahan baru belum dikirim.") }
     setReady(true)
   }, [])
 
-  useEffect(() => {
-    if (ready && !state.management?.companySync) dispatch({ type: "SINKRON_PERUSAHAAN" })
-  }, [ready, state.management?.companySync])
-
-  useEffect(() => {
-    if (!ready || storageBlocked) return
-    try {
-      localStorage.setItem(DEMO_STORAGE_KEY, JSON.stringify({ ...state, weather: undefined, notice: undefined }))
-      setStorageError("")
-    } catch {
-      setStorageError("Perubahan belum tersimpan di browser. Izinkan penyimpanan situs atau kosongkan ruang perangkat, lalu coba simpan lagi. Jangan tutup halaman sebelum tersimpan.")
-    }
-  }, [state, ready, storageBlocked, saveAttempt])
-
-  const value = useMemo(() => ({ state, dispatch, refreshWeather, user: userById(state.sesi?.userId), ready, storageError, retryStorage: () => {
-    if (storageBlocked) {
+  const dispatch = useCallback((action: Action) => {
+    if (action.type === "LOGIN") return // the account comes from the server session, not from the screen
+    if (LOCAL_ONLY.has(action.type)) { setState(previous => reducer(previous, action)); return }
+    void (async () => {
       try {
-        const raw = localStorage.getItem(DEMO_STORAGE_KEY)
-        if (raw) readDemoState(raw)
-        setStorageError("Data tersimpan dilindungi. Muat ulang halaman setelah masalah penyimpanan diperbaiki.")
-      } catch { setStorageError("Penyimpanan masih tidak dapat dibaca. Gunakan jendela privat; data lama tetap tidak ditimpa.") }
-    } else setSaveAttempt(n => n + 1)
-  } }), [state, ready, storageError, storageBlocked, refreshWeather])
+        const response = await fetch("/api/workspace/actions", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action }) })
+        if (response.status === 401) { setSignedOut(true); return }
+        // SAFETY: shape produced by /api/workspace/actions from the server-side reducer.
+        const body = await response.json() as { state?: AppState; notice?: AppState["notice"]; error?: string }
+        if (!response.ok || !body.state) { setState(previous => notice(previous, "error", body.error ?? "Aksi tidak dapat diproses.")); return }
+        const next = body.state
+        setState(previous => ({ ...next, weather: previous.weather, notice: body.notice }))
+        setSyncError("")
+      } catch { setSyncError("Perubahan belum terkirim ke server TERMA. Periksa koneksi lalu ulangi aksi.") }
+    })()
+  }, [])
+
+  // Another screen changed the shared workspace: fetch this user's view again.
+  useEffect(() => {
+    if (!ready || signedOut) return
+    const source = new EventSource("/api/workspace/stream")
+    let first = true
+    source.onmessage = () => { if (first) { first = false; return } void load() }
+    source.onerror = () => setSyncError("Koneksi langsung ke server terputus. Menyambung ulang…")
+    source.onopen = () => setSyncError("")
+    return () => source.close()
+  }, [ready, signedOut, load])
+
+  useEffect(() => { void load() }, [load, reload])
+  const refreshWeather = useBmkgSync(ready && !signedOut, dispatch)
+
+  useEffect(() => {
+    if (ready && !signedOut && !state.management?.companySync) dispatch({ type: "SINKRON_PERUSAHAAN" })
+  }, [ready, signedOut, state.management?.companySync, dispatch])
+
+  const logout = useCallback(async () => {
+    await fetch("/api/auth/logout", { method: "POST" }).catch(() => null)
+    setState(stateAwal())
+    setSignedOut(true)
+  }, [])
+
+  const value = useMemo(() => ({ state, dispatch, refreshWeather, user: signedOut ? null : userById(state.sesi?.userId), ready, signedOut, signedIn: () => setReload(n => n + 1), logout, syncError, retrySync: () => setReload(n => n + 1) }), [state, dispatch, refreshWeather, ready, signedOut, logout, syncError])
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>
 }
 

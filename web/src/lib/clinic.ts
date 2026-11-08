@@ -42,7 +42,7 @@ export function medicalRiskPoints(s: AppState, code: string) {
   if (!profile) return { points: 0, available: false }
   let points = Math.min(2, Number(profile.hipertensi) + Number(profile.diabetes) + Number(profile.jantung)) + (profile.riwayatPanas ? 2 : 0)
   if (profile.tinggiCm && profile.beratKg && profile.beratKg / (profile.tinggiCm / 100) ** 2 >= 30) points++
-  if (profile.tanggalLahir && Number(s.tanggal.slice(0,4)) - Number(profile.tanggalLahir.slice(0,4)) - (s.tanggal.slice(5) < profile.tanggalLahir.slice(5) ? 1 : 0) >= 60) points++
+  if (profile.tanggalLahir && ageOn(profile.tanggalLahir, s.tanggal) >= 60) points++
   if (hasConsent(s, code, "OBAT") && profile.obatBerisiko) points++
   return { points, available: true }
 }
@@ -79,4 +79,15 @@ export function manageClinic(s: AppState, action: ClinicAction): AppState {
   }
   const updated = audit({ ...s, management: { ...m, clinic: next } }, action.type, `${code}: catatan Klinik diperbarui; rincian dibatasi menurut peran.`)
   return notice(currentShift(s)?.status !== "CLOSED" ? recompute(updated) : updated, "ok", "Catatan Klinik tersimpan. Perubahan rencana ditinjau HSE tanpa rincian medis.")
+}
+
+/** Whole years between an ISO birth date and an ISO date. */
+export function ageOn(birth: string, date: string) {
+  return Number(date.slice(0, 4)) - Number(birth.slice(0, 4)) - (date.slice(5) < birth.slice(5) ? 1 : 0)
+}
+
+/** Age from the clinic profile, only when the worker consented to MCU data use. */
+export function consentedAge(s: AppState, code: string) {
+  const birth = hasConsent(s, code, "MCU") ? clinicOf(s).profiles.find(row => row.pekerjaKode === code)?.tanggalLahir : undefined
+  return birth ? ageOn(birth, s.tanggal) : undefined
 }

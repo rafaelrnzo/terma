@@ -7,6 +7,7 @@ import { manageWorker } from "./worker-management"
 import { shiftActionError } from "./shift-action-validation"
 import { ingestIot } from "./iot"
 import { manageStationPlacement } from "./station-placement"
+import { handleAlert } from "./shift-alerts"
 import { saveBaseline, recordReadiness } from "./worker-readiness"
 import { manageShift, openShift } from "./shift-management"
 import { AksesDitolak, wajib, type Aksi } from "./access"
@@ -64,7 +65,7 @@ function reguDari(s: AppState, a: Action): string | undefined {
   return undefined
 }
 
-function inner(s: AppState, a: Exclude<Action, ManagementAction | WeatherAction | { type: "SINKRON_PERUSAHAAN" } | { type: "TERIMA_IOT" } | { type: "SIMPAN_PENEMPATAN_STATION" } | { type: "HAPUS_PENEMPATAN_STATION" }>): AppState {
+function inner(s: AppState, a: Exclude<Action, ManagementAction | WeatherAction | { type: "SINKRON_PERUSAHAAN" } | { type: "TERIMA_IOT" } | { type: "SIMPAN_PENEMPATAN_STATION" } | { type: "HAPUS_PENEMPATAN_STATION" } | { type: "TANGANI_PERINGATAN" }>): AppState {
   switch (a.type) {
     case "TERIMA_TELEMETRI_PEKERJA": return recompute(ingestPersonalTelemetry(s, a.events))
     case "ATUR_BAND":
@@ -76,6 +77,7 @@ function inner(s: AppState, a: Exclude<Action, ManagementAction | WeatherAction 
     case "TINDAK_LANJUT_KLINIK": return manageClinic(s, a)
     case "SIMPAN_BASELINE": return saveBaseline(s, a.input)
     case "CATAT_CHECKIN":
+    case "CATAT_PULANG":
     case "TINJAU_KONDISI": return recordReadiness(s, a)
     case "MUAT_DEMO":
       if (!bisaMuatDemo(s)) return notice(s, "info", "Seed tidak dijalankan: ruang kerja sudah berisi data. Tidak ada data yang ditimpa.")
@@ -194,6 +196,7 @@ export function reducer(s: AppState, a: Action): AppState {
   // Devices authenticate at /api/iot, independent of the role signed in on this browser.
   if (a.type === "TERIMA_IOT") return ingestIot(s, a.events)
   if (a.type === "SIMPAN_PENEMPATAN_STATION" || a.type === "HAPUS_PENEMPATAN_STATION") return manageStationPlacement(s, a)
+  if (a.type === "TANGANI_PERINGATAN") return handleAlert(s, a)
   if (a.type === "CUACA_MULAI") return { ...s, weather: { ...s.weather, status: "loading", error: undefined } }
   if (a.type === "CUACA_GAGAL") return { ...s, weather: { ...s.weather, status: "error", error: a.pesan } }
   if (a.type === "CUACA_DITERIMA") {

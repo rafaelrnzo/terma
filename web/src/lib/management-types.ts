@@ -1,3 +1,4 @@
+import type { AlertAction } from "./shift-alerts"
 import type { StationPlacement } from "./station-placement"
 import type { PersonalDeviceEvent } from "./personal-telemetry"
 import type { BandAllocation } from "./band-management"
@@ -22,6 +23,7 @@ export interface ShiftRecord {
   contoh?: boolean
   personalTelemetry?: PersonalDeviceEvent[]
   bands?: BandAllocation[]
+  alertActions?: AlertAction[]
   readiness?: ShiftReadiness
   workspace: ShiftWorkspace
 }

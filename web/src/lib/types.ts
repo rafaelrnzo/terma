@@ -103,6 +103,10 @@ export interface PengukuranWBGT {
   kalibrasi: string
   origin: DataOrigin // REPLAY for labelled recordings
   waktuCatat: string // ISO timestamp the reading was taken
+  /** Station hours only: twelve 5-minute slots (sum and count of samples), hour maximum, last counted sample. */
+  slot?: { jumlah: number; n: number }[]
+  isbbMaks?: number
+  sampelTerakhir?: string
 }
 
 /** BMKG forecast, kept at its native 3-hour interval (F-ENV-01). */
@@ -152,6 +156,7 @@ export interface Rencana {
   riskColour?: RiskColour
   personalScore?: number
   medicalDataAvailable?: boolean
+  peringatanBand?: "WASPADA" | "MERAH" // server-computed level; raw Band values stay with Klinik
   id: string // `${pekerjaKode}-v${version}@${tanggal}`
   tanggal: string
   pekerjaKode: string

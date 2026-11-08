@@ -27,6 +27,7 @@ export interface WorkerCheckin {
   persetujuan?: boolean
   keluhan: BodyComplaint[]
   waktu: string
+  pulang?: string // check-out time: hours on site for the heat dose, and overtime
 }
 export interface ReadinessReview {
   pekerjaKode: string
@@ -39,6 +40,7 @@ export interface ShiftReadiness { checkins: WorkerCheckin[]; baselines: HealthBa
 export type ReadinessAction =
   | { type: "CATAT_CHECKIN"; pekerjaKode: string; kondisi: BodyCondition; keluhan: BodyComplaint[]; metode?: CheckinMethod; persetujuan?: boolean }
   | { type: "TINJAU_KONDISI"; pekerjaKode: string; hasil: ReadinessReview["hasil"]; catatan: string }
+  | { type: "CATAT_PULANG"; pekerjaKode: string }
   | { type: "SIMPAN_BASELINE"; input: BaselineInput }
 
 export function readinessProgress(state: AppState) {
@@ -72,6 +74,15 @@ export function recordReadiness(state: AppState, action: Exclude<ReadinessAction
   const worker = state.pekerja.find(row => row.kode === action.pekerjaKode)
   if (!worker) return notice(state, "error", "ID pekerja tidak terdaftar pada shift ini.")
   const readiness = shift.readiness
+  if (action.type === "CATAT_PULANG") {
+    const checkin = readiness.checkins.find(row => row.pekerjaKode === worker.kode)
+    if (!checkin) return notice(state, "error", "Pekerja belum absen masuk pada shift ini.")
+    if (checkin.pulang) return notice(state, "info", "Absen pulang sudah tercatat.")
+    const management = managementOf(state)
+    const checkins = readiness.checkins.map(row => row.pekerjaKode === worker.kode ? { ...row, pulang: now() } : row)
+    const next = { ...state, management: { ...management, shifts: management.shifts.map(row => row.id === shift.id ? { ...row, readiness: { ...readiness, checkins } } : row) } }
+    return notice(audit(next, "ABSEN_PULANG", `${worker.kode}: absen pulang tercatat.`, worker.kode), "ok", `Absen pulang ${worker.nama} tercatat. Terima kasih.`)
+  }
   if (action.type === "CATAT_CHECKIN") {
     const consented = managementOf(state).shifts.some(row => row.readiness?.checkins.some(checkin => checkin.pekerjaKode === worker.kode && checkin.persetujuan === true))
     if (shift.calculationVersion === "PDF_V0" && !consented && action.persetujuan !== true) return notice(state, "error", "Persetujuan penggunaan jawaban kondisi diperlukan pada check-in pertama.")

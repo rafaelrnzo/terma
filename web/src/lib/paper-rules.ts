@@ -4,7 +4,10 @@ import { cariBaris, deteksiKandidat, kualitasBacaan, rentangJam } from "./rules"
 import type { AppState } from "./store-state"
 import type { Pekerja, Rencana, RiskColour, IntervalPlan } from "./types"
 import { clinicOf, medicalRiskPoints } from "./clinic"
-import { currentShift } from "./management-state"
+import { currentShift, managementOf } from "./management-state"
+import { DRINK_RULES, drinkDeficit } from "./drink-monitor"
+import { DOSE_RULES, overtimeStreak } from "./heat-dose"
+import { ACCL_RULES, greenLastShifts, heatWave, hotterZoneMove } from "./acclimatisation-triggers"
 import { DEVICE_RULES, deviceWarnings } from "./device-warnings"
 
 /** Flowchart Perhitungan TERMA §2–4. Versioned draft parameters, not clinical validation. */
@@ -19,6 +22,14 @@ export const PAPER_RULES = {
 /** Display name of a plan's rule set; plans saved before the rename keep the same rules. */
 export function ruleLabel(version: string) { return version === "flow-pdf-v0" ? PAPER_RULES.version : version }
 
+/** Today's highest ISBB: valid Station/manual hours, or the forecast estimate before any reading exists. */
+export function todayMaxIsbb(s: AppState) {
+  const readings = s.bacaan.filter(row => row.tanggal === s.tanggal && (!row.slot || row.slot.filter(item => item.n > 0).length >= 8)).map(row => row.isbbMaks ?? row.isbb)
+  if (readings.length) return Math.max(...readings)
+  const forecast = JAM_SHIFT.map(hour => forecastAtPeriod(s.prakiraan, s.tanggal, hour)).flatMap(row => row ? [estimateForecastWbgt(row.suhu, row.kelembapan)] : []).filter((value): value is number => value !== null)
+  return forecast.length ? Math.max(...forecast) : null
+}
+
 export function estimateForecastWbgt(temperature: number, humidity: number) {
   if (!Number.isFinite(temperature) || !Number.isFinite(humidity) || temperature < 10 || temperature > 50 || humidity < 0 || humidity > 100) return null
   const e = humidity / 100 * 6.105 * Math.exp(17.27 * temperature / (237.7 + temperature))
@@ -31,14 +42,21 @@ export function paperPersonalRisk(s: AppState, worker: Pekerja) {
   const factors: string[] = []
   let points = 0
   if (day && day <= 7) { const value = day <= 3 ? PAPER_RULES.points.acclEarly : PAPER_RULES.points.acclLate; points += value; factors.push(`Aklimatisasi hari ${day} (+${value})`) }
+  // Acclimatisation ends at day ≥ 5 only after three green shifts; otherwise it continues up to day 14.
+  else if (day && day <= ACCL_RULES.maxDays && !greenLastShifts(s, worker.kode)) { points += ACCL_RULES.extensionPoints; factors.push(`Perpanjangan aklimatisasi hari ${day}, belum hijau 3 shift (+${ACCL_RULES.extensionPoints})`) }
   const checkin = currentShift(s)?.readiness?.checkins.find(row => row.pekerjaKode === worker.kode)
   if (checkin && checkin.kondisi !== "BAIK") { points += PAPER_RULES.points.unwell; factors.push("Ada faktor kesehatan hari ini") }
   const medical = medicalRiskPoints(s, worker.kode)
   if (medical.points) { points += medical.points; if (!factors.some(factor => factor.startsWith("Ada faktor kesehatan"))) factors.push("Ada faktor kesehatan") }
+  // Yesterday's final drink deficit raises today's score (flowchart: P +1 when deficit > 0.25).
+  const previous = managementOf(s).shifts.filter(row => row.tanggal < s.tanggal).toSorted((a, b) => b.tanggal.localeCompare(a.tanggal))[0]
+  const yesterday = drinkDeficit(previous, worker.kode)
+  if (yesterday && yesterday.deficit > DRINK_RULES.tomorrowPointDeficit) { points += 1; factors.push(`Defisit minum shift sebelumnya ${Math.round(yesterday.deficit * 100)}% (+1)`) }
+  if (overtimeStreak(s, worker.kode)) { points += 1; factors.push(`Lembur ${DOSE_RULES.overtimeDays} shift berturut-turut (+1)`) }
   const devices = deviceWarnings(s, worker.kode, !day || day > 7)
   if (devices.band === "WASPADA") points += DEVICE_RULES.bandWatchPoints
   factors.push(...devices.reasons)
-  return { points, factors, day, medicalAvailable: medical.available, bandRed: devices.band === "MERAH", drinkGap: devices.drinkGapMinutes !== undefined }
+  return { points, factors, day, medicalAvailable: medical.available, band: devices.band, bandRed: devices.band === "MERAH", drinkGap: devices.drink !== undefined }
 }
 
 export function calculatePaperPlan(s: AppState, worker: Pekerja): Omit<Rencana, "id" | "version" | "sig" | "dibuat"> | null {
@@ -49,18 +67,22 @@ export function calculatePaperPlan(s: AppState, worker: Pekerja): Omit<Rencana, 
   const risk = paperPersonalRisk(s, worker)
   const confirmation = s.konfirmasi.find(row => row.pekerjaKode === worker.kode)
   const candidate = deteksiKandidat(worker, s.kehadiran, s.tanggal, 8)
-  const requiresConfirmation = !!candidate.pemicu && !confirmation
+  const moved = hotterZoneMove(s, worker.kode, assignment.zonaKode)
+  const requiresConfirmation = (!!candidate.pemicu || !!moved) && !confirmation
+  const wave = heatWave(s, todayMaxIsbb(s))
   const restriction = clinicOf(s).followups.some(row => row.pekerjaKode === worker.kode && row.tanggal === s.tanggal && row.status === "BATASI")
   // Core estimate over the threshold means stop heat exposure, whatever the ISBB data says.
   const stop = restriction || risk.bandRed
   const correction = PAPER_RULES.ppe[assignment.apd]
   const unknownPpe = correction === undefined
   const percent = risk.day ? Math.min(100, risk.day * 20) : requiresConfirmation ? 0 : 100
-  const dailyCap = stop || unknownPpe ? 0 : Math.round(percent / 100 * NORMAL_PAPARAN_MENIT)
+  const dailyCap = stop || unknownPpe ? 0 : Math.round(percent / 100 * NORMAL_PAPARAN_MENIT * (wave?.firstDay ? ACCL_RULES.heatWaveCut : 1))
   const reference = ATURAN_FIXTURE.rows.find(row => row.nab[task.beban] !== undefined)?.nab[task.beban]
   const reasons = [...risk.factors]
-  reasons.push("Skor menggunakan faktor yang tersedia, termasuk peringatan Band dan jeda minum bila perangkat terhubung. Lembur belum terhubung ke perhitungan ini.")
+  reasons.push("Skor menggunakan faktor yang tersedia: aklimatisasi, kondisi check-in, profil Klinik berizin, lembur, defisit minum, dan peringatan Band bila perangkat terhubung.")
   if (!risk.medicalAvailable) reasons.push("Tanpa data medis berizin; faktor medis tidak diasumsikan normal.")
+  if (moved) reasons.push(`Pindah dari ${moved.from} ke zona rata-rata ${moved.delta.toFixed(1).replace(".", ",")} °C lebih panas: aklimatisasi ulang perlu dikonfirmasi HSE.`)
+  if (wave) reasons.push(wave.firstDay ? `Gelombang panas hari pertama (ISBB maks +${wave.delta.toFixed(1).replace(".", ",")} °C dari rata-rata 7 hari): batas harian −50%.` : `Gelombang panas berlanjut (+${wave.delta.toFixed(1).replace(".", ",")} °C dari rata-rata 7 hari).`)
   if (requiresConfirmation) reasons.push("Riwayat adaptasi perlu dikonfirmasi HSE.")
   if (unknownPpe) reasons.push("Jenis APD belum memiliki koreksi pada konfigurasi aturan.")
   if (restriction) reasons.push("Pembatasan kerja dari Klinik: tinjau ulang penugasan tanpa rincian medis.")
@@ -97,7 +119,7 @@ export function calculatePaperPlan(s: AppState, worker: Pekerja): Omit<Rencana, 
   if (missing.length) reasons.push(`Data belum lengkap pada ${missing.map(row=>rentangJam(row.jamMulai)).join(", ")}.`)
   if (intervals.some(row=>row.kualitas === "PRAKIRAAN_SAJA")) reasons.push("ISBB prakiraan adalah aproksimasi suhu/kelembapan, belum dikalibrasi di lokasi. Bukan pengukuran Station.")
   reasons.push(`Skor P ${risk.points}; bobot dan margin mengikuti parameter aturan ${PAPER_RULES.version}. Alokasi mengisi jam lebih sejuk dahulu.`)
-  return { tanggal:s.tanggal, pekerjaKode:worker.kode, zonaKode:assignment.zonaKode, tugasKode:assignment.tugasKode, aturanVersi:PAPER_RULES.version, riskColour:colour, personalScore:risk.points, medicalDataAvailable:risk.medicalAvailable,
+  return { tanggal:s.tanggal, pekerjaKode:worker.kode, zonaKode:assignment.zonaKode, tugasKode:assignment.tugasKode, aturanVersi:PAPER_RULES.version, riskColour:colour, personalScore:risk.points, medicalDataAvailable:risk.medicalAvailable, peringatanBand:risk.band,
     status: colour === "DATA_KURANG" ? "TINJAU_HSE" : colour === "MERAH" ? "BATASI_ATAU_PINDAHKAN" : risk.day ? "ADAPTASI_DIPERLUKAN" : "RENCANA_TERSEDIA", kualitas:quality,
     belumLayak:total === 0, batasHarianMenit:dailyCap, persenAdaptasi:percent, totalKerjaMenit:total, intervals, alasan:reasons, usulan:["Ikuti jadwal kerja–istirahat per jam. Periksa perubahan bacaan selama shift; perubahan yang memperketat perlu persetujuan HSE."] }
 }

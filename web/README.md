@@ -1,24 +1,40 @@
-# TERMA frontend
+# TERMA web
 
-Next.js 15. Role homes: `/hse`, `/admin`, `/mandor`. `/ringkasan` redirects to the current role. See [role workflow](../docs/role-workspaces.md).
+Next.js 16. One server holds the shared workspace: every screen signs in, every action runs on the
+server as that user (role rules enforced there), and changes reach all open screens over SSE.
+Clinical notes, check-in complaints and raw Band values are sent only to Klinik accounts.
+See [role workflow](../docs/role-workspaces.md) and [firmware](../firmware/README.md).
 
-## Start the application
+## Start locally
 
 ```sh
 npm install
-npm run dev -- --port 3001
+npm run set-password -- ratna   # once per account: ratna, budi, sari, tono, dewi
+npm run dev -- --port 3030
 ```
 
-Open http://localhost:3001/hse. A new browser receives eight linked reference workers, assignments and baseline summaries through Company Data Hub. Existing workspaces are preserved. Create a draft shift, open **Buka layar absen pekerja**, then complete attendance and HSE review before approving plans.
+Open http://localhost:3030 and sign in. Data lives in `~/.terma` (outside the project, so saving it does
+not trigger Next reloads; set `TERMA_DATA_DIR` to change it): `workspace.json`
+(shared workspace) and `users.json` (scrypt password hashes). For device data also run terma-iot
+(repo Raya46/terma-iot) and set `TERMA_IOT_URL` / `TERMA_IOT_KEY` in `.env.local` (see `.env.example`).
+A new workspace receives eight reference workers through Company Data Hub.
 
 ## Connected surfaces
 
-- `/kiosk`: camera permission and live preview, thermal color effect, self-confirmed identity, or interactive card tap; body condition questions follow both methods. Camera tracks stop on confirmation, mode change, page exit or hidden tab. No photo, video, biometric match or temperature is stored. Card tap uses the same scan duration as the water-station visualization; physical hardware is not connected.
-- `/forecasting`: real BMKG JSON for Kemayoran, Jakarta Pusat (`31.71.03.1001`) through `/api/weather`. Server cache 15 minutes; visible browser refresh every 30 minutes. Source periods, production time, humidity and air temperature are retained. Air temperature is not WBGT. Errors are shown and previous successful data retained. Approved/active/closed shift snapshots stay unchanged.
-- `/forecasting` and `/monitoring`: Leaflet 1.9.4 with OpenStreetMap tiles, visible attribution, zoom, pan and selectable zone markers. No token is needed. Zone offsets are illustrative around the weather reference, not surveyed GPS or worker tracking. Network failure returns to the selectable scheme. Only visible tiles are requested; no offline prefetch.
-- `/impor`: existing URL now opens Company Data Hub and the worker directory; CSV forms have been removed. Empty workspaces get local reference data once. Sensor readings sync automatically when opening the Sensor task, preserving recorded/manual readings and closed history. Instructions go to the TERMA foreman inbox; no external WhatsApp delivery is claimed.
+- Devices: TERMA Station (ISBB per placed zone), Water Station (card taps, drink gaps) and TERMA Band
+  (heart rate, core-temperature estimate) arrive through terma-iot; this server files them into the
+  shift and recomputes plans. Band and drink warnings create a new plan version for HSE approval.
+- `/kiosk`: sign in once on the tablet (data officer account), then workers check in by camera or card.
+- `/forecasting`: BMKG forecast for Kemayoran via `/api/weather`, Leaflet/OpenStreetMap map, and the
+  Station placement form (map click, device GPS or typed coordinates).
+- `/monitoring`: monitoring, attendance, drink records, ISBB readings and analytics tabs.
 
-Operational records and role selection remain browser-local (`terma-demo-v2`), without server authentication or cross-device synchronization. Company/MCU/device adapters use local reference data; BMKG and OSM are actual external services.
+## Deploy
+
+Not on Vercel: the workspace needs a persistent disk. Run the `web-image` workflow (tests, then
+`ghcr.io/rafaelrnzo/terma-web`), then `deploy/compose.yml` at the repo root with terma-iot on the VPS,
+HTTPS in front of port 3000, `TERMA_SESSION_SECRET` (≥ 32 characters) and `TERMA_IOT_KEY` set.
+Set passwords inside the container: `docker compose exec web node scripts/set-password.mjs ratna`.
 
 ## Checks and release
 
@@ -26,7 +42,7 @@ Operational records and role selection remain browser-local (`terma-demo-v2`), w
 npm test
 npx tsc --noEmit
 npm run lint
-npm run build
+npm run build   # CI only (web-image workflow)
 ```
 
-Vercel builds `web/` from the upstream repository main branch. No map token or private API credentials are required.
+Vercel still builds `web/` from main, but without a persistent disk and `users.json` nobody can sign in there; production is the VPS deployment above. No map token is required.
