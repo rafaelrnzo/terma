@@ -22,7 +22,7 @@ the private repo Raya46/terma-iot). The TERMA web receives them in real time ove
 
 ## Setup
 
-1. `secrets.h` in each sketch folder holds three WiFi networks (the device joins the strongest one in range and switches when it drops), the laptop's
+1. `secrets.h` in each sketch folder holds three WiFi networks (the device joins them in turn and stays on the one where the TERMA server is found), the laptop's
    mDNS name and `TERMA_IOT_KEY`. It is gitignored; template in `secrets.example.h`.
    The key must equal `TERMA_IOT_KEY` in `web/.env.local`.
 2. Laptop mode (devices and laptop on the same WiFi): run terma-iot on the port in `secrets.h`
