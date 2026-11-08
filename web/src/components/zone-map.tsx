@@ -6,23 +6,26 @@ import { CheckIcon as Check } from "@phosphor-icons/react/dist/csr/Check"
 import { StackIcon as Layers3 } from "@phosphor-icons/react/dist/csr/Stack"
 import { Button } from "@/components/ui/button"
 import { DEMO_ZONE_POSITIONS } from "@/lib/zone-map"
+import { stationPlacements } from "@/lib/station-placement"
+import { useApp } from "@/lib/store"
 
 const GeographicMap = dynamic(() => import("./zone-openstreetmap"), { ssr: false, loading: () => <div className="map-loading" role="status">Memuat peta OpenStreetMap…</div> })
 
 export type MapZone = { kode: string; nama: string; value: string }
-export type ZoneMapProps = { zones: MapZone[]; selected: string; onZone: (code: string) => void; title?: string; caption?: string; center?: [number, number] }
+export type ZoneMapProps = { zones: MapZone[]; selected: string; onZone: (code: string) => void; title?: string; caption?: string; center?: [number, number]; onPick?: (lat: number, lng: number) => void }
 
-export function ZoneMap({ zones, selected, onZone, center, title = "Peta zona kerja", caption = "Pilih area untuk melihat bacaan. Warna membedakan zona, bukan tingkat risiko." }: ZoneMapProps) {
+export function ZoneMap({ zones, selected, onZone, center, onPick, title = "Peta zona kerja", caption = "Pilih area untuk melihat bacaan. Warna membedakan zona, bukan tingkat risiko." }: ZoneMapProps) {
   const [geographic, setGeographic] = useState(true)
+  const placements = stationPlacements(useApp().state)
   const [error, setError] = useState(false)
   return <div className="zone-map" data-tour="map">
     <div className="map-toolbar">
-      <div><h2 className="font-heading text-base font-semibold">{title}</h2><p className="mt-1 text-xs text-muted-foreground">{geographic ? "OpenStreetMap" : "Denah zona"} · posisi ilustratif</p></div>
+      <div><h2 className="font-heading text-base font-semibold">{title}</h2><p className="mt-1 text-xs text-muted-foreground">{geographic ? "OpenStreetMap" : "Denah zona"} · {placements.length ? `${placements.length} Station terpasang` : "posisi ilustratif"}</p></div>
       {!geographic && <span className="map-view-label"><Layers3 className="size-3.5" aria-hidden />Isometrik</span>}
       <div className="flex gap-1" role="group" aria-label="Tampilan peta"><Button size="sm" variant="ghost" aria-pressed={!geographic} onClick={() => setGeographic(false)}>Skema</Button><Button size="sm" variant="ghost" aria-pressed={geographic} onClick={() => { setError(false); setGeographic(true) }}>OpenStreetMap</Button></div>
     </div>
     {error && <p className="map-error" role="status">Peta geografis tidak dapat dimuat. Denah tetap dapat digunakan. Pilih OpenStreetMap untuk mencoba lagi.</p>}
-    {geographic ? <GeographicMap zones={zones} selected={selected} onZone={onZone} center={center} onFailure={() => { setGeographic(false); setError(true) }} /> : <div className="zone-scheme" role="group" aria-label="Denah zona, pilih zona untuk melihat bacaan">
+    {geographic ? <GeographicMap zones={zones} selected={selected} onZone={onZone} center={center} placements={placements} onPick={onPick} onFailure={() => { setGeographic(false); setError(true) }} /> : <div className="zone-scheme" role="group" aria-label="Denah zona, pilih zona untuk melihat bacaan">
       <svg className="scheme-paths" viewBox="0 0 600 340" preserveAspectRatio="none" aria-hidden="true"><path d="M150 100 L300 170 L450 100 M300 170 V255" fill="none" stroke="var(--border)" strokeWidth="1.5" strokeDasharray="4 5" /><circle cx="300" cy="170" r="4" fill="var(--card)" stroke="var(--input)" /></svg>
       {zones.map(z => {
         const position = DEMO_ZONE_POSITIONS[z.kode]
@@ -42,6 +45,6 @@ export function ZoneMap({ zones, selected, onZone, center, title = "Peta zona ke
         </button>
       })}
     </div>}
-    <div className="map-caption"><p>{caption}</p><details><summary>Tentang peta</summary><p>Posisi seluruh zona bersifat ilustratif, tanpa pelacakan pekerja. Peta geografis menggunakan OpenStreetMap. Marker zona bersifat ilustratif di sekitar lokasi acuan, bukan koordinat sensor atau pelacakan pekerja.</p></details></div>
+    <div className="map-caption"><p>{caption}</p><details><summary>Tentang peta</summary><p>Zona dengan Station terpasang ditandai di koordinat pemasangan Station. Zona tanpa Station memakai posisi ilustratif di sekitar lokasi acuan. Peta tidak melacak pekerja. Peta geografis menggunakan OpenStreetMap.</p></details></div>
   </div>
 }

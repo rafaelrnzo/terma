@@ -1,3 +1,4 @@
+import type { StationPlacementAction } from "./station-placement"
 import type { IotEvent } from "./iot"
 import type { PersonalTelemetryAction } from "./personal-telemetry"
 import type { BandAction } from "./band-management"
@@ -68,8 +69,8 @@ export type Action =
   | { type: "IMPOR_PRAKIRAAN"; csv: string; source: string }
   | { type: "KONFIRMASI"; pekerjaKode: string; profil: AcclProfile | "NORMAL"; hari: number }
   | { type: "INPUT_BACAAN"; zonaKode: string; jamMulai: number; isbb: number; idAlat: string; kalibrasi: string }
-  | { type: "AMBIL_BACAAN_PERANGKAT" }
   | { type: "TERIMA_IOT"; events: IotEvent[] }
+  | StationPlacementAction
   | { type: "HITUNG_RENCANA" }
   | { type: "SETUJUI"; rencanaId: string }
   | { type: "UBAH_PENUGASAN"; pekerjaKode: string; zonaKode: string; tugasKode: string }

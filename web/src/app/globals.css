@@ -236,7 +236,8 @@
 @layer base {
   * { @apply border-border outline-ring/50; }
   body { @apply bg-background text-foreground; }
-  html { @apply font-sans; }
+  /* No macOS rubber-band past the page end: it pulled the sticky shell up and showed a blank area. */
+  html { @apply font-sans; overscroll-behavior-y: none; }
   h1, h2, h3 { text-wrap: balance; }
   p { text-wrap: pretty; }
   :focus-visible { outline: 2px solid var(--ring); outline-offset: 3px; }

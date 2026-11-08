@@ -16,7 +16,7 @@ export function RoleTaskBoard({ shift, workerCount }: { shift?: ShiftRecord; wor
   const readings = shift?.workspace.bacaan.filter(reading => reading.tanggal === shift.tanggal && zones.has(reading.zonaKode)).length ?? 0
   const tasks = user.role === "PETUGAS_DATA" ? [
     { title: "Pekerja aktif", count: workerCount, unit: "pekerja", href: "/impor" },
-    ...(shift ? [{ title: "Bacaan WBGT", count: readings, unit: `/ ${zones.size * JAM_SHIFT.length} interval`, href: "/pengukuran" },{ title: "Check-in", count: shift.readiness?.checkins.length ?? 0, unit: `/ ${shift.workspace.pekerja.length} pekerja`, href: "/monitoring?tab=absensi" }] : []),
+    ...(shift ? [{ title: "Bacaan WBGT", count: readings, unit: `/ ${zones.size * JAM_SHIFT.length} interval`, href: "/monitoring?tab=isbb" },{ title: "Check-in", count: shift.readiness?.checkins.length ?? 0, unit: `/ ${shift.workspace.pekerja.length} pekerja`, href: "/monitoring?tab=absensi" }] : []),
   ] : !shift ? [] : user.role === "MANDOR" ? [
     { title: "Instruksi masuk", count: flow?.actions.filter(action => action.status === "DISAMPAIKAN").length ?? 0, unit: "menunggu pengakuan", href: "/instruksi" },
     { title: "Perlu dilaporkan", count: flow?.actions.filter(action => action.status === "DIAKUI" || action.status === "BELUM_SELESAI").length ?? 0, unit: "tindakan", href: "/tindakan" },

@@ -5,7 +5,7 @@ export const NAV_GROUPS = [
   { label: "Data pekerja", href: "/impor", routes: [{ href: "/impor", label: "Data pekerja" }] },
   { label: "Operasional shift", href: "/rencana", routes: [{ href: "/rencana", label: "Perencanaan shift" }, { href: "/instruksi", label: "Instruksi regu" }, { href: "/tindakan", label: "Pelaksanaan & verifikasi" }] },
   { label: "Forecasting", href: "/forecasting", routes: [{ href: "/forecasting", label: "Peta prakiraan" }] },
-  { label: "Monitoring", href: "/monitoring", routes: [{ href: "/monitoring", label: "Pantau shift" }, { href: "/pengukuran", label: "Bacaan WBGT" }, { href: "/perangkat", label: "Perangkat IoT" }, { href: "/band", label: "Band bergilir" }] },
+  { label: "Monitoring", href: "/monitoring", routes: [{ href: "/monitoring", label: "Pantau shift" }, { href: "/pengukuran", label: "Bacaan WBGT", hiddenInNav: true }, { href: "/perangkat", label: "Perangkat IoT" }] },
   { label: "Laporan", href: "/laporan", routes: [{ href: "/laporan", label: "Pusat laporan" }, { href: "/laporan/bulanan", label: "Rekap bulanan", hiddenInNav: true }] },
 ]
 
@@ -43,7 +43,6 @@ export function navigationGroup(path: string) {
 export function pageAllowedFor(user: User, path: string) {
   if (path === "/laporan/bulanan") return ["HSE","MANDOR","KLINIK"].includes(user.role)
   if (path.startsWith("/pemantauan/")) return user.role === "HSE" || user.role === "KLINIK"
-  if (path === "/band") return user.role === "HSE" || user.role === "MANDOR"
   if (path.startsWith("/klinik")) return user.role === "KLINIK"
   const home = Object.entries(ROLE_WORKSPACE).find(([,value])=>value.href===path)
   if (home) return home[0] === user.role

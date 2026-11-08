@@ -1,12 +1,15 @@
 import { describe, expect, it } from "vitest"
 import { emptyWorkspaceState, reducer, rencanaAktif, type Action, type AppState } from "./store"
 import { shiftTaskFlow } from "./shift-task-flow"
-import { USERS } from "./config"
 import { managementOf } from "./management-state"
+import { JAM_SHIFT, USERS, ZONA } from "./config"
+import type { IotEvent } from "./iot"
 
 const date = "2026-10-31"
 const hse = USERS[0], foreman = USERS[1]
 const run = (state: AppState, ...actions: Action[]) => actions.reduce(reducer, state)
+/** Station readings for every zone and shift hour, as terma-iot delivers them. */
+const stationDay: Action = { type: "TERIMA_IOT", events: ZONA.flatMap((zone, z) => JAM_SHIFT.map((hour, h): IotEvent => ({ type: "station", deviceId: `TST-${zone.kode}`, zone: zone.kode, airC: 31, humidityPct: 60, wetBulbC: 25, seq: z * 100 + h + 1, receivedAt: new Date(`${date}T${String(hour).padStart(2, "0")}:10:00+07:00`).toISOString() }))) }
 function draft(twoCrews = false) {
   let state = emptyWorkspaceState(date)
   for (const [kode, reguKode] of twoCrews ? [["W01", "COR"], ["W02", "BEK"]] : [["W01", "COR"]]) state = reducer(state, { type: "SIMPAN_PEKERJA", input: { kode, nama: kode, reguKode, tanggalMulai: date, tugasKode: "PEMERIKSAAN", zonaKode: "GUDANG", apd: "Standar" } })
@@ -15,7 +18,7 @@ function draft(twoCrews = false) {
 function published(twoCrews = false) {
   let state = draft(twoCrews)
   for (const worker of state.pekerja) state = run(state, { type: "CATAT_CHECKIN", persetujuan: true, pekerjaKode: worker.kode, kondisi: "BAIK", keluhan: [] }, { type: "TINJAU_KONDISI", pekerjaKode: worker.kode, hasil: "LANJUT_TINJAU_RENCANA", catatan: "Kondisi awal dan data tersedia ditinjau sesuai SOP" }, { type: "KONFIRMASI", pekerjaKode: worker.kode, profil: "PEKERJA_BARU", hari: 1 })
-  state = run(state, { type: "AMBIL_BACAAN_PERANGKAT" }, { type: "HITUNG_RENCANA" })
+  state = run(state, stationDay, { type: "HITUNG_RENCANA" })
   for (const plan of rencanaAktif(state)) state = reducer(state, { type: "SETUJUI", rencanaId: plan.id })
   return reducer(state, { type: "TERBITKAN_SHIFT", shiftId: date })
 }
@@ -33,7 +36,7 @@ describe("focused shift task flow", () => {
     state = run(state, { type: "CATAT_CHECKIN", persetujuan: true, pekerjaKode: "W01", kondisi: "BAIK", keluhan: [] }, { type: "TINJAU_KONDISI", pekerjaKode: "W01", hasil: "LANJUT_TINJAU_RENCANA", catatan: "Kondisi awal dan data tersedia ditinjau sesuai SOP" }, { type: "KONFIRMASI", pekerjaKode: "W01", profil: "PEKERJA_BARU", hari: 1 })
     expect(shiftTaskFlow(state,hse).current).toBe(2)
     expect(shiftTaskFlow(state,hse).steps[1].optional).toBe(true)
-    state = run(state, { type: "AMBIL_BACAAN_PERANGKAT" }, { type: "HITUNG_RENCANA" })
+    state = run(state, stationDay, { type: "HITUNG_RENCANA" })
     expect(shiftTaskFlow(state,hse).current).toBe(2)
     for (const plan of rencanaAktif(state)) state = reducer(state, { type: "SETUJUI", rencanaId: plan.id })
     expect(shiftTaskFlow(state,hse).current).toBe(2)

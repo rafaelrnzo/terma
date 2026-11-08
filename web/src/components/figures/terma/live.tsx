@@ -12,12 +12,12 @@ import { SquaresFourIcon } from "@phosphor-icons/react/dist/csr/SquaresFour"
 import { PauseIcon } from "@phosphor-icons/react/dist/csr/Pause"
 import { PlayIcon } from "@phosphor-icons/react/dist/csr/Play"
 import { ArrowUpRightIcon } from "@phosphor-icons/react/dist/csr/ArrowUpRight"
-import { IdentificationCardIcon } from "@phosphor-icons/react/dist/csr/IdentificationCard"
-import { Button } from "@/components/ui/button"
 import { useApp } from "@/lib/store"
-import { scopedWorkspace } from "@/lib/workspace"
 import { ZONA } from "@/lib/config"
 import { type DeviceSelection } from "@/lib/device-telemetry"
+import { stationWbgt } from "@/lib/iot"
+import { managementOf } from "@/lib/management-state"
+import { useIotEvents } from "@/lib/use-iot-events"
 import { DEVICE_ANCHORS } from "./generated-view"
 import { InstrumentActivity, BandSignal } from "./activity"
 import { useInstrumentLoop } from "./use-instrument-loop"
@@ -36,15 +36,29 @@ export function IotLive({ art, focused = false }: { art: ReactNode; focused?: bo
   const [selection, select] = useState<DeviceSelection>(focused ? "station" : "all")
   const [inspectWetBulb, inspect] = useState(false)
   const [zone, setZone] = useState(focused ? state.penugasan[0]?.zonaKode ?? "COR_B" : "COR_B")
-  const { root, svg, frame, paused, reducedMotion, updated, tap, toggle } = useInstrumentLoop(zone, selection, inspectWetBulb)
-  const scope = user ? scopedWorkspace(state, user) : state
-  const visitor = scope.pekerja.length ? scope.pekerja[(Math.max(frame.visits, 1) - 1) % scope.pekerja.length] : undefined
-  const wearer = scope.pekerja[0]
+  // The drawing animates; every number below comes from real device events (null = no reading yet).
+  const { root, svg, paused, reducedMotion, toggle } = useInstrumentLoop(zone, selection, inspectWetBulb)
+  const { events, connected } = useIotEvents()
+  const today = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Jakarta" })
+  const station = events.findLast(event => event.type === "station" && event.zone === zone)
+  const wbgt = station?.type === "station" ? stationWbgt(station).isbb : null
+  const taps = events.filter(event => event.type === "water" && new Date(event.receivedAt).toLocaleDateString("en-CA", { timeZone: "Asia/Jakarta" }) === today)
+  const lastTap = taps.at(-1)
+  const visitor = lastTap?.type === "water" ? managementOf(state).workers.find(worker => worker.kartuUid === lastTap.uid) : undefined
+  const band = events.findLast(event => event.type === "band" && event.heartRate !== null)
+  const clinic = user?.role === "KLINIK"
+  const heartRate = clinic && band?.type === "band" ? band.heartRate : null
+  const skin = clinic && band?.type === "band" ? band.skinC : null
+  const wearer = band ? currentShiftWearer(state, band.deviceId) : undefined
+  const last = events.at(-1)
+  const updated = last ? new Date(last.receivedAt).toLocaleTimeString("id-ID", { timeZone: "Asia/Jakarta" }) : ""
+  const kinds = new Set(events.map(event => event.deviceId))
+  const fixed = (value: number | null, digits = 1) => value === null ? "—" : value.toLocaleString("id-ID", { maximumFractionDigits: digits })
   const name = selection === "water" ? "Smart Water Station" : selection === "band" ? "TERMA Band" : selection === "gateway" ? "TERMA Gateway" : "TERMA Station"
-  const readout = selection === "water" ? `${frame.visits} kunjungan RFID` : selection === "band" ? `${frame.heartRate} bpm · ${frame.skinTemperature.toLocaleString("id-ID")} °C` : selection === "gateway" ? `${frame.packets} paket diterima` : `WBGT ${frame.wbgt.toLocaleString("id-ID")} °C`
+  const readout = selection === "water" ? `${taps.length} kunjungan RFID` : selection === "band" ? (band ? (clinic ? `${fixed(heartRate, 0)} bpm · ${fixed(skin)} °C` : "Bacaan diterima · nilai untuk Klinik") : "Belum ada bacaan Band") : selection === "gateway" ? `${events.length} kiriman diterima` : `WBGT ${fixed(wbgt)} °C`
   function choose(id: DeviceSelection) { select(id); inspect(false) }
   return <section ref={root} className="iso iot-workbench summon-panel" data-selected={selection} data-inspection={inspectWetBulb ? "wetbulb" : "assembly"} data-guide="iot-workbench" aria-labelledby="iot-bench-title">
-    <header className="iot-bench-heading"><div><p className="eyebrow">PERANGKAT LAPANGAN</p><h2 id="iot-bench-title">{focused ? "Station membaca zona peserta" : "Setiap pembacaan terhubung."}</h2><p>{focused ? "Periksa zona dan nilai WBGT. Simpan bacaan melalui tugas Sensor untuk menggunakannya pada rencana shift." : "Panas lingkungan, kunjungan minum, dan respons tubuh dalam satu aliran perangkat."}</p></div><span className="connected-note"><span className="status-dot text-primary" />{reducedMotion ? "Gerakan dikurangi" : paused ? "Tampilan dijeda" : "Gateway aktif"}</span></header>
+    <header className="iot-bench-heading"><div><p className="eyebrow">PERANGKAT LAPANGAN</p><h2 id="iot-bench-title">{focused ? "Station membaca zona peserta" : "Setiap pembacaan terhubung."}</h2><p>{focused ? "Periksa zona dan nilai WBGT. Simpan bacaan melalui tugas Sensor untuk menggunakannya pada rencana shift." : "Panas lingkungan, kunjungan minum, dan respons tubuh dalam satu aliran perangkat."}</p></div><span className="connected-note"><span className="status-dot text-primary" />{connected === false ? "Server IoT tidak terhubung" : connected ? "Server IoT terhubung" : "Menghubungkan…"}</span></header>
     {!focused && <div className="iot-controls" data-guide="device-controls" role="group" aria-label="Pilih perangkat">{controls.map(control => <button key={control.id} aria-pressed={selection === control.id} onClick={() => choose(control.id)}><control.Icon size={16} weight={selection === control.id ? "fill" : "regular"} />{control.label}</button>)}</div>}
     <div className="iot-bench-layout"><figure className="iot-figure" aria-labelledby="iot-figure-caption">
       <div className="iot-figure-top"><span>FIG. 01</span>{selection === "station" ? <WetBulbInspection inspecting={inspectWetBulb} onInspect={() => inspect(value => !value)} /> : <span>TERMA / LOKASI 1</span>}</div>
@@ -58,18 +72,24 @@ export function IotLive({ art, focused = false }: { art: ReactNode; focused?: bo
       <figcaption id="iot-figure-caption" className="sr-only">Station mengirim WBGT, pembaca RFID mencatat kunjungan air minum, dan Band mengirim detak jantung serta suhu kulit ke gateway.</figcaption>
       {reducedMotion && <p className="iot-motion-preference">Gerakan mengikuti pengaturan perangkat. Pilih Aktifkan animasi untuk menyalakannya.</p>}
     </figure>
-    <aside className="iot-detail" aria-label="Detail pembacaan perangkat"><div className="iot-detail-title"><p className="eyebrow">{selection === "all" ? "BACAAN TERBARU" : "DETAIL PERANGKAT"}</p><h3>{name}</h3><p>{selection === "water" ? "WS-01 · Titik air minum utama" : selection === "band" ? `TB-01 · ${wearer?.nama ?? "Unit band 01"}` : selection === "gateway" ? "GW-01 · Gateway lokasi" : `TST-${zone} · ${ZONA.find(item => item.kode === zone)?.nama}`}</p></div>
-      {(selection === "all" || selection === "station") && <><Metric label="WBGT / ISBB" value={frame.wbgt} unit="°C" hero /><div className="iot-metric-pair"><Metric label="Suhu udara" value={frame.air} unit="°C" /><Metric label="Kelembapan" value={frame.humidity} unit="% RH" /></div><label className="iot-zone-label" htmlFor="iot-zone">Station zona</label><OptionSelect id="iot-zone" value={zone} onValueChange={setZone} options={ZONA.map(item=>({value:item.kode,label:item.nama}))} /></>}
+    <aside className="iot-detail" aria-label="Detail pembacaan perangkat"><div className="iot-detail-title"><p className="eyebrow">{selection === "all" ? "BACAAN TERBARU" : "DETAIL PERANGKAT"}</p><h3>{name}</h3><p>{selection === "water" ? `${lastTap?.deviceId ?? "Water Station"} · titik air minum` : selection === "band" ? `${band?.deviceId ?? "Band"} · ${wearer?.nama ?? "belum diserahkan ke pekerja"}` : selection === "gateway" ? "terma-iot · server lokasi" : `${station?.deviceId ?? "Belum ada Station"} · ${ZONA.find(item => item.kode === zone)?.nama}`}</p></div>
+      {(selection === "all" || selection === "station") && <><Metric label="WBGT / ISBB" value={wbgt} unit="°C" hero /><div className="iot-metric-pair"><Metric label="Suhu udara" value={station?.type === "station" ? station.airC : null} unit="°C" /><Metric label="Kelembapan" value={station?.type === "station" ? station.humidityPct : null} unit="% RH" /></div><label className="iot-zone-label" htmlFor="iot-zone">Station zona</label><OptionSelect id="iot-zone" value={zone} onValueChange={setZone} options={ZONA.map(item=>({value:item.kode,label:item.nama}))} /></>}
       {selection === "station" && <StationAnatomy />}
-      {selection === "water" && <><Metric label="Kunjungan tercatat" value={frame.visits} unit="tap" hero /><p className="iot-detail-copy">{frame.visits ? `${visitor?.nama ?? "Kartu terdaftar #014"} · kunjungan terakhir diterima gateway.` : "Pembaca RFID siap menerima kartu pekerja."}</p><Button className="w-full" onClick={tap}><IdentificationCardIcon />Tap kartu pekerja</Button><p className="iot-detail-footnote">Tap mencatat kunjungan ke titik minum.</p></>}
-      {selection === "band" && <><Metric label="Detak jantung" value={frame.heartRate} unit="bpm" hero /><div className="iot-metric-pair"><Metric label="Suhu kulit" value={frame.skinTemperature} unit="°C" /><Metric label="Baterai" value={frame.battery} unit="%" /></div><p className="iot-detail-copy">PPG dan suhu kulit dikirim melalui BLE. Indikator cahaya mengikuti denyut pembacaan.</p><BandSignal large /></>}
-      {selection === "gateway" && <><Metric label="Paket diterima" value={frame.packets} unit="paket" hero /><div className="iot-metric-pair"><Metric label="Station" value={3} unit="unit" /><Metric label="Perangkat personal" value={2} unit="unit" /></div><p className="iot-detail-copy">Gateway menerima pembacaan Station, kunjungan RFID, dan data BLE Band dalam satu urutan pembaruan.</p></>}
-      <div className="iot-last-update"><span className="status-dot text-primary" /><span>{updated ? `Pembaruan ${updated}` : "Menyiapkan pembacaan…"}</span><span>#{String(frame.sequence + 1).padStart(4, "0")}</span></div>
+      {selection === "water" && <><Metric label="Kunjungan hari ini" value={taps.length} unit="tap" hero /><p className="iot-detail-copy">{lastTap?.type === "water" ? `${visitor?.nama ?? `Kartu ${lastTap.uid} belum terdaftar`} · tap terakhir ${new Date(lastTap.receivedAt).toLocaleTimeString("id-ID", { timeZone: "Asia/Jakarta", hour: "2-digit", minute: "2-digit" })}.` : "Belum ada tap kartu hari ini."}</p><p className="iot-detail-footnote">Tap mencatat kunjungan ke titik minum, bukan volume air.</p></>}
+      {selection === "band" && <><Metric label="Detak jantung" value={heartRate} unit="bpm" hero /><div className="iot-metric-pair"><Metric label="Suhu kulit" value={skin} unit="°C" /><Metric label="Terakhir" value={null} unit={band ? new Date(band.receivedAt).toLocaleTimeString("id-ID", { timeZone: "Asia/Jakarta", hour: "2-digit", minute: "2-digit" }) : ""} /></div><p className="iot-detail-copy">{clinic ? "Denyut dan suhu kulit dikirim Band lewat WiFi setiap 10 detik saat dipakai." : "Nilai denyut dan suhu kulit hanya terlihat oleh Klinik."}</p><BandSignal large /></>}
+      {selection === "gateway" && <><Metric label="Kiriman diterima" value={events.length} unit="kiriman" hero /><div className="iot-metric-pair"><Metric label="Station" value={[...kinds].filter(id => events.some(event => event.deviceId === id && event.type === "station")).length} unit="unit" /><Metric label="Perangkat personal" value={[...kinds].filter(id => events.some(event => event.deviceId === id && event.type !== "station")).length} unit="unit" /></div><p className="iot-detail-copy">Server terma-iot menerima pembacaan Station, kunjungan RFID, dan data Band lewat WiFi.</p></>}
+      <div className="iot-last-update"><span className="status-dot text-primary" /><span>{updated ? `Pembaruan ${updated}` : "Belum ada kiriman perangkat"}</span><span>{last ? `#${String(last.seq).padStart(4, "0")}` : ""}</span></div>
     </aside></div>
-    {!focused && <div className="iot-summary-strip"><button onClick={() => choose("station")}><ThermometerIcon size={17} /><span>Station <strong>{frame.wbgt.toLocaleString("id-ID")} °C</strong></span></button><button onClick={() => choose("water")}><DropIcon size={17} /><span>Water Station <strong>{frame.visits} kunjungan</strong></span></button><button onClick={() => choose("band")}><HeartbeatIcon size={17} /><span>Band <strong>{frame.heartRate} bpm</strong></span><BandSignal /></button><Link href={state.management?.activeId ? `/shift/${state.management.activeId}` : "/ringkasan"}>Ke alur shift<ArrowUpRightIcon size={15} /></Link></div>}
+    {!focused && <div className="iot-summary-strip"><button onClick={() => choose("station")}><ThermometerIcon size={17} /><span>Station <strong>{fixed(wbgt)} °C</strong></span></button><button onClick={() => choose("water")}><DropIcon size={17} /><span>Water Station <strong>{taps.length} kunjungan</strong></span></button><button onClick={() => choose("band")}><HeartbeatIcon size={17} /><span>Band <strong>{clinic ? `${fixed(heartRate, 0)} bpm` : band ? "aktif" : "—"}</strong></span><BandSignal /></button><Link href={state.management?.activeId ? `/shift/${state.management.activeId}` : "/ringkasan"}>Ke alur shift<ArrowUpRightIcon size={15} /></Link></div>}
   </section>
 }
 
-function Metric({ label, value, unit, hero = false }: { label: string; value: number; unit: string; hero?: boolean }) {
-  return <dl className={hero ? "iot-metric iot-metric-hero" : "iot-metric"}><dt>{label}</dt><dd><NumberFlow value={value} locales="id-ID" format={{ maximumFractionDigits: 1 }} /><span>{unit}</span></dd></dl>
+function Metric({ label, value, unit, hero = false }: { label: string; value: number | null; unit: string; hero?: boolean }) {
+  return <dl className={hero ? "iot-metric iot-metric-hero" : "iot-metric"}><dt>{label}</dt><dd>{value === null ? "—" : <NumberFlow value={value} locales="id-ID" format={{ maximumFractionDigits: 1 }} />}<span>{unit}</span></dd></dl>
+}
+
+function currentShiftWearer(state: ReturnType<typeof useApp>["state"], bandId: string) {
+  const shift = managementOf(state).shifts.find(row => row.id === managementOf(state).activeId)
+  const code = shift?.bands?.find(row => row.bandId === bandId && row.dipakaiPada && !row.dikembalikanPada && !row.dibatalkanPada)?.pekerjaKode
+  return code ? managementOf(state).workers.find(worker => worker.kode === code) : undefined
 }

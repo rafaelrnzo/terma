@@ -5,8 +5,8 @@ import { isManagementAction, currentShift, checkpointShift, ensureManagement, is
 import { syncCompanyData } from "./company-data"
 import { manageWorker } from "./worker-management"
 import { shiftActionError } from "./shift-action-validation"
-import { ingestStationReadings } from "./device-ingestion"
 import { ingestIot } from "./iot"
+import { manageStationPlacement } from "./station-placement"
 import { saveBaseline, recordReadiness } from "./worker-readiness"
 import { manageShift, openShift } from "./shift-management"
 import { AksesDitolak, wajib, type Aksi } from "./access"
@@ -47,7 +47,6 @@ const IZIN_AKSI: Partial<Record<Action["type"], Aksi>> = {
   IMPOR_PENGUKURAN: "INPUT_PENGUKURAN",
   IMPOR_PRAKIRAAN: "INPUT_PENGUKURAN",
   INPUT_BACAAN: "INPUT_PENGUKURAN",
-  AMBIL_BACAAN_PERANGKAT: "INPUT_PENGUKURAN",
   KONFIRMASI: "KONFIRMASI_PAPARAN",
   HITUNG_RENCANA: "HITUNG_RENCANA",
   SETUJUI: "SETUJUI_RENCANA",
@@ -65,9 +64,9 @@ function reguDari(s: AppState, a: Action): string | undefined {
   return undefined
 }
 
-function inner(s: AppState, a: Exclude<Action, ManagementAction | WeatherAction | { type: "SINKRON_PERUSAHAAN" } | { type: "TERIMA_IOT" }>): AppState {
+function inner(s: AppState, a: Exclude<Action, ManagementAction | WeatherAction | { type: "SINKRON_PERUSAHAAN" } | { type: "TERIMA_IOT" } | { type: "SIMPAN_PENEMPATAN_STATION" } | { type: "HAPUS_PENEMPATAN_STATION" }>): AppState {
   switch (a.type) {
-    case "TERIMA_TELEMETRI_PEKERJA": return ingestPersonalTelemetry(s, a.events)
+    case "TERIMA_TELEMETRI_PEKERJA": return recompute(ingestPersonalTelemetry(s, a.events))
     case "ATUR_BAND":
     case "SERAH_BAND":
     case "KEMBALI_BAND": return manageBand(s, a)
@@ -78,7 +77,6 @@ function inner(s: AppState, a: Exclude<Action, ManagementAction | WeatherAction 
     case "SIMPAN_BASELINE": return saveBaseline(s, a.input)
     case "CATAT_CHECKIN":
     case "TINJAU_KONDISI": return recordReadiness(s, a)
-    case "AMBIL_BACAAN_PERANGKAT": return ingestStationReadings(s)
     case "MUAT_DEMO":
       if (!bisaMuatDemo(s)) return notice(s, "info", "Seed tidak dijalankan: ruang kerja sudah berisi data. Tidak ada data yang ditimpa.")
       if (!tanggalValid(s.tanggal)) return notice(s, "error", "Tanggal rencana tidak valid.")
@@ -195,6 +193,7 @@ export function reducer(s: AppState, a: Action): AppState {
   if (a.type === "SINKRON_PERUSAHAAN") return syncCompanyData(s)
   // Devices authenticate at /api/iot, independent of the role signed in on this browser.
   if (a.type === "TERIMA_IOT") return ingestIot(s, a.events)
+  if (a.type === "SIMPAN_PENEMPATAN_STATION" || a.type === "HAPUS_PENEMPATAN_STATION") return manageStationPlacement(s, a)
   if (a.type === "CUACA_MULAI") return { ...s, weather: { ...s.weather, status: "loading", error: undefined } }
   if (a.type === "CUACA_GAGAL") return { ...s, weather: { ...s.weather, status: "error", error: a.pesan } }
   if (a.type === "CUACA_DITERIMA") {

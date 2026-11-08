@@ -5,15 +5,19 @@ import type { AppState } from "./store-state"
 import type { Pekerja, Rencana, RiskColour, IntervalPlan } from "./types"
 import { clinicOf, medicalRiskPoints } from "./clinic"
 import { currentShift } from "./management-state"
+import { DEVICE_RULES, deviceWarnings } from "./device-warnings"
 
 /** Flowchart Perhitungan TERMA §2–4. Versioned draft parameters, not clinical validation. */
 export const PAPER_RULES = {
-  version: "flow-pdf-v0",
+  version: "TERMA 2026.1",
   points: { acclEarly: 3, acclLate: 2, unwell: 2, closedPpe: 1 },
   redScore: 5, yellowScore: 3, redMargin: 1, yellowMargin: 2,
   forecastCalibration: { a: 0, b: 1, calibrated: false },
   ppe: { Standar: 0, "Pakaian kerja biasa": 0, "Coverall kain": 0, "Coverall SMS": 0.5, "Coverall polyolefin": 1, "Dua lapis kain": 3 } as Record<string, number>,
 } as const
+
+/** Display name of a plan's rule set; plans saved before the rename keep the same rules. */
+export function ruleLabel(version: string) { return version === "flow-pdf-v0" ? PAPER_RULES.version : version }
 
 export function estimateForecastWbgt(temperature: number, humidity: number) {
   if (!Number.isFinite(temperature) || !Number.isFinite(humidity) || temperature < 10 || temperature > 50 || humidity < 0 || humidity > 100) return null
@@ -31,7 +35,10 @@ export function paperPersonalRisk(s: AppState, worker: Pekerja) {
   if (checkin && checkin.kondisi !== "BAIK") { points += PAPER_RULES.points.unwell; factors.push("Ada faktor kesehatan hari ini") }
   const medical = medicalRiskPoints(s, worker.kode)
   if (medical.points) { points += medical.points; if (!factors.some(factor => factor.startsWith("Ada faktor kesehatan"))) factors.push("Ada faktor kesehatan") }
-  return { points, factors, day, medicalAvailable: medical.available }
+  const devices = deviceWarnings(s, worker.kode, !day || day > 7)
+  if (devices.band === "WASPADA") points += DEVICE_RULES.bandWatchPoints
+  factors.push(...devices.reasons)
+  return { points, factors, day, medicalAvailable: medical.available, bandRed: devices.band === "MERAH", drinkGap: devices.drinkGapMinutes !== undefined }
 }
 
 export function calculatePaperPlan(s: AppState, worker: Pekerja): Omit<Rencana, "id" | "version" | "sig" | "dibuat"> | null {
@@ -44,13 +51,15 @@ export function calculatePaperPlan(s: AppState, worker: Pekerja): Omit<Rencana, 
   const candidate = deteksiKandidat(worker, s.kehadiran, s.tanggal, 8)
   const requiresConfirmation = !!candidate.pemicu && !confirmation
   const restriction = clinicOf(s).followups.some(row => row.pekerjaKode === worker.kode && row.tanggal === s.tanggal && row.status === "BATASI")
+  // Core estimate over the threshold means stop heat exposure, whatever the ISBB data says.
+  const stop = restriction || risk.bandRed
   const correction = PAPER_RULES.ppe[assignment.apd]
   const unknownPpe = correction === undefined
   const percent = risk.day ? Math.min(100, risk.day * 20) : requiresConfirmation ? 0 : 100
-  const dailyCap = restriction || unknownPpe ? 0 : Math.round(percent / 100 * NORMAL_PAPARAN_MENIT)
+  const dailyCap = stop || unknownPpe ? 0 : Math.round(percent / 100 * NORMAL_PAPARAN_MENIT)
   const reference = ATURAN_FIXTURE.rows.find(row => row.nab[task.beban] !== undefined)?.nab[task.beban]
   const reasons = [...risk.factors]
-  reasons.push("Skor menggunakan faktor yang tersedia. Lembur, defisit minum dan ambang Band belum terhubung ke perhitungan ini.")
+  reasons.push("Skor menggunakan faktor yang tersedia, termasuk peringatan Band dan jeda minum bila perangkat terhubung. Lembur belum terhubung ke perhitungan ini.")
   if (!risk.medicalAvailable) reasons.push("Tanpa data medis berizin; faktor medis tidak diasumsikan normal.")
   if (requiresConfirmation) reasons.push("Riwayat adaptasi perlu dikonfirmasi HSE.")
   if (unknownPpe) reasons.push("Jenis APD belum memiliki koreksi pada konfigurasi aturan.")
@@ -61,16 +70,17 @@ export function calculatePaperPlan(s: AppState, worker: Pekerja): Omit<Rencana, 
     const forecast = forecastAtPeriod(s.prakiraan, s.tanggal, hour)
     const isMeasured = measured.kualitas === "TERUKUR" || measured.kualitas === "REPLAY"
     const value = isMeasured ? measured.reading?.isbb ?? null : forecast ? estimateForecastWbgt(forecast.suhu, forecast.kelembapan) : null
+    if (risk.bandRed) return { jamMulai: hour, isbb: value, kualitas: isMeasured ? measured.kualitas : forecast ? "PRAKIRAAN_SAJA" : "TIDAK_TERSEDIA", barisNab: null, kerjaMaksMenit: 0, kerjaDirencanakan: 0, riskColour: "MERAH", catatan: "Peringatan Band: istirahat di tempat teduh, minum, dan periksa pekerja sebelum kembali bekerja." }
     if (value === null || unknownPpe || requiresConfirmation) return { jamMulai: hour, isbb: value, kualitas: isMeasured ? measured.kualitas : forecast ? "PRAKIRAAN_SAJA" : "TIDAK_TERSEDIA", barisNab: null, kerjaMaksMenit: 0, kerjaDirencanakan: 0, riskColour: "DATA_KURANG", catatan: value === null ? "Data hilang: jangan diasumsikan aman." : unknownPpe ? "Koreksi APD belum tersedia." : "Konfirmasi riwayat adaptasi diperlukan." }
     const corrected = value + correction
     const { row } = cariBaris(ATURAN_FIXTURE, task.beban, corrected)
-    const red = restriction || !row || (risk.points >= PAPER_RULES.redScore && corrected >= (reference ?? 0) - PAPER_RULES.redMargin) || (!!risk.day && risk.day <= 3 && corrected >= (reference ?? 0))
-    const yellow = risk.points >= PAPER_RULES.yellowScore || corrected >= (reference ?? 0) - PAPER_RULES.yellowMargin
+    const red = stop || !row || (risk.points >= PAPER_RULES.redScore && corrected >= (reference ?? 0) - PAPER_RULES.redMargin) || (!!risk.day && risk.day <= 3 && corrected >= (reference ?? 0))
+    const yellow = risk.drinkGap || risk.points >= PAPER_RULES.yellowScore || corrected >= (reference ?? 0) - PAPER_RULES.yellowMargin
     const colour: RiskColour = red ? "MERAH" : yellow ? "KUNING" : "HIJAU"
     const offset = red ? 2 : yellow ? 1 : 0
     const baseIndex = row ? ATURAN_FIXTURE.rows.indexOf(row) : -1
     const finalRow = baseIndex >= 0 ? ATURAN_FIXTURE.rows[baseIndex + offset] : undefined
-    const minutes = restriction ? 0 : finalRow?.kerjaMaksMenit ?? 0
+    const minutes = stop ? 0 : finalRow?.kerjaMaksMenit ?? 0
     return { jamMulai: hour, isbb: Math.round(corrected * 100) / 100, kualitas: isMeasured ? measured.kualitas : "PRAKIRAAN_SAJA", barisNab: minutes > 0 ? finalRow!.label : null, baseMinutes: row?.kerjaMaksMenit ?? 0, kerjaMaksMenit: minutes, kerjaDirencanakan: 0, riskColour: colour, drinkInterval: red ? 15 : yellow ? 20 : 30, catatan: `${isMeasured ? "Station/rekaman" : "Perkiraan BMKG · belum terkalibrasi"}; ISBB′ ${corrected.toFixed(1)} °C. ${row ? `Dasar ${row.label}; ${colour.toLowerCase()} turun ${offset} baris` : "Tidak ada baris NAB yang memenuhi"}. ${minutes} menit kerja/jam.` }
   })
   let remaining = dailyCap
@@ -86,7 +96,7 @@ export function calculatePaperPlan(s: AppState, worker: Pekerja): Omit<Rencana, 
   const quality = intervals.map(row=>row.kualitas).sort((a,b)=>qualityRank[b]-qualityRank[a])[0]
   if (missing.length) reasons.push(`Data belum lengkap pada ${missing.map(row=>rentangJam(row.jamMulai)).join(", ")}.`)
   if (intervals.some(row=>row.kualitas === "PRAKIRAAN_SAJA")) reasons.push("ISBB prakiraan adalah aproksimasi suhu/kelembapan, belum dikalibrasi di lokasi. Bukan pengukuran Station.")
-  reasons.push(`Skor P ${risk.points}; bobot dan margin mengikuti flow PDF v0 (asumsi pilot). Alokasi mengisi jam lebih sejuk dahulu.`)
+  reasons.push(`Skor P ${risk.points}; bobot dan margin mengikuti parameter aturan ${PAPER_RULES.version}. Alokasi mengisi jam lebih sejuk dahulu.`)
   return { tanggal:s.tanggal, pekerjaKode:worker.kode, zonaKode:assignment.zonaKode, tugasKode:assignment.tugasKode, aturanVersi:PAPER_RULES.version, riskColour:colour, personalScore:risk.points, medicalDataAvailable:risk.medicalAvailable,
     status: colour === "DATA_KURANG" ? "TINJAU_HSE" : colour === "MERAH" ? "BATASI_ATAU_PINDAHKAN" : risk.day ? "ADAPTASI_DIPERLUKAN" : "RENCANA_TERSEDIA", kualitas:quality,
     belumLayak:total === 0, batasHarianMenit:dailyCap, persenAdaptasi:percent, totalKerjaMenit:total, intervals, alasan:reasons, usulan:["Ikuti jadwal kerja–istirahat per jam. Periksa perubahan bacaan selama shift; perubahan yang memperketat perlu persetujuan HSE."] }

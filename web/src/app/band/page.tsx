@@ -1,2 +1,3 @@
-import { BandWorkspace } from "@/components/band-workspace"
-export default function BandPage(){return <BandWorkspace />}
+import { redirect } from "next/navigation"
+// Band assignment lives in the worker directory (HSE); foreman handoff is on /mandor.
+export default function BandPage() { redirect("/impor") }

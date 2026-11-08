@@ -4,7 +4,6 @@ import { useParams, useSearchParams } from "next/navigation"
 import dynamic from "next/dynamic"
 import { ModuleTabs } from "@/components/module-tabs"
 import Link from "next/link"
-import { ArrowLeftIcon as ArrowLeft } from "@phosphor-icons/react/dist/csr/ArrowLeft"
 import { ArrowRightIcon as ArrowRight } from "@phosphor-icons/react/dist/csr/ArrowRight"
 import { PageHeader, WorkflowEmpty } from "@/components/app-shell"
 import { LifecycleBadge, OriginBadge } from "@/components/status"
@@ -33,7 +32,6 @@ export function WorkerPlanPage() {
   const actions = state.tindakan.filter(t => t.rencanaId === plan?.id)
   const attendance = state.kehadiran.filter(k => k.pekerjaKode === kode && k.tanggal <= state.tanggal).sort((a, b) => b.tanggal.localeCompare(a.tanggal)).slice(0, 14)
   return <>
-    <Button className="mb-5" variant="ghost" asChild><Link href={user.role === "MANDOR" ? "/instruksi" : "/rencana"}><ArrowLeft aria-hidden />{user.role === "MANDOR" ? "Instruksi regu" : "Perencanaan shift"}</Link></Button>
     <PageHeader title={worker.nama} summary={`${worker.kode} · ${crew?.nama} · Bergabung ${tanggalLabel(worker.tanggalMulai)}`} />
     <ModuleTabs label="Rencana pekerja" active={tab === "analisis" ? "analisis" : "rencana"} tabs={[{key:"rencana",label:"Rencana kerja",href:`/pekerja/${encodeURIComponent(kode)}`},{key:"analisis",label:"Analisis paparan",href:`/pekerja/${encodeURIComponent(kode)}?tab=analisis`}]} />
     <div className="module-panel" key={tab}>{tab === "analisis" ? <WorkerPlanInsights code={kode} /> : <>
@@ -47,7 +45,7 @@ export function WorkerPlanPage() {
       </dl><div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t pt-4"><OriginBadge origin={worker.origin} /><Button asChild variant="outline"><Link href={`/regu/${worker.reguKode.toLowerCase()}`}>Lihat regu<ArrowRight aria-hidden /></Link></Button></div></CardContent></Card>
       <Card><CardHeader><CardTitle>Riwayat adaptasi</CardTitle></CardHeader><CardContent className="space-y-3 text-sm"><p>{candidate.keterangan}</p><p className="text-muted-foreground">{confirmation ? `Dikonfirmasi ${confirmation.dikonfirmasiOleh} · ${confirmation.profil === "NORMAL" ? "Profil normal" : "Adaptasi hari ke-" + confirmation.hariAdaptasi}` : "Belum ada konfirmasi riwayat oleh HSE."}</p><p>{attendance.filter(a => a.status === "HADIR").length} hadir dari {attendance.length} catatan terakhir.</p><p className="text-xs text-muted-foreground">Kehadiran bukan bukti durasi paparan panas.</p><Button asChild variant="outline"><Link href="/rencana?tab=adaptasi">Tinjau adaptasi<ArrowRight aria-hidden /></Link></Button></CardContent></Card>
     </div>
-    <section id="rencana" className="scroll-mt-6" aria-label="Rencana pekerja"><div className="mb-4 flex flex-wrap items-center justify-between gap-3"><h2 className="font-heading text-xl font-semibold">Rencana pada {tanggalLabel(state.tanggal)}</h2><Link href="/rencana" className="text-sm underline underline-offset-4">Kembali ke daftar rencana</Link></div>{plan ? <RencanaCard r={plan} mode={user.role === "MANDOR" ? "mandor" : "hse"} /> : <WorkflowEmpty title="Belum ada rencana pada tanggal ini" href="/rencana" label="Buka rencana kerja">Periksa tanggal aktif dan kelengkapan data sebelum menghitung rencana.</WorkflowEmpty>}</section>
+    <section id="rencana" className="scroll-mt-6" aria-label="Rencana pekerja"><h2 className="mb-4 font-heading text-xl font-semibold">Rencana pada {tanggalLabel(state.tanggal)}</h2>{plan ? <RencanaCard r={plan} mode={user.role === "MANDOR" ? "mandor" : "hse"} /> : <WorkflowEmpty title="Belum ada rencana pada tanggal ini" href="/rencana" label="Buka rencana kerja">Periksa tanggal aktif dan kelengkapan data sebelum menghitung rencana.</WorkflowEmpty>}</section>
 
     <Card className="mt-6"><CardHeader><CardTitle>Tindak lanjut pekerja</CardTitle></CardHeader><CardContent className="space-y-4">{actions.length ? actions.map(t => <div key={t.id} className="flex flex-wrap items-center justify-between gap-3 text-sm"><p className="max-w-prose">{t.deskripsi}</p><LifecycleBadge status={t.status} /></div>) : <p className="text-sm text-muted-foreground">Tindakan dibuat setelah rencana disetujui dan instruksi dibagikan.</p>}<Button asChild variant="outline"><Link href="/tindakan">Buka tindakan & verifikasi<ArrowRight aria-hidden /></Link></Button></CardContent></Card>
     </>}</div>

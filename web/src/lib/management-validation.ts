@@ -1,3 +1,4 @@
+import { validPlacement } from "./station-placement"
 import { validPersonalEvent } from "./personal-telemetry"
 import type { AppState } from "./store-state"
 import type { ManagementState, ShiftWorkspace } from "./management-types"
@@ -35,6 +36,7 @@ export function validateManagement(state: AppState) {
   if (!objects(m.workers) || !objects(m.assignments) || !objects(m.shifts)) throw new Error("Invalid management collections")
   if (m.companySync !== undefined && (!m.companySync || !["LOCAL_ADAPTER", "WORKSPACE"].includes(m.companySync.source) || !Number.isFinite(Date.parse(m.companySync.syncedAt)))) throw new Error("Invalid company connection")
   if (m.healthBaselines !== undefined && !baselines(m.healthBaselines)) throw new Error("Invalid health baselines")
+  if (m.stationPlacements !== undefined && (!Array.isArray(m.stationPlacements) || !m.stationPlacements.every(validPlacement))) throw new Error("Invalid station placements")
   if (m.shifts.some(shift => shift.personalTelemetry !== undefined && (!Array.isArray(shift.personalTelemetry) || shift.personalTelemetry.some(row=>!validPersonalEvent(row))))) throw new Error("Invalid personal telemetry")
   if (m.shifts.some(shift => shift.bands !== undefined && (!objects(shift.bands) || shift.bands.some(row=>typeof row.id !== "string" || typeof row.bandId !== "string" || typeof row.pekerjaKode !== "string" || !Number.isFinite(Date.parse(row.ditugaskanPada)))))) throw new Error("Invalid Band allocations")
   if (m.shifts.some(shift => shift.readiness !== undefined && !readiness(shift.readiness))) throw new Error("Invalid shift readiness")

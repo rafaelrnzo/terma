@@ -44,7 +44,7 @@ function KioskSession() {
       <div className="kiosk-step-heading"><p className="eyebrow">{CHECKIN_METHOD_LABEL[identification.method]}</p><h1>Bagaimana kondisi tubuh Anda, {worker.nama}?</h1><p>Pilih yang Anda rasakan sekarang. Satu jawaban sebelum mulai bekerja.</p></div>
       <KioskQuestions onSave={submit} onBack={reset} />
       {submitted && state.notice?.tipe === "error" && <p role="alert" className="mt-4 text-sm text-destructive">{state.notice.pesan}</p>}
-    </> : <><div className="kiosk-step-heading"><p className="eyebrow">CHECK-IN SEBELUM KERJA</p><h1>Absen mudah, pilih caranya.</h1><p>Via kamera atau tap kartu. Setelah itu, isi kondisi tubuh Anda.</p></div><KioskIdentity workers={state.pekerja} onIdentified={(code, method) => { setIdentification({ code, method }); setSubmitted(false) }} /></>}
+    </> : <><div className="kiosk-step-heading"><p className="eyebrow">CHECK-IN SEBELUM KERJA</p><h1>Absen mudah, pilih caranya.</h1><p>Via kamera atau tap kartu. Setelah itu, isi kondisi tubuh Anda.</p></div><KioskIdentity workers={state.pekerja} checkedIn={new Set(shift?.readiness?.checkins.map(row => row.pekerjaKode) ?? [])} onIdentified={(code, method) => { setIdentification({ code, method }); setSubmitted(false) }} /></>}
   </>
 }
 

@@ -1,3 +1,4 @@
+import type { StationPlacement } from "./station-placement"
 import type { PersonalDeviceEvent } from "./personal-telemetry"
 import type { BandAllocation } from "./band-management"
 import type { ClinicState } from "./clinic"
@@ -32,6 +33,7 @@ export interface ManagementState {
   healthBaselines?: HealthBaseline[]
   clinic?: ClinicState
   companySync?: CompanySync
+  stationPlacements?: StationPlacement[]
 }
 export interface WorkerInput {
   kode: string

@@ -5,7 +5,8 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { managementOf } from "@/lib/management-state"
 import { stationWbgt, type IotEvent } from "@/lib/iot"
-import { subscribeIot, IOT_URL } from "@/lib/iot-client"
+import { IOT_URL } from "@/lib/iot-client"
+import { useIotEvents } from "@/lib/use-iot-events"
 import { useApp } from "@/lib/store"
 
 const KIND = { station: "TERMA Station", water: "Water Station", water_heartbeat: "Water Station", band: "TERMA Band" } as const
@@ -15,10 +16,8 @@ const time = (iso: string) => new Date(iso).toLocaleTimeString("id-ID", { timeZo
 /** Live view of what each physical device last sent to /api/iot. */
 export function LiveDevices() {
   const { state, user } = useApp()
-  const [events, setEvents] = useState<IotEvent[]>([])
-  const [connected, setConnected] = useState<boolean | null>(null)
+  const { events, connected } = useIotEvents()
   const [now, setNow] = useState(() => Date.now())
-  useEffect(() => subscribeIot(0, event => setEvents(previous => [...previous, event]), setConnected), [])
   useEffect(() => {
     const timer = setInterval(() => setNow(Date.now()), 5000)
     return () => clearInterval(timer)

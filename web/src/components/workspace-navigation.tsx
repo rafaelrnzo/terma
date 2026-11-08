@@ -15,7 +15,6 @@ import { PulseIcon } from "@phosphor-icons/react/dist/csr/Pulse"
 import { ThermometerIcon } from "@phosphor-icons/react/dist/csr/Thermometer"
 import { CpuIcon } from "@phosphor-icons/react/dist/csr/Cpu"
 import { FingerprintIcon } from "@phosphor-icons/react/dist/csr/Fingerprint"
-import { WatchIcon } from "@phosphor-icons/react/dist/csr/Watch"
 import { FileTextIcon } from "@phosphor-icons/react/dist/csr/FileText"
 import { ChartBarIcon } from "@phosphor-icons/react/dist/csr/ChartBar"
 import { LightbulbIcon } from "@phosphor-icons/react/dist/csr/Lightbulb"
@@ -30,7 +29,7 @@ const icons: Record<string, typeof SquaresFourIcon> = {
   "/impor": IdentificationCardIcon, "/kesehatan-awal": FirstAidKitIcon, "/paparan": PersonSimpleWalkIcon,
   "/rencana": ClipboardTextIcon, "/instruksi": PaperPlaneTiltIcon, "/tindakan": ListChecksIcon,
   "/forecasting": CloudSunIcon, "/monitoring": PulseIcon, "/pengukuran": ThermometerIcon,
-  "/perangkat": CpuIcon, "/absensi": FingerprintIcon, "/band": WatchIcon,
+  "/perangkat": CpuIcon, "/absensi": FingerprintIcon,
   "/laporan/bulanan": ShieldPlusIcon, "/laporan": FileTextIcon, "/analitik": ChartBarIcon, "/insight": LightbulbIcon, "/kesehatan": ShieldPlusIcon,
 }
 

@@ -1,5 +1,5 @@
 import { acclHistorySuggestion } from "./accl-history"
-import { calculatePaperPlan } from "./paper-rules"
+import { calculatePaperPlan, PAPER_RULES, ruleLabel } from "./paper-rules"
 import { currentShift } from "./management-state"
 import { ATURAN_FIXTURE, LOKASI, REGU, TUGAS } from "./config"
 import { deteksiKandidat, hitungRencana, namaZona, rentangJam } from "./rules"
@@ -56,8 +56,8 @@ export function recompute(s: AppState): AppState {
       }
       hasil.totalKerjaMenit = hasil.intervals.reduce((sum,row)=>sum+row.kerjaDirencanakan,0)
     }
-    const sig = JSON.stringify([pn.zonaKode, pn.tugasKode, hasil.status, hasil.kualitas, hasil.batasHarianMenit, "personalScore" in hasil ? hasil.personalScore : null, "medicalDataAvailable" in hasil ? hasil.medicalDataAvailable : null, hasil.intervals.map((i) => [i.kualitas, i.isbb, i.kerjaDirencanakan])])
-    const base = { ...hasil, sig, tanggal: s.tanggal, zonaKode: pn.zonaKode, tugasKode: pn.tugasKode, aturanVersi: paper ? "flow-pdf-v0" : ATURAN_FIXTURE.versi, dibuat: now(), pekerjaKode: p.kode }
+    const sig = JSON.stringify([pn.zonaKode, pn.tugasKode, hasil.status, hasil.kualitas, hasil.batasHarianMenit, "personalScore" in hasil ? hasil.personalScore : null, "medicalDataAvailable" in hasil ? hasil.medicalDataAvailable : null, hasil.intervals.map((i) => [i.kualitas, i.isbb, i.kerjaDirencanakan]), "riskColour" in hasil ? hasil.riskColour : null])
+    const base = { ...hasil, sig, tanggal: s.tanggal, zonaKode: pn.zonaKode, tugasKode: pn.tugasKode, aturanVersi: paper ? PAPER_RULES.version : ATURAN_FIXTURE.versi, dibuat: now(), pekerjaKode: p.kode }
     if (!current) {
       rencana.push({ ...base, id: `${p.kode}-v1@${s.tanggal}`, version: 1 })
       continue
@@ -99,7 +99,7 @@ export function isiPesan(s: AppState, reguKode: string): { teks: string; rencana
   const teks = [
     ...(s.demo && s.demo.versi !== "workspace-v3" ? ["SUMBER: DATA CONTOH HISTORIS"] : []),
     `TERMA · ${regu.nama}, ${LOKASI}, ${s.tanggal}.`,
-    `Sumber: ${sumber || "Belum tersedia"}; aturan ${[...new Set(rs.map(plan=>plan.aturanVersi))].join(", ") || ATURAN_FIXTURE.versi} (parameter v0).`,
+    `Sumber: ${sumber || "Belum tersedia"}; aturan ${[...new Set(rs.map(plan=>ruleLabel(plan.aturanVersi)))].join(", ") || ATURAN_FIXTURE.versi} (parameter v0).`,
     ...baris,
     "Mohon akui penerimaan di TERMA lalu catat tindakan dan waktunya. Pengakuan pesan belum berarti tindakan terlaksana.",
     "Pesan ini tidak menyatakan pekerja sehat atau aman secara medis. Keluhan atau dugaan darurat: ikuti SOP lokasi, jangan menunggu aplikasi.",

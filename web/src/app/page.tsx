@@ -23,7 +23,7 @@ const stages = [
     steps: [
       { no: 1, title: "Data pekerja & penugasan", description: "Impor CSV pekerja dan kehadiran. Telusuri regu, tugas, zona, serta profil setiap pekerja.", href: "/impor" },
       { no: 2, title: "Riwayat & adaptasi", description: "Tinjau kandidat adaptasi dan konfirmasi riwayat paparan sebelum menghitung rencana.", href: "/paparan" },
-      { no: 3, title: "Pengukuran panas", description: "Catat atau impor WBGT/ISBB per zona dan jam. Bedakan pengukuran, replay, prakiraan, dan data yang belum tersedia.", href: "/pengukuran" },
+      { no: 3, title: "Pengukuran panas", description: "Catat atau impor WBGT/ISBB per zona dan jam. Bedakan pengukuran, replay, prakiraan, dan data yang belum tersedia.", href: "/monitoring?tab=isbb" },
     ],
   },
   {

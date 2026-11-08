@@ -32,6 +32,17 @@ describe("low-budget TERMA devices", () => {
     expect(s.bacaan.find(row => row.zonaKode === "COR_B" && row.jamMulai === 11)?.origin).toBe("MANUAL")
   })
 
+  it("files Station readings under the zone where the Station is placed", () => {
+    const date = "2026-11-06"
+    let s = run(shift(date), { type: "LOGIN", userId: "mandor-budi" }, { type: "SIMPAN_PENEMPATAN_STATION", deviceId: "TST-01", zonaKode: "BEK_A", lat: -6.2, lng: 106.8 })
+    expect(s.notice?.tipe).toBe("error")
+    s = run(s, { type: "LOGIN", userId: "hse-ratna" }, { type: "SIMPAN_PENEMPATAN_STATION", deviceId: "tst-01", zonaKode: "BEK_A", lat: -6.2, lng: 106.8 })
+    expect(readDemoState(JSON.stringify(s)).management?.stationPlacements).toEqual([expect.objectContaining({ deviceId: "TST-01", zonaKode: "BEK_A" })])
+    s = iot(s, event({ type: "station", deviceId: "TST-01", zone: "COR_B", airC: 32, humidityPct: 60, wetBulbC: 26 }, `${date}T10:05:00+07:00`))
+    expect(s.bacaan.filter(row => row.idAlat === "TST-01").map(row => row.zonaKode)).toEqual(["BEK_A"])
+    expect(reducer(s, { type: "SIMPAN_PENEMPATAN_STATION", deviceId: "TST-01", zonaKode: "BEK_A", lat: 200, lng: 0 }).notice?.tipe).toBe("error")
+  })
+
   it("maps Water Station card taps and heartbeats to shift participants", () => {
     const date = "2026-11-06"
     let s = iot(shift(date), event({ type: "water_heartbeat", deviceId: "TWS-01", uptimeMs: 600000 }, `${date}T09:00:00+07:00`), event({ type: "water", deviceId: "TWS-01", uid: "A1:B2:C3:D4" }, `${date}T09:05:00+07:00`))

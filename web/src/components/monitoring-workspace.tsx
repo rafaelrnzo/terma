@@ -2,6 +2,8 @@
 import { useSearchParams } from "next/navigation"
 import { PageHeader } from "@/components/app-shell"
 import { ModuleTabs } from "@/components/module-tabs"
+import { DrinkReview } from "@/components/drink-review"
+import { StationReadings } from "@/components/station-readings"
 import { ShiftHealthReview } from "@/components/shift-health-review"
 import { ShiftMonitoring } from "@/components/shift-monitoring"
 import dynamic from "next/dynamic"
@@ -19,7 +21,8 @@ export function MonitoringWorkspace() {
   const shift = currentShift(state)
   const canAnalyze = pageAllowedFor(user, "/analitik")
   const canAttend = pageAllowedFor(user, "/absensi")
-  const tabs = [{key:"pemantauan",label:"Pemantauan",href:"/monitoring"},...(canAttend ? [{key:"absensi",label:"Absensi",href:"/monitoring?tab=absensi"}] : []),...(canAnalyze ? [{key:"analitik",label:"Analitik",href:"/monitoring?tab=analitik"}] : [])]
-  const active = tab === "analitik" && canAnalyze ? "analitik" : tab === "absensi" && canAttend ? "absensi" : "pemantauan"
-  return <><PageHeader title={user.role === "MANDOR" ? "Monitoring regu" : "Monitoring shift"} summary={shift ? `${shift.nama} · ${tanggalLabel(shift.tanggal)}` : undefined} />{tabs.length > 1 && <ModuleTabs label="Monitoring shift" active={active} tabs={tabs} />}<div className="module-panel" key={active}>{active === "analitik" ? <ShiftAnalytics /> : active === "absensi" ? <ShiftHealthReview /> : <ShiftMonitoring />}</div></>
+  const canMeasure = pageAllowedFor(user, "/pengukuran")
+  const tabs = [{key:"pemantauan",label:"Pemantauan",href:"/monitoring"},...(canAttend ? [{key:"absensi",label:"Absensi",href:"/monitoring?tab=absensi"},{key:"minum",label:"Minum",href:"/monitoring?tab=minum"}] : []),...(canMeasure ? [{key:"isbb",label:"Bacaan ISBB",href:"/monitoring?tab=isbb"}] : []),...(canAnalyze ? [{key:"analitik",label:"Analitik",href:"/monitoring?tab=analitik"}] : [])]
+  const active = tab === "analitik" && canAnalyze ? "analitik" : tab === "absensi" && canAttend ? "absensi" : tab === "minum" && canAttend ? "minum" : tab === "isbb" && canMeasure ? "isbb" : "pemantauan"
+  return <><PageHeader title={user.role === "MANDOR" ? "Monitoring regu" : "Monitoring shift"} summary={shift ? `${shift.nama} · ${tanggalLabel(shift.tanggal)}` : undefined} />{tabs.length > 1 && <ModuleTabs label="Monitoring shift" active={active} tabs={tabs} />}<div className="module-panel" key={active}>{active === "analitik" ? <ShiftAnalytics /> : active === "absensi" ? <ShiftHealthReview /> : active === "minum" ? <DrinkReview /> : active === "isbb" ? <StationReadings /> : <ShiftMonitoring />}</div></>
 }

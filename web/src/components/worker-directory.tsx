@@ -5,7 +5,8 @@ import { useState } from "react"
 import { MagnifyingGlassIcon } from "@phosphor-icons/react/dist/csr/MagnifyingGlass"
 import { UsersThreeIcon } from "@phosphor-icons/react/dist/csr/UsersThree"
 import { CompanyConnection } from "@/components/company-connection"
-import { WorkerBandStatus, WorkerHealthDetail } from "@/components/worker-health-detail"
+import { WorkerHealthDetail } from "@/components/worker-health-detail"
+import { WorkerBandCell } from "@/components/band-assignment"
 import { ReviewStateBadge } from "@/components/status"
 import { Badge } from "@/components/ui/badge"
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table"
@@ -71,7 +72,7 @@ export function WorkerDirectory({ initialDate }: { initialDate?: string }) {
           <TableCell><p>{health?.baseline ? BASELINE_LABEL[health.baseline.status] : BASELINE_VALIDITY_LABEL[row.validity]}</p>{health?.baseline && <p className="mt-1 text-xs text-muted-foreground">{row.validity === "BERLAKU" ? "Berlaku s.d." : BASELINE_VALIDITY_LABEL[row.validity]} {new Date(`${health.baseline.berlakuSampai}T00:00:00Z`).toLocaleDateString("id-ID",{day:"numeric",month:"short",year:"numeric",timeZone:"UTC"})}</p>}</TableCell>
           <TableCell><p>{health?.checkin ? CONDITION_LABEL[health.checkin.kondisi] : row.checkedIn ? "Sudah check-in" : "Belum check-in"}</p>{health?.checkin?.keluhan.length ? <p className="mt-1 text-xs text-status-tinjau">{health.checkin.keluhan.join(", ")}</p> : null}<p className="mt-1 text-xs text-muted-foreground">{row.shift?.nama ?? "Tanpa shift"}</p></TableCell>
           <TableCell><MonitoringBadge status={row.status} adaptationReviewed={!!selectedShift?.workspace.konfirmasi.some(record=>record.pekerjaKode===worker.kode)} /></TableCell>
-          {showBand && <TableCell><WorkerBandStatus code={worker.kode} date={date} /></TableCell>}
+          {showBand && <TableCell><WorkerBandCell code={worker.kode} date={date} /></TableCell>}
           <TableCell><div className="worker-row-actions"><WorkerHealthDetail row={row} date={date} /><WorkerRowActions worker={worker} archived={!!worker.diarsipkan} /></div></TableCell>
         </TableRow>
       })}</TableBody>

@@ -52,7 +52,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const path = usePathname()
   const activeShift = currentShift(state)
   const shift = activeShift && (user?.role !== "MANDOR" || activeShift.workspace.pekerja.some(worker => worker.reguKode === user.reguKode)) ? activeShift : undefined
-  const needsShift = isShiftRoute(path) || ["/laporan", "/analitik", "/insight", "/monitoring", "/absensi", "/band"].includes(path)
+  const needsShift = isShiftRoute(path) || ["/laporan", "/analitik", "/insight", "/monitoring", "/absensi"].includes(path)
   const blockedExecution = shift?.status === "DRAFT" && ["/instruksi", "/tindakan"].includes(path)
   const [menuOpen, setMenuOpen] = useState(false)
   useEffect(() => {

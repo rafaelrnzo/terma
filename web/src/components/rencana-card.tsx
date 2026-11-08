@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { ruleLabel } from "@/lib/paper-rules"
 import { WarningIcon as AlertTriangle } from "@phosphor-icons/react/dist/csr/Warning"
 import { ArrowsLeftRightIcon as ArrowRightLeft } from "@phosphor-icons/react/dist/csr/ArrowsLeftRight"
 import { CheckCircleIcon as CheckCircle2 } from "@phosphor-icons/react/dist/csr/CheckCircle"
@@ -123,7 +124,7 @@ export function RencanaCard({ r, mode = "hse" }: { r: Rencana; mode?: "hse" | "m
                   </ul>
                 </div>
               )}
-              <div className="text-xs text-muted-foreground">Aturan {r.aturanVersi}. Label status bukan pernyataan sehat atau izin medis.</div>
+              <div className="text-xs text-muted-foreground">Aturan {ruleLabel(r.aturanVersi)}. Label status bukan pernyataan sehat atau izin medis.</div>
             </AccordionContent>
           </AccordionItem>
         </Accordion>

@@ -4,6 +4,7 @@ import { bandWornWithConsent, mergePersonalTelemetry, type PersonalDeviceEvent }
 import { recompute } from "./store-plans"
 import { notice } from "./store-utils"
 import type { AppState } from "./store-state"
+import { placementZone } from "./station-placement"
 import type { PengukuranWBGT } from "./types"
 
 /** Device posts as validated and stamped by terma-iot (Raya46/terma-iot reading.go). */
@@ -43,11 +44,12 @@ function stationRows(s: AppState, events: IotEvent[]) {
     const { tanggal, jam } = jakarta(event.receivedAt)
     if (tanggal !== s.tanggal || !JAM_SHIFT.includes(jam)) continue
     const { isbb, wick } = stationWbgt(event)
-    const slot = (row: PengukuranWBGT) => row.zonaKode === event.zone && row.tanggal === tanggal && row.jamMulai === jam
+    const zone = placementZone(s, event.deviceId) ?? event.zone
+    const slot = (row: PengukuranWBGT) => row.zonaKode === zone && row.tanggal === tanggal && row.jamMulai === jam
     const old = bacaan.find(slot)
     // Human entries win; within the hour the device keeps the highest (most protective) value.
     if (old && (old.origin === "MANUAL" || (old.idAlat === event.deviceId && old.isbb >= isbb))) continue
-    const row: PengukuranWBGT = { zonaKode: event.zone, tanggal, jamMulai: jam, isbb, idAlat: event.deviceId, pencatat: "TERMA Station", kalibrasi: wick ? "Tanpa globe: 0,7·Tnw(sumbu basah) + 0,3·Ta" : "Tanpa globe: 0,7·Tw(Stull, DHT11) + 0,3·Ta", origin: "AKTUAL", waktuCatat: event.receivedAt }
+    const row: PengukuranWBGT = { zonaKode: zone, tanggal, jamMulai: jam, isbb, idAlat: event.deviceId, pencatat: "TERMA Station", kalibrasi: wick ? "Tanpa globe: 0,7·Tnw(sumbu basah) + 0,3·Ta" : "Tanpa globe: 0,7·Tw(Stull, DHT11) + 0,3·Ta", origin: "AKTUAL", waktuCatat: event.receivedAt }
     bacaan = [...bacaan.filter(item => !slot(item)), row]
     changed = true
   }
@@ -89,7 +91,8 @@ export function ingestIot(s: AppState, events: IotEvent[]): AppState {
   const sameDay = out.filter(event => jakarta(event.observedAt).tanggal === shift.tanggal)
   if (sameDay.length) {
     const merged = mergePersonalTelemetry(next, sameDay)
-    if ("state" in merged) next = merged.state
+    // Band and Water readings can raise plan warnings: recompute so changes become a new version for HSE approval.
+    if ("state" in merged) next = recompute(merged.state)
   }
   return unknownCards.length ? notice(next, "info", `Kartu ${unknownCards.at(-1)} belum terdaftar pada peserta shift. Isi "UID kartu" di data pekerja.`) : next
 }
