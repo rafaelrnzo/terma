@@ -44,9 +44,9 @@ export function ShiftReport() {
     <>
 
       {shift && <p className="mb-5 rounded-md border p-4 text-sm">{shift.nama} · {shiftLabel(shift.status)}{shift.status === "CLOSED" ? ` · Ditutup ${shift.ditutupOleh}, ${new Date(shift.ditutupPada!).toLocaleString("id-ID")}` : " · Laporan sementara, shift belum ditutup"}</p>}
-      {readiness.required && <div className="mb-5 rounded-md border bg-card p-4 text-sm"><p>Catatan awal shift: {readiness.checked}/{readiness.total} peserta absen. Jawaban kondisi hanya untuk Klinik.</p><Link href="/monitoring?tab=absensi" className="panel-link no-print mt-2">Lihat catatan kondisi awal sesuai peran</Link></div>}
+      {readiness.required && <div className="mb-5 rounded-md border bg-card p-4 text-sm"><p>Absen awal: {readiness.checked}/{readiness.total} peserta.</p><Link href="/monitoring?tab=absensi" className="panel-link no-print mt-2">Lihat catatan kondisi awal sesuai peran</Link></div>}
       <div data-guide="report" className="no-print mb-6">
-        <p className="mb-3 text-sm text-muted-foreground">Lingkup laporan: {user.role === "MANDOR" ? `regu ${user.reguKode}. Jejak audit lintas regu dan data sumber hanya tersedia untuk HSE atau petugas data.` : "seluruh regu pada lokasi ini."}</p>
+        <p className="mb-3 text-sm text-muted-foreground">Lingkup: {user.role === "MANDOR" ? `regu ${user.reguKode}` : "seluruh regu"}</p>
         <Button variant="outline" onClick={() => window.print()}><Printer /> Cetak laporan</Button>
       </div>
 
@@ -56,7 +56,7 @@ export function ShiftReport() {
           <CardHeader>
             <CardTitle>Laporan shift TERMA · {LOKASI}</CardTitle>
             <CardDescription>
-              Tanggal rencana {state.tanggal} · aturan {ATURAN_FIXTURE.versi}{ATURAN_FIXTURE.isFixture ? " (belum disahkan sebagai aturan operasional)" : ""}.
+              Tanggal rencana {state.tanggal} · aturan {ATURAN_FIXTURE.versi}{ATURAN_FIXTURE.isFixture ? " (fixture)" : ""}.
               Dicetak {new Date().toLocaleString("id-ID")}.
             </CardDescription>
           </CardHeader>
@@ -76,7 +76,7 @@ export function ShiftReport() {
         <Card>
           <CardHeader>
             <CardTitle>Tindak lanjut</CardTitle>
-            <CardDescription>Pengakuan pesan tidak dihitung sebagai tindakan. Kepatuhan administratif tidak otomatis berarti pekerja terlindungi.</CardDescription>
+            <CardDescription>Pesan dibaca ≠ tindakan selesai.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
@@ -91,7 +91,7 @@ export function ShiftReport() {
         <Card>
           <CardHeader>
             <CardTitle>Kekosongan data</CardTitle>
-            <CardDescription>Setiap data hilang atau kombinasi tidak didukung menghasilkan keluaran yang terlihat.</CardDescription>
+            <CardDescription>Data hilang ditandai.</CardDescription>
           </CardHeader>
           <CardContent className="divide-y text-sm">
             <Gap judul={`Interval tanpa bacaan WBGT valid (${kosongUkur.length})`}>
@@ -112,7 +112,7 @@ export function ShiftReport() {
         <Card>
           <CardHeader>
             <CardTitle>Versi rencana</CardTitle>
-            <CardDescription>Versi lama tidak dihapus. Perubahan setelah persetujuan memerlukan persetujuan ulang.</CardDescription>
+            <CardDescription>Perubahan setelah disetujui perlu persetujuan ulang.</CardDescription>
           </CardHeader>
           <CardContent>
             <p className="no-print mb-3 text-xs text-muted-foreground xl:hidden">Geser tabel ke samping untuk melihat seluruh kolom.</p>

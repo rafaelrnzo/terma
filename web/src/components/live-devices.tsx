@@ -27,7 +27,7 @@ export function LiveDevices() {
   return <Card>
     <CardHeader>
       <CardTitle>Perangkat terhubung</CardTitle>
-      <CardDescription>Data nyata dari alat lewat WiFi, langsung saat dikirim · server {connected === false ? "tidak terhubung" : "terhubung"}.</CardDescription>
+      <CardDescription>Langsung dari alat · server {connected === false ? "tidak terhubung" : "terhubung"}.</CardDescription>
     </CardHeader>
     <CardContent>
       {connected === false ? <p className="text-sm text-muted-foreground">Server IoT belum dapat dihubungi. Halaman tersambung sendiri setelah server IoT aktif.</p>

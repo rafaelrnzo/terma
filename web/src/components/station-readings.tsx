@@ -41,7 +41,7 @@ export function StationReadings() {
     <>
       <RoleHint peran={["PETUGAS_DATA", "HSE"]} />
 
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-4 rounded-md border bg-card p-5"><div><h2 className="text-sm font-semibold">Bacaan TERMA Station</h2><p className="mt-1 text-xs text-muted-foreground">Station mengirim otomatis setiap 30 detik; nilai tertinggi tiap jam dicatat sebagai bacaan aktual di zona penempatannya. Bila Station tidak terhubung, catat bacaan alat ukur pada formulir di bawah.</p></div><Button asChild variant="outline"><Link href="/perangkat">Status perangkat</Link></Button></div>
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-4 rounded-md border bg-card p-5"><div><h2 className="text-sm font-semibold">Bacaan TERMA Station</h2><p className="mt-1 text-xs text-muted-foreground">Otomatis dari Station tiap 30 detik. Station mati? Catat manual di bawah.</p></div><Button asChild variant="outline"><Link href="/perangkat">Status perangkat</Link></Button></div>
       <Card>
         <CardHeader>
           <CardTitle>Bacaan per zona</CardTitle>
@@ -112,14 +112,14 @@ export function StationReadings() {
 
       <div id="input-pengukuran" className="mt-8 scroll-mt-6">
         <h2 className="text-lg font-semibold">Tambah pengukuran</h2>
-        <p className="mt-1 text-sm text-muted-foreground">Bacaan utama berasal dari Station. Catatan manual tersedia untuk alat pengukuran tambahan.</p>
+        <p className="mt-1 text-sm text-muted-foreground">Untuk alat ukur tambahan.</p>
       </div>
       <div className="mt-4 grid items-start gap-6 xl:grid-cols-2">
 
         <Card>
           <CardHeader>
             <CardTitle>Catat bacaan manual</CardTitle>
-            <CardDescription>Waktu catat = sekarang. Bacaan untuk jam yang belum tiba akan terhitung kedaluwarsa, karena panas belum bisa diukur sebelum terjadi.</CardDescription>
+            <CardDescription>Waktu catat = sekarang.</CardDescription>
           </CardHeader>
           <CardContent>
             <form
@@ -176,7 +176,7 @@ export function StationReadings() {
           {ATURAN_FIXTURE.isFixture && (
             <Alert className="bg-background">
               <AlertTitle>Belum disahkan sebagai aturan operasional</AlertTitle>
-              <AlertDescription>Angka perlu diverifikasi ke naskah resmi Permenaker 5/2018 dan ditinjau HSE. Sel kosong berarti kombinasi tidak didukung, bukan nol.</AlertDescription>
+              <AlertDescription>Acuan Permenaker 5/2018. Sel kosong = tidak didukung.</AlertDescription>
             </Alert>
           )}
           <Table>

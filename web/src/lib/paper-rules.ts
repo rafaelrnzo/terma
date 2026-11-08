@@ -79,14 +79,13 @@ export function calculatePaperPlan(s: AppState, worker: Pekerja): Omit<Rencana, 
   const dailyCap = stop || unknownPpe ? 0 : Math.round(percent / 100 * NORMAL_PAPARAN_MENIT * (wave?.firstDay ? ACCL_RULES.heatWaveCut : 1))
   const reference = ATURAN_FIXTURE.rows.find(row => row.nab[task.beban] !== undefined)?.nab[task.beban]
   const reasons = [...risk.factors]
-  reasons.push("Skor menggunakan faktor yang tersedia: aklimatisasi, kondisi check-in, profil Klinik berizin, lembur, defisit minum, dan peringatan Band bila perangkat terhubung.")
-  if (!risk.medicalAvailable) reasons.push("Tanpa data medis berizin; faktor medis tidak diasumsikan normal.")
+  if (!risk.medicalAvailable) reasons.push("Tanpa data medis berizin.")
   if (moved) reasons.push(`Pindah dari ${moved.from} ke zona rata-rata ${moved.delta.toFixed(1).replace(".", ",")} °C lebih panas: aklimatisasi ulang perlu dikonfirmasi HSE.`)
   if (wave) reasons.push(wave.firstDay ? `Gelombang panas hari pertama (ISBB maks +${wave.delta.toFixed(1).replace(".", ",")} °C dari rata-rata 7 hari): batas harian −50%.` : `Gelombang panas berlanjut (+${wave.delta.toFixed(1).replace(".", ",")} °C dari rata-rata 7 hari).`)
   if (requiresConfirmation) reasons.push("Riwayat adaptasi perlu dikonfirmasi HSE.")
   if (unknownPpe) reasons.push("Jenis APD belum memiliki koreksi pada konfigurasi aturan.")
   if (restriction) reasons.push("Pembatasan kerja dari Klinik: tinjau ulang penugasan tanpa rincian medis.")
-  if (risk.day) reasons.push(`${percent}% × ${NORMAL_PAPARAN_MENIT} menit = ${dailyCap} menit; batas NAB per jam tetap berlaku.`)
+  if (risk.day) reasons.push(`${percent}% × ${NORMAL_PAPARAN_MENIT} menit = ${dailyCap} menit.`)
   const intervals: IntervalPlan[] = JAM_SHIFT.map(hour => {
     const measured = kualitasBacaan(assignment.zonaKode, s.tanggal, hour, s.bacaan, [])
     const forecast = forecastAtPeriod(s.prakiraan, s.tanggal, hour)
@@ -117,9 +116,9 @@ export function calculatePaperPlan(s: AppState, worker: Pekerja): Omit<Rencana, 
   const qualityRank = { TERUKUR:0, REPLAY:1, PRAKIRAAN_SAJA:2, KEDALUWARSA:3, TIDAK_TERSEDIA:4 }
   const quality = intervals.map(row=>row.kualitas).sort((a,b)=>qualityRank[b]-qualityRank[a])[0]
   if (missing.length) reasons.push(`Data belum lengkap pada ${missing.map(row=>rentangJam(row.jamMulai)).join(", ")}.`)
-  if (intervals.some(row=>row.kualitas === "PRAKIRAAN_SAJA")) reasons.push("ISBB prakiraan adalah aproksimasi suhu/kelembapan, belum dikalibrasi di lokasi. Bukan pengukuran Station.")
-  reasons.push(`Skor P ${risk.points}; bobot dan margin mengikuti parameter aturan ${PAPER_RULES.version}. Alokasi mengisi jam lebih sejuk dahulu.`)
+  if (intervals.some(row=>row.kualitas === "PRAKIRAAN_SAJA")) reasons.push("ISBB dari prakiraan BMKG, bukan Station.")
+  reasons.push(`Skor P ${risk.points} · aturan ${PAPER_RULES.version} · jam sejuk diisi dahulu.`)
   return { tanggal:s.tanggal, pekerjaKode:worker.kode, zonaKode:assignment.zonaKode, tugasKode:assignment.tugasKode, aturanVersi:PAPER_RULES.version, riskColour:colour, personalScore:risk.points, medicalDataAvailable:risk.medicalAvailable, peringatanBand:risk.band,
     status: colour === "DATA_KURANG" ? "TINJAU_HSE" : colour === "MERAH" ? "BATASI_ATAU_PINDAHKAN" : risk.day ? "ADAPTASI_DIPERLUKAN" : "RENCANA_TERSEDIA", kualitas:quality,
-    belumLayak:total === 0, batasHarianMenit:dailyCap, persenAdaptasi:percent, totalKerjaMenit:total, intervals, alasan:reasons, usulan:["Ikuti jadwal kerja–istirahat per jam. Periksa perubahan bacaan selama shift; perubahan yang memperketat perlu persetujuan HSE."] }
+    belumLayak:total === 0, batasHarianMenit:dailyCap, persenAdaptasi:percent, totalKerjaMenit:total, intervals, alasan:reasons, usulan:["Ikuti jadwal kerja–istirahat per jam."] }
 }

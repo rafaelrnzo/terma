@@ -124,7 +124,7 @@ export function RencanaCard({ r, mode = "hse" }: { r: Rencana; mode?: "hse" | "m
                   </ul>
                 </div>
               )}
-              <div className="text-xs text-muted-foreground">Aturan {ruleLabel(r.aturanVersi)}. Label status bukan pernyataan sehat atau izin medis.</div>
+              <div className="text-xs text-muted-foreground">Aturan {ruleLabel(r.aturanVersi)}.</div>
             </AccordionContent>
           </AccordionItem>
         </Accordion>

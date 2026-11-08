@@ -12,6 +12,7 @@ import { REGU, TUGAS, ZONA, hariIni } from "@/lib/config"
 import { managementOf } from "@/lib/management-state"
 import type { WorkerInput } from "@/lib/management-types"
 import { useApp, useIzin } from "@/lib/store"
+import { LastCardButton } from "@/components/last-card-button"
 import type { Pekerja } from "@/lib/types"
 import { workerInputError } from "@/lib/worker-management"
 
@@ -35,19 +36,19 @@ export function WorkerForm({ worker, openOnMount = false, onClose }: { worker?: 
   }
   return <Dialog open={open} onOpenChange={value => { if (!value) close(); else setOpen(true); if (value) { setInput(initial()); setError("") } }}>
     {!openOnMount && <DialogTrigger asChild><Button variant={worker ? "outline" : "default"} disabled={!izin("KELOLA_PEKERJA")} data-guide={worker ? undefined : "add-worker"}>{worker ? <PencilSimpleIcon /> : <PlusIcon />}{worker ? "Edit" : "Tambah pekerja"}<span className="sr-only">{worker ? ` ${worker.nama}` : ""}</span></Button></DialogTrigger>}
-    <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-xl" onCloseAutoFocus={event => { if (openOnMount) event.preventDefault() }}><DialogHeader><DialogTitle>{worker ? "Edit pekerja" : "Tambah pekerja"}</DialogTitle><DialogDescription>Isi identitas dan penugasan awal. Data ini dipilih saat membuat shift.</DialogDescription></DialogHeader>
+    <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-xl" onCloseAutoFocus={event => { if (openOnMount) event.preventDefault() }}><DialogHeader><DialogTitle>{worker ? "Edit pekerja" : "Tambah pekerja"}</DialogTitle><DialogDescription>Identitas dan penugasan awal.</DialogDescription></DialogHeader>
       <form onSubmit={submit} className="space-y-5">
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2"><Label htmlFor="worker-code">ID pekerja</Label><Input id="worker-code" value={input.kode} disabled={!!worker} onChange={e => field("kode", e.target.value.trim())} required maxLength={32} placeholder="PK001" /><p className="text-xs text-muted-foreground">ID tetap digunakan untuk riwayat shift.</p></div>
           <div className="space-y-2"><Label htmlFor="worker-name">Nama pekerja</Label><Input id="worker-name" value={input.nama} onChange={e => field("nama", e.target.value)} required minLength={2} /></div>
           <div className="space-y-2"><Label htmlFor="worker-regu">Regu</Label><OptionSelect id="worker-regu" value={input.reguKode} onValueChange={value => field("reguKode", value)} options={REGU.map(row => ({value:row.kode,label:row.nama}))} /></div>
-          <div className="space-y-2"><Label htmlFor="worker-card">UID kartu RFID (opsional)</Label><Input id="worker-card" value={input.kartuUid ?? ""} onChange={e => field("kartuUid", e.target.value.trim().toUpperCase())} placeholder="A1:B2:C3:D4" autoComplete="off" spellCheck={false} /></div>
+          <div className="space-y-2"><Label htmlFor="worker-card">UID kartu RFID (opsional)</Label><Input id="worker-card" value={input.kartuUid ?? ""} onChange={e => field("kartuUid", e.target.value.trim().toUpperCase())} placeholder="A1:B2:C3:D4" autoComplete="off" spellCheck={false} /><LastCardButton workerCode={worker?.kode} onPick={uid => field("kartuUid", uid)} /></div>
           <div className="space-y-2"><Label htmlFor="worker-start">Tanggal mulai bekerja</Label><Input id="worker-start" type="date" value={input.tanggalMulai} onChange={e => field("tanggalMulai", e.target.value)} required /></div>
           <div className="space-y-2 sm:col-span-2"><Label htmlFor="worker-task">Tugas awal</Label><OptionSelect id="worker-task" value={input.tugasKode} onValueChange={value => field("tugasKode", value)} options={TUGAS.map(row => ({value:row.kode,label:row.nama}))} searchPlaceholder="Cari tugas…" /></div>
           <div className="space-y-2"><Label htmlFor="worker-zone">Zona awal</Label><OptionSelect id="worker-zone" value={input.zonaKode} onValueChange={value => field("zonaKode", value)} options={ZONA.map(row => ({value:row.kode,label:row.nama}))} /></div>
           <div className="space-y-2"><Label htmlFor="worker-apd">APD</Label><Input id="worker-apd" value={input.apd} onChange={e => field("apd", e.target.value)} required /></div>
         </div>
-        {worker && <p className="text-sm text-muted-foreground">Perubahan berlaku untuk shift berikutnya. Penugasan di shift yang sudah ada dikelola dari halaman shift tersebut.</p>}
+        {worker && <p className="text-sm text-muted-foreground">Berlaku mulai shift berikutnya.</p>}
         {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
         <div className="flex justify-end gap-2"><Button type="button" variant="outline" onClick={close}>Batal</Button><Button type="submit">{worker ? "Simpan perubahan" : "Simpan pekerja"}</Button></div>
       </form>

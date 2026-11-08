@@ -24,7 +24,7 @@ export function ZoneMap({ zones, selected, onZone, center, onPick, title = "Peta
       {!geographic && <span className="map-view-label"><Layers3 className="size-3.5" aria-hidden />Isometrik</span>}
       <div className="flex gap-1" role="group" aria-label="Tampilan peta"><Button size="sm" variant="ghost" aria-pressed={!geographic} onClick={() => setGeographic(false)}>Skema</Button><Button size="sm" variant="ghost" aria-pressed={geographic} onClick={() => { setError(false); setGeographic(true) }}>OpenStreetMap</Button></div>
     </div>
-    {error && <p className="map-error" role="status">Peta geografis tidak dapat dimuat. Denah tetap dapat digunakan. Pilih OpenStreetMap untuk mencoba lagi.</p>}
+    {error && <p className="map-error" role="status">Peta gagal dimuat. Pakai Skema.</p>}
     {geographic ? <GeographicMap zones={zones} selected={selected} onZone={onZone} center={center} placements={placements} onPick={onPick} onFailure={() => { setGeographic(false); setError(true) }} /> : <div className="zone-scheme" role="group" aria-label="Denah zona, pilih zona untuk melihat bacaan">
       <svg className="scheme-paths" viewBox="0 0 600 340" preserveAspectRatio="none" aria-hidden="true"><path d="M150 100 L300 170 L450 100 M300 170 V255" fill="none" stroke="var(--border)" strokeWidth="1.5" strokeDasharray="4 5" /><circle cx="300" cy="170" r="4" fill="var(--card)" stroke="var(--input)" /></svg>
       {zones.map(z => {
@@ -45,6 +45,6 @@ export function ZoneMap({ zones, selected, onZone, center, onPick, title = "Peta
         </button>
       })}
     </div>}
-    <div className="map-caption"><p>{caption}</p><details><summary>Tentang peta</summary><p>Zona dengan Station terpasang ditandai di koordinat pemasangan Station. Zona tanpa Station memakai posisi ilustratif di sekitar lokasi acuan. Peta tidak melacak pekerja. Peta geografis menggunakan OpenStreetMap.</p></details></div>
+    <div className="map-caption"><p>{caption}</p><details><summary>Tentang peta</summary><p>Titik = Station terpasang · peta tidak melacak pekerja · © OpenStreetMap</p></details></div>
   </div>
 }

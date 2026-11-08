@@ -24,6 +24,6 @@ export function KidneyReferrals() {
         <TableCell>{row.factors.length ? row.factors.join(", ") : <span className="text-muted-foreground">Tidak tercatat / tanpa izin MCU</span>}</TableCell>
         <TableCell><Badge variant={STATUS[row.status].variant}>{STATUS[row.status].label}</Badge></TableCell>
       </TableRow>)}</TableBody></Table></div>
-    <p className="border-t p-5 text-xs text-muted-foreground">Faktor risiko: hipertensi, diabetes, usia ≥ {DOSE_RULES.kidneyAge}, riwayat sakit akibat panas, dari profil Klinik dengan izin MCU. Daftar ini menyaring; diagnosis tetap oleh dokter.</p>
+    <p className="border-t p-5 text-xs text-muted-foreground">Faktor risiko: hipertensi, diabetes, usia ≥ {DOSE_RULES.kidneyAge}, riwayat sakit panas. Diagnosis oleh dokter.</p>
   </section>
 }

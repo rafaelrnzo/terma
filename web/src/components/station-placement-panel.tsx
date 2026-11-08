@@ -39,13 +39,13 @@ export function StationPlacementPanel({ picked }: { picked: { lat: number; lng: 
     setTyped(null)
   }
   return <section className="summon-panel mt-6" aria-labelledby="station-placement-title">
-    <div className="panel-heading"><div><h2 id="station-placement-title">Penempatan TERMA Station</h2><p>Lokasi pemasangan menentukan zona bacaan ISBB setiap Station dan posisinya di peta.</p></div></div>
+    <div className="panel-heading"><div><h2 id="station-placement-title">Penempatan TERMA Station</h2><p>Zona dan titik pasang tiap Station.</p></div></div>
     {canEdit && <form onSubmit={submit} className="grid gap-4 border-b p-5 sm:grid-cols-2 xl:grid-cols-[10rem_minmax(12rem,1fr)_9rem_9rem_auto] xl:items-end">
       <div className="space-y-2"><Label htmlFor="placement-device">ID Station</Label><Input id="placement-device" value={deviceId} onChange={event => setDeviceId(event.target.value.toUpperCase())} required pattern="[A-Za-z0-9_-]{2,32}" /></div>
       <div className="space-y-2"><Label htmlFor="placement-zone">Zona kerja</Label><OptionSelect id="placement-zone" value={zone} onValueChange={setZone} options={ZONA.map(row => ({ value: row.kode, label: row.nama }))} /></div>
       <div className="space-y-2"><Label htmlFor="placement-lat">Lintang</Label><Input id="placement-lat" inputMode="decimal" value={coords.lat} onChange={event => setTyped({ ...coords, lat: event.target.value })} placeholder="-6.17600" required /></div>
       <div className="space-y-2"><Label htmlFor="placement-lng">Bujur</Label><Input id="placement-lng" inputMode="decimal" value={coords.lng} onChange={event => setTyped({ ...coords, lng: event.target.value })} placeholder="106.82700" required /></div>
-      <div className="space-y-2 sm:col-span-2 xl:col-span-4"><Label htmlFor="placement-globe">Selisih bola hitam − udara (°C)</Label><Input id="placement-globe" inputMode="decimal" value={globe} onChange={event => setGlobe(event.target.value)} className="max-w-40" /><p className="text-xs text-muted-foreground">0 untuk lokasi teduh. Untuk zona terbuka isi dari satu kali pengukuran alat ISBB (Tg − Ta); TERMA memakai 0,7·Tnw + 0,3·Ta + 0,2·selisih.</p></div>
+      <div className="space-y-2 sm:col-span-2 xl:col-span-4"><Label htmlFor="placement-globe">Selisih bola hitam − udara (°C)</Label><Input id="placement-globe" inputMode="decimal" value={globe} onChange={event => setGlobe(event.target.value)} className="max-w-40" /><p className="text-xs text-muted-foreground">0 = teduh · terbuka: Tg − Ta</p></div>
       <Button type="submit">Simpan penempatan</Button>
       <div className="flex flex-wrap items-center gap-3 sm:col-span-2 xl:col-span-5"><Button type="button" variant="outline" size="sm" onClick={useDeviceLocation}><MapPinIcon />Gunakan lokasi perangkat ini</Button><p className="text-xs text-muted-foreground" role="status">{locating || "Atau klik titik pemasangan pada peta di atas."}</p></div>
     </form>}
@@ -58,6 +58,6 @@ export function StationPlacementPanel({ picked }: { picked: { lat: number; lng: 
         <TableCell>{new Date(row.dipasangPada).toLocaleString("id-ID", { dateStyle: "medium", timeStyle: "short" })} · {row.oleh}</TableCell>
         {canEdit && <TableCell><Button size="sm" variant="ghost" onClick={() => dispatch({ type: "HAPUS_PENEMPATAN_STATION", deviceId: row.deviceId })}>Lepas</Button></TableCell>}
       </TableRow>)}</TableBody></Table>
-    {!rows.length && <p className="p-6 text-sm text-muted-foreground">Belum ada Station yang dicatat lokasinya. Selama belum dicatat, bacaan memakai zona bawaan perangkat dan peta memakai posisi ilustratif.</p>}
+    {!rows.length && <p className="p-6 text-sm text-muted-foreground">Belum ada Station terpasang.</p>}
   </section>
 }

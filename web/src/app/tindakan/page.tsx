@@ -40,7 +40,7 @@ export default function TindakanPage() {
         <dl className="grid grid-cols-3 gap-4">
           {[["Seluruh tindakan", daftar.length], ["Perlu verifikasi", daftar.filter((t) => kelompok(t) === "VERIFIKASI").length], ["Terverifikasi", daftar.filter((t) => kelompok(t) === "TERVERIFIKASI").length]].map(([label, value]) => <div key={label}><dt className="text-xs text-muted-foreground">{label}</dt><dd className="mt-2 font-heading text-3xl font-medium tabular-nums">{value}</dd></div>)}
         </dl>
-        <p className="mt-4 text-xs text-muted-foreground">Lingkup {user?.role === "MANDOR" ? REGU.find((g) => g.kode === user.reguKode)?.nama : "lokasi"} · {state.tanggal}. Verifikasi administratif bukan pengukuran fisiologis.</p>
+        <p className="mt-4 text-xs text-muted-foreground">Lingkup {user?.role === "MANDOR" ? REGU.find((g) => g.kode === user.reguKode)?.nama : "lokasi"} · {state.tanggal}.</p>
       </section>
       <Card>
         <CardHeader>

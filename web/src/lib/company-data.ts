@@ -28,6 +28,6 @@ export function syncCompanyData(state: AppState): AppState {
   ] satisfies [string, string, string, string, string, number][]
   const workers: Pekerja[] = people.map(([kode, nama, reguKode, , , days]) => ({ kode, nama, reguKode, tanggalMulai: dateOffset(state.tanggal, days), source: "Company Data Hub · referensi lokal", origin: "SINTETIS", revision: 1, diarsipkan: false }))
   const assignments: Penugasan[] = people.map(([pekerjaKode, , , tugasKode, zonaKode]) => ({ pekerjaKode, tugasKode, zonaKode, apd: "Standar", apdBerubah: false, version: 1 }))
-  const healthBaselines: HealthBaseline[] = workers.map(worker => ({ pekerjaKode: worker.kode, tanggalPemeriksaan: dateOffset(state.tanggal, -30), berlakuSampai: dateOffset(state.tanggal, 335), status: "PERLU_TINJAU", pembatasan: "Ringkasan referensi perusahaan. HSE perlu meninjau dokumen pemeriksaan dan kondisi awal sebelum penugasan.", sumber: `Company Data Hub · referensi lokal / ${worker.kode}`, dicatatOleh: "Company Data Hub", dicatatPada: now() }))
+  const healthBaselines: HealthBaseline[] = workers.map(worker => ({ pekerjaKode: worker.kode, tanggalPemeriksaan: dateOffset(state.tanggal, -30), berlakuSampai: dateOffset(state.tanggal, 335), status: "PERLU_TINJAU", pembatasan: "Tinjau dokumen pemeriksaan sebelum penugasan.", sumber: `Company Data Hub · referensi lokal / ${worker.kode}`, dicatatOleh: "Company Data Hub", dicatatPada: now() }))
   return { ...state, management: { ...management, workers, assignments, healthBaselines, companySync: { source: "LOCAL_ADAPTER", syncedAt: now() } } }
 }
