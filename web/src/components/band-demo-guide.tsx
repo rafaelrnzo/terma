@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { bandDemoGuide } from "@/lib/band-demo-guide"
 import { useApp } from "@/lib/store"
 
-export function BandDemoGuide({ onBack }: { onBack: () => void }) {
+export function BandDemoGuide({ onBack }: { onBack?: () => void }) {
   const { state, user } = useApp()
   if (!user || user.role !== "ADMIN") return null
   const steps = bandDemoGuide(state, user)
@@ -20,6 +20,6 @@ export function BandDemoGuide({ onBack }: { onBack: () => void }) {
     </li>)}</ol>
     {!next && <p role="status">Bacaan Band aktual sudah tercatat untuk Raya. Tetap tempelkan sensor agar pembaruan berlanjut.</p>}
     <p className="flow-guide-note">Water Station: isi UID kartu Raya di Data pekerja, lalu tap kartu agar kunjungan minumnya masuk ke profil. Paparan panas mengikuti sumber pada rencana; bacaan Station dipakai pada interval 08.00–16.00.</p>
-    <Button size="sm" variant="ghost" onClick={onBack}>Kembali ke pilihan alur</Button>
+    {onBack && <Button size="sm" variant="ghost" onClick={onBack}>Tutup panduan Band</Button>}
   </div>
 }

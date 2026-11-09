@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
-import { ArrowRightIcon } from "@phosphor-icons/react/dist/csr/ArrowRight"
 import { CheckCircleIcon } from "@phosphor-icons/react/dist/csr/CheckCircle"
 import { CursorClickIcon } from "@phosphor-icons/react/dist/csr/CursorClick"
 import { PauseIcon } from "@phosphor-icons/react/dist/csr/Pause"
@@ -14,69 +13,44 @@ import { BandDemoGuide } from "@/components/band-demo-guide"
 import { useApp } from "@/lib/store"
 import { currentShift } from "@/lib/management-state"
 import { hariIni } from "@/lib/config"
-import type { Role } from "@/lib/types"
 
 type Step =
   | { label: string; action: "navigate"; href: string; target: string }
   | { label: string; action: "click"; target: string; text?: string }
   | { label: string; action: "type"; target: string; value: string }
+  | { label: string; action: "select"; target: string; value: string }
+  | { label: string; action: "reset"; target: string; value: string }
   | { label: string; action: "map"; target: string }
   | { label: string; action: "wait"; target: string; text?: string }
 
-type Scenario = { id: string; title: string; description: string; steps: Step[] }
 type Status = "idle" | "running" | "paused" | "done" | "error"
 
-const scenarios: Scenario[] = [
-  {
-    id: "operasional", title: "Pantau operasional", description: "Beranda → absensi → perangkat → laporan",
-    steps: [
-      { label: "Membuka beranda operasional", action: "navigate", href: "/pengelola", target: ".page-heading" },
-      { label: "Membuka daftar absensi", action: "navigate", href: "/monitoring?tab=absensi", target: "#attendance-search" },
-      { label: "Mencari kehadiran Raya", action: "type", target: "#attendance-search", value: "Raya" },
-      { label: "Melihat ekosistem perangkat", action: "navigate", href: "/perangkat", target: ".page-heading" },
-      { label: "Membuka laporan shift", action: "navigate", href: "/laporan", target: ".page-heading" },
-    ],
-  },
-  {
-    id: "station", title: "Tempatkan Station", description: "Klik peta, isi lokasi, lalu simpan",
-    steps: [
-      { label: "Membuka peta prakiraan", action: "navigate", href: "/forecasting", target: ".zone-map" },
-      { label: "Menaruh pin pada peta", action: "map", target: ".geographic-map.leaflet-container" },
-      { label: "Mengisi ID Station", action: "type", target: "#placement-device", value: "TST-TUR" },
-      { label: "Menamai lokasi", action: "type", target: "#placement-location", value: "Area Pantau Utara" },
-      { label: "Menyimpan penempatan", action: "click", target: "section[aria-labelledby='station-placement-title'] form", text: "Simpan penempatan" },
-      { label: "Memastikan Station tercatat", action: "wait", target: "table[aria-label='Station terpasang']", text: "TST-TUR" },
-    ],
-  },
-  {
-    id: "asisten", title: "Tanya asisten shift", description: "Ketik pertanyaan dan tunggu jawaban",
-    steps: [
-      { label: "Membuka asisten shift", action: "navigate", href: "/asisten", target: "#assistant-question" },
-      { label: "Mengetik pertanyaan", action: "type", target: "#assistant-question", value: "Apa prioritas HSE pada shift pagi ini?" },
-      { label: "Mengirim pertanyaan", action: "click", target: ".assistant-chat-composer button[type='submit']" },
-      { label: "Menunggu jawaban asisten", action: "wait", target: ".assistant-chat-bubble-answer" },
-    ],
-  },
-  {
-    id: "absensi", title: "Absen sebagai Raya", description: "Pratinjau kamera → kondisi tubuh → tercatat",
-    steps: [
-      { label: "Membuka layar absen", action: "navigate", href: "/kiosk", target: ".kiosk-card" },
-      { label: "Menyiapkan pratinjau kamera", action: "click", target: ".kiosk-entry-actions", text: "Pratinjau tanpa kamera" },
-      { label: "Melanjutkan sebagai Raya", action: "click", target: ".kiosk-entry-actions", text: "Lanjut sebagai" },
-      { label: "Menyetujui pencatatan kondisi", action: "click", target: ".kiosk-card", text: "Saya setuju & lanjut" },
-      { label: "Mencatat kondisi tubuh", action: "click", target: ".kiosk-card", text: "Ya, merasa baik" },
-      { label: "Memastikan absensi tercatat", action: "wait", target: ".kiosk-success" },
-    ],
-  },
+const FLOW: Step[] = [
+  { label: "Membuka beranda admin", action: "navigate", href: "/pengelola", target: ".page-heading" },
+  { label: "Membuka absensi pekerja", action: "navigate", href: "/monitoring?tab=absensi", target: "table[aria-label='Absensi peserta shift']" },
+  { label: "Menyiapkan ulang absensi Raya", action: "reset", target: "table[aria-label='Absensi peserta shift']", value: "RAYA001" },
+  { label: "Membuka layar absen", action: "navigate", href: "/kiosk", target: "#kiosk-worker" },
+  { label: "Memilih identitas Raya secara otomatis", action: "select", target: "#kiosk-worker", value: "RAYA001" },
+  { label: "Menyiapkan pratinjau kamera", action: "click", target: ".kiosk-entry-actions", text: "Pratinjau tanpa kamera" },
+  { label: "Mengonfirmasi identitas Raya", action: "click", target: ".kiosk-entry-actions", text: "Ya, saya Raya" },
+  { label: "Menyetujui pencatatan kondisi", action: "click", target: ".kiosk-card", text: "Saya setuju & lanjut" },
+  { label: "Mencatat kondisi tubuh", action: "click", target: ".kiosk-card", text: "Ya, merasa baik" },
+  { label: "Memastikan absensi tercatat", action: "wait", target: ".kiosk-success" },
+  { label: "Meninjau kehadiran di monitoring", action: "navigate", href: "/monitoring?tab=absensi", target: "#attendance-search" },
+  { label: "Mencari catatan Raya", action: "type", target: "#attendance-search", value: "Raya" },
+  { label: "Melihat ekosistem perangkat", action: "navigate", href: "/perangkat", target: ".page-heading" },
+  { label: "Membuka peta prakiraan", action: "navigate", href: "/forecasting", target: ".zone-map" },
+  { label: "Menaruh pin Station pada peta", action: "map", target: ".geographic-map.leaflet-container" },
+  { label: "Mengisi ID Station", action: "type", target: "#placement-device", value: "TST-TUR" },
+  { label: "Menamai lokasi", action: "type", target: "#placement-location", value: "Area Pantau Utara" },
+  { label: "Menyimpan penempatan Station", action: "click", target: "section[aria-labelledby='station-placement-title'] form", text: "Simpan penempatan" },
+  { label: "Memastikan Station tercatat", action: "wait", target: "table[aria-label='Station terpasang']", text: "TST-TUR" },
+  { label: "Membuka asisten shift", action: "navigate", href: "/asisten", target: "#assistant-question" },
+  { label: "Mengetik pertanyaan", action: "type", target: "#assistant-question", value: "Apa prioritas HSE pada shift pagi ini?" },
+  { label: "Mengirim pertanyaan", action: "click", target: ".assistant-chat-composer button[type='submit']" },
+  { label: "Menunggu jawaban asisten", action: "wait", target: ".assistant-chat-bubble-answer" },
+  { label: "Membuka laporan shift", action: "navigate", href: "/laporan", target: ".page-heading" },
 ]
-
-function availableScenarios(role: Role, hasShift: boolean, canAttend: boolean) {
-  if (role === "PEGAWAI") return canAttend ? scenarios.filter(item => item.id === "absensi") : []
-  if (role === "ADMIN") return scenarios.filter(item => item.id !== "absensi" && (hasShift || item.id !== "operasional"))
-  if (role === "HSE") return scenarios.filter(item => item.id === "asisten" || item.id === "station")
-  if (role === "PETUGAS_DATA") return scenarios.filter(item => item.id === "station")
-  return []
-}
 
 function findTarget(step: Step): HTMLElement | null {
   const root = document.querySelector<HTMLElement>(step.target)
@@ -97,18 +71,13 @@ export function DemoFlow() {
   const router = useRouter()
   const { user, state, ready } = useApp()
   const [open, setOpen] = useState(false)
-  const [activeId, setActiveId] = useState<string | null>(null)
   const [status, setStatus] = useState<Status>("idle")
   const [index, setIndex] = useState(0)
   const [error, setError] = useState("")
-  const [bandGuideOpen, setBandGuideOpen] = useState(false)
   const [pointer, setPointer] = useState<{ x: number; y: number } | null>(null)
   const control = useRef({ run: 0, paused: false })
   const highlighted = useRef<HTMLElement | null>(null)
-  const active = scenarios.find(item => item.id === activeId)
   const shift = currentShift(state)
-  const choices = user ? availableScenarios(user.role, !!shift, !!shift?.readiness && shift.status !== "CLOSED" && shift.tanggal === hariIni()) : []
-  const ownCheckin = user?.role === "PEGAWAI" && shift?.readiness?.checkins.some(row => row.pekerjaKode === user.pekerjaKode)
 
   useEffect(() => () => { control.current.run += 1; highlighted.current?.classList.remove("flow-target") }, [])
   useEffect(() => { control.current.run += 1; control.current.paused = false; highlighted.current?.classList.remove("flow-target") }, [user?.id])
@@ -124,10 +93,8 @@ export function DemoFlow() {
     control.current.paused = false
     clearHighlight()
     setStatus("idle")
-    setActiveId(null)
     setIndex(0)
     setError("")
-    setBandGuideOpen(false)
   }
 
   function check(run: number) {
@@ -185,6 +152,29 @@ export function DemoFlow() {
         await sleep(55, run)
         setNativeValue(target, target.value + char)
       }
+    } else if (step.action === "select") {
+      target.click()
+      let option: HTMLElement | undefined
+      let elapsed = 0
+      while (!option && elapsed < 4000) {
+        await sleep(100, run)
+        option = [...document.querySelectorAll<HTMLElement>("[role='option']")].find(item => item.textContent?.includes(step.value) && !item.hasAttribute("data-disabled") && item.getAttribute("aria-disabled") !== "true")
+        elapsed += 100
+      }
+      if (!option) throw new Error(`Pekerja ${step.value} tidak tersedia untuk absen.`)
+      await pointAt(option, run)
+      option.click()
+    } else if (step.action === "reset") {
+      const row = [...target.querySelectorAll<HTMLElement>("tbody tr")].find(item => item.textContent?.includes(step.value))
+      if (!row) throw new Error(`Pekerja ${step.value} belum masuk dalam shift ini.`)
+      const reset = [...row.querySelectorAll<HTMLButtonElement>("button")].find(item => item.textContent?.includes("Reset absen datang"))
+      if (reset) {
+        await pointAt(reset, run)
+        reset.click()
+        let elapsed = 0
+        while (row.isConnected && !row.textContent?.includes("Belum check-in") && elapsed < 5000) { await sleep(100, run); elapsed += 100 }
+        if (row.isConnected && !row.textContent?.includes("Belum check-in")) throw new Error("Absensi Raya belum berhasil diatur ulang.")
+      }
     } else if (step.action === "map") {
       const rect = target.getBoundingClientRect()
       target.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true, clientX: rect.left + rect.width * .61, clientY: rect.top + rect.height * .57 }))
@@ -199,28 +189,28 @@ export function DemoFlow() {
     clearHighlight()
   }
 
-  async function start(scenario: Scenario) {
+  async function start() {
     stop()
     const run = control.current.run
     setOpen(true)
-    setActiveId(scenario.id)
     setStatus("running")
+    if (!shift?.readiness || shift.status === "CLOSED" || shift.tanggal !== hariIni() || !shift.workspace.pekerja.some(worker => worker.kode === "RAYA001")) {
+      setError("Siapkan shift hari ini yang memuat Raya sebelum menjalankan presentasi.")
+      setStatus("error")
+      return
+    }
     try {
-      for (let i = 0; i < scenario.steps.length; i += 1) {
+      for (let i = 0; i < FLOW.length; i += 1) {
         check(run)
         setIndex(i)
-        const step = scenario.steps[i]
-        if (scenario.id === "absensi" && i === 1 && ownCheckin) {
-          await targetFor({ label: "Absensi Raya", action: "wait", target: ".kiosk-success" }, run)
-          break
-        }
-        if (scenario.id === "absensi" && i === 3 && !findTarget(step) && findTarget(scenario.steps[4])) continue
+        const step = FLOW[i]
+        if (i === 7 && !findTarget(step) && findTarget(FLOW[i + 1])) continue
         await execute(step, run)
         await sleep(850, run)
       }
       check(run)
       clearHighlight()
-      setIndex(scenario.steps.length)
+      setIndex(FLOW.length)
       setStatus("done")
     } catch (reason) {
       if (reason instanceof Error && reason.message === "stopped") return
@@ -230,13 +220,14 @@ export function DemoFlow() {
     }
   }
 
-  if (!ready || !user || !choices.length) return null
+  if (!ready || user?.role !== "ADMIN") return null
   return <div className="flow-layer no-print">
     {pointer && status === "running" && <span className="flow-pointer" style={{ left: pointer.x, top: pointer.y }} aria-hidden><CursorClickIcon size={24} weight="fill" /></span>}
     {open ? <section className="flow-panel" aria-label="Pengendali alur interaktif">
-      <header className="flow-header"><div><h2>Jalankan alur</h2><p>Pilih skenario untuk menggerakkan situs otomatis.</p></div><button type="button" aria-label="Tutup panel alur" onClick={() => { stop(); setOpen(false) }}><XIcon size={18} /></button></header>
-      {bandGuideOpen ? <BandDemoGuide onBack={() => setBandGuideOpen(false)} /> : active ? <div className="flow-running"><div className="flow-current"><span>{status === "done" ? <CheckCircleIcon size={18} weight="fill" /> : <CursorClickIcon size={18} />}</span><div><strong>{active.title}</strong><small>{status === "done" ? "Alur selesai" : status === "paused" ? "Dijeda" : status === "error" ? "Terhenti" : `${Math.min(index + 1, active.steps.length)} dari ${active.steps.length} langkah`}</small></div></div><div className="flow-progress" role="progressbar" aria-label="Kemajuan alur" aria-valuemin={0} aria-valuemax={active.steps.length} aria-valuenow={index}><span style={{ width: `${index / active.steps.length * 100}%` }} /></div><p className="flow-step" aria-live="polite">{status === "done" ? "Skenario berhasil dijalankan." : status === "error" ? error : active.steps[index]?.label}</p><div className="flow-actions">{status === "running" ? <Button size="sm" variant="outline" onClick={() => { control.current.paused = true; setStatus("paused") }}><PauseIcon />Jeda</Button> : status === "paused" ? <Button size="sm" onClick={() => { control.current.paused = false; setStatus("running") }}><PlayIcon />Lanjutkan</Button> : status === "error" ? <Button size="sm" onClick={() => void start(active)}><PlayIcon />Ulangi</Button> : null}<Button size="sm" variant="ghost" onClick={stop}><StopIcon />{status === "done" ? "Pilih alur lain" : "Hentikan"}</Button></div></div> : <div className="flow-choices">{user.role === "ADMIN" && <button type="button" onClick={() => { stop(); setBandGuideOpen(true) }}><span><strong>Hubungkan Band ke Raya</strong><small>Persiapan dan pemeriksaan bacaan RAYA001</small></span><ArrowRightIcon size={17} /></button>}{choices.map(item => <button key={item.id} type="button" onClick={() => void start(item)}><span><strong>{item.title}</strong><small>{item.description}</small></span><ArrowRightIcon size={17} /></button>)}</div>}
-      <p className="flow-foot">Alur ini menggunakan fungsi halaman yang tersedia. Anda bisa menjeda kapan saja.</p>
-    </section> : <Button className="flow-launch" onClick={() => setOpen(true)}><PlayIcon weight="fill" />Jalankan alur</Button>}
+      <header className="flow-header"><div><h2>Presentasi TERMA</h2><p>Satu alur dari absensi sampai laporan.</p></div><button type="button" aria-label="Tutup pengendali presentasi" onClick={() => { stop(); setOpen(false) }}><XIcon size={18} /></button></header>
+      <div className="flow-running"><div className="flow-current"><span>{status === "done" ? <CheckCircleIcon size={18} weight="fill" /> : <CursorClickIcon size={18} />}</span><div><strong>{status === "done" ? "Presentasi selesai" : status === "paused" ? "Presentasi dijeda" : status === "error" ? "Presentasi terhenti" : "Presentasi berjalan"}</strong><small>{status === "idle" ? "Siap diulang" : `${Math.min(index + 1, FLOW.length)} dari ${FLOW.length} langkah`}</small></div></div><div className="flow-progress" role="progressbar" aria-label="Kemajuan presentasi" aria-valuemin={0} aria-valuemax={FLOW.length} aria-valuenow={index}><span style={{ width: `${index / FLOW.length * 100}%` }} /></div><p className="flow-step" aria-live="polite">{status === "done" ? "Seluruh alur berhasil dijalankan." : status === "error" ? error : status === "idle" ? "Mulai lagi kapan saja." : FLOW[index]?.label}</p><div className="flow-actions">{status === "running" ? <Button size="sm" variant="outline" onClick={() => { control.current.paused = true; setStatus("paused") }}><PauseIcon />Jeda</Button> : status === "paused" ? <Button size="sm" onClick={() => { control.current.paused = false; setStatus("running") }}><PlayIcon />Lanjutkan</Button> : <Button size="sm" onClick={() => void start()}><PlayIcon />{status === "done" ? "Ulangi presentasi" : "Mulai lagi"}</Button>}{(status === "running" || status === "paused") && <Button size="sm" variant="ghost" onClick={() => { stop(); setOpen(false) }}><StopIcon />Hentikan</Button>}</div></div>
+      {status === "done" && <details className="flow-band-after"><summary>Panduan Band fisik untuk Raya</summary><BandDemoGuide /></details>}
+      <p className="flow-foot">Alur mengatur ulang absensi Raya dan menyimpan lokasi Station. Anda bisa menjeda kapan saja.</p>
+    </section> : <Button className="flow-launch" onClick={() => void start()}><PlayIcon weight="fill" />Jalankan presentasi</Button>}
   </div>
 }
