@@ -12,9 +12,9 @@ import { useApp } from "@/lib/store"
 const GeographicMap = dynamic(() => import("./zone-openstreetmap"), { ssr: false, loading: () => <div className="map-loading" role="status">Memuat peta OpenStreetMap…</div> })
 
 export type MapZone = { kode: string; nama: string; value: string }
-export type ZoneMapProps = { zones: MapZone[]; selected: string; onZone: (code: string) => void; title?: string; caption?: string; center?: [number, number]; onPick?: (lat: number, lng: number) => void }
+export type ZoneMapProps = { zones: MapZone[]; selected: string; onZone: (code: string) => void; title?: string; caption?: string; center?: [number, number]; onPick?: (lat: number, lng: number) => void; picked?: { lat: number; lng: number } | null }
 
-export function ZoneMap({ zones, selected, onZone, center, onPick, title = "Peta zona kerja", caption = "Pilih area untuk melihat bacaan. Warna membedakan zona, bukan tingkat risiko." }: ZoneMapProps) {
+export function ZoneMap({ zones, selected, onZone, center, onPick, picked, title = "Peta zona kerja", caption = "Pilih area untuk melihat bacaan. Warna membedakan zona, bukan tingkat risiko." }: ZoneMapProps) {
   const [geographic, setGeographic] = useState(true)
   const placements = stationPlacements(useApp().state)
   const [error, setError] = useState(false)
@@ -25,7 +25,7 @@ export function ZoneMap({ zones, selected, onZone, center, onPick, title = "Peta
       <div className="flex gap-1" role="group" aria-label="Tampilan peta"><Button size="sm" variant="ghost" aria-pressed={!geographic} onClick={() => setGeographic(false)}>Skema</Button><Button size="sm" variant="ghost" aria-pressed={geographic} onClick={() => { setError(false); setGeographic(true) }}>OpenStreetMap</Button></div>
     </div>
     {error && <p className="map-error" role="status">Peta gagal dimuat. Pakai Skema.</p>}
-    {geographic ? <GeographicMap zones={zones} selected={selected} onZone={onZone} center={center} placements={placements} onPick={onPick} onFailure={() => { setGeographic(false); setError(true) }} /> : <div className="zone-scheme" role="group" aria-label="Denah zona, pilih zona untuk melihat bacaan">
+    {geographic ? <GeographicMap zones={zones} selected={selected} onZone={onZone} center={center} placements={placements} onPick={onPick} picked={picked} onFailure={() => { setGeographic(false); setError(true) }} /> : <div className="zone-scheme" role="group" aria-label="Denah zona, pilih zona untuk melihat bacaan">
       <svg className="scheme-paths" viewBox="0 0 600 340" preserveAspectRatio="none" aria-hidden="true"><path d="M150 100 L300 170 L450 100 M300 170 V255" fill="none" stroke="var(--border)" strokeWidth="1.5" strokeDasharray="4 5" /><circle cx="300" cy="170" r="4" fill="var(--card)" stroke="var(--input)" /></svg>
       {zones.map(z => {
         const position = DEMO_ZONE_POSITIONS[z.kode]
@@ -45,6 +45,6 @@ export function ZoneMap({ zones, selected, onZone, center, onPick, title = "Peta
         </button>
       })}
     </div>}
-    <div className="map-caption"><p>{caption}</p><details><summary>Tentang peta</summary><p>Titik = Station terpasang · peta tidak melacak pekerja · © OpenStreetMap</p></details></div>
+    <div className="map-caption"><p>{caption}</p><details><summary>Tentang peta</summary><p>Pin Station menunjukkan lokasi tersimpan · peta tidak melacak pekerja · © OpenStreetMap</p></details></div>
   </div>
 }
