@@ -7,7 +7,7 @@ import { toast } from "sonner"
 import { OptionSelect } from "@/components/ui/option-select"
 import { WorkerBandStatus } from "@/components/worker-health-detail"
 import { lingkupPekerja } from "@/lib/access"
-import { currentBandAllocations } from "@/lib/band-management"
+import { canHandOverBand, canReturnBand, currentBandAllocations } from "@/lib/band-management"
 import { hasConsent } from "@/lib/clinic"
 import { BAND_UNITS } from "@/lib/config"
 import { currentShift } from "@/lib/management-state"
@@ -29,7 +29,7 @@ export function WorkerBandCell({ code, date }: { code: string; date: string }) {
   if (!assignable) return <div><WorkerBandStatus code={code} date={date} />{(user?.role === "HSE" || user?.role === "ADMIN") && allocation?.dipakaiPada && releaseSuggested(state, code) && <p className="mt-1 text-xs text-success">Boleh dilepas: aklimatisasi selesai, hijau 3 shift</p>}</div>
   if (!hasConsent(state, code, "BAND")) return <p className="text-sm text-muted-foreground">Perlu persetujuan Band dari Klinik</p>
   const rank = bandPriority(state).find(row => row.kode === code)?.rank
-  if (allocation) return <div><p className="text-sm">{allocation.bandId} ditetapkan</p><p className="mt-1 text-xs text-muted-foreground">Menunggu serah-terima mandor</p></div>
+  if (allocation) return <div><p className="text-sm">{allocation.bandId} ditetapkan</p>{user?.role === "ADMIN" ? <><Button size="sm" disabled={!canHandOverBand(shift, user.role)} onClick={() => dispatch({ type: "SERAH_BAND", allocationId: allocation.id })}>Sudah dipakai</Button>{!canHandOverBand(shift, user.role) && <p className="mt-1 text-xs text-muted-foreground">Buka shift hari ini untuk memulai pemantauan.</p>}</> : <p className="mt-1 text-xs text-muted-foreground">Menunggu serah-terima mandor</p>}</div>
   const free = BAND_UNITS.filter(bandId => !active.some(row => row.bandId === bandId))
   if (!free.length) return <p className="text-sm text-muted-foreground">Semua Band sedang ditugaskan</p>
   const bandId = picked || free[0]
@@ -62,14 +62,14 @@ export function BandHandoff() {
     dispatch(row.dipakaiPada ? { type: "KEMBALI_BAND", allocationId: row.id } : { type: "SERAH_BAND", allocationId: row.id })
   }
   return <section className="summon-panel mt-6 p-5" aria-labelledby="band-handoff-title">
-    <div className="flex flex-wrap items-center justify-between gap-3"><h2 id="band-handoff-title" className="font-semibold">Serah-terima TERMA Band</h2>{mine.length > 0 && shift.status === "ACTIVE" && <QrScanButton label="Scan QR Band" onCode={scanned} />}</div>
+    <div className="flex flex-wrap items-center justify-between gap-3"><h2 id="band-handoff-title" className="font-semibold">Serah-terima TERMA Band</h2>{mine.length > 0 && canHandOverBand(shift, user.role) && <QrScanButton label="Scan QR Band" onCode={scanned} />}</div>
     {!mine.length ? <p className="mt-2 text-sm text-muted-foreground">Belum ada Band yang ditetapkan HSE untuk regu Anda.</p>
       : <ul className="mt-3 divide-y">{mine.map(row => <li key={row.id} className="flex flex-wrap items-center justify-between gap-3 py-3 text-sm">
         <span><strong>{row.bandId}</strong> · {workers.find(worker => worker.kode === row.pekerjaKode)?.nama} · {row.dipakaiPada ? "sedang dipakai" : "menunggu serah-terima"}</span>
         {row.dipakaiPada
-          ? <Button size="sm" variant="outline" disabled={shift.status !== "ACTIVE"} onClick={() => dispatch({ type: "KEMBALI_BAND", allocationId: row.id })}>Dikembalikan & dibersihkan</Button>
-          : <Button size="sm" disabled={shift.status !== "ACTIVE"} onClick={() => dispatch({ type: "SERAH_BAND", allocationId: row.id })}>Sudah dipakai</Button>}
+          ? <Button size="sm" variant="outline" disabled={!canReturnBand(shift, user.role)} onClick={() => dispatch({ type: "KEMBALI_BAND", allocationId: row.id })}>Dikembalikan & dibersihkan</Button>
+          : <Button size="sm" disabled={!canHandOverBand(shift, user.role)} onClick={() => dispatch({ type: "SERAH_BAND", allocationId: row.id })}>Sudah dipakai</Button>}
       </li>)}</ul>}
-    {shift.status !== "ACTIVE" && mine.length > 0 && <p className="mt-2 text-xs text-muted-foreground">Serah-terima tersedia setelah HSE menerbitkan shift.</p>}
+    {!canHandOverBand(shift, user.role) && mine.length > 0 && <p className="mt-2 text-xs text-muted-foreground">{user.role === "ADMIN" ? "Buka shift hari ini untuk memulai pemantauan Band." : "Serah-terima tersedia setelah HSE menerbitkan shift."}</p>}
   </section>
 }

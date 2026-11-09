@@ -13,7 +13,7 @@ export function BandDemoGuide({ onBack }: { onBack: () => void }) {
   const next = steps.find(step => !step.complete)
   return <div className="flow-band-guide" aria-label="Panduan Band untuk Raya">
     <div className="flow-guide-heading"><h3>Band untuk Raya</h3><span>{steps.filter(step => step.complete).length}/{steps.length} siap</span></div>
-    <p>Perangkat yang terhubung belum otomatis menjadi bacaan pekerja. Selesaikan pengaitan berikut satu kali per pemakaian Band.</p>
+    <p>Selesaikan pengaitan satu kali per pemakaian Band. Admin dapat memulai pemantauan pada persiapan shift hari ini; persetujuan rencana kerja dilakukan terpisah.</p>
     <ol className="flow-guide-steps">{steps.map((step, index) => <li key={step.id} data-complete={step.complete} data-current={step.id === next?.id}>
       <span aria-label={step.complete ? "Selesai" : `Langkah ${index + 1}`}>{step.complete ? <CheckCircleIcon size={18} weight="fill" /> : index + 1}</span>
       <div><strong>{step.title}</strong>{step.id === next?.id && <><p>{step.description}</p><Button asChild size="sm" variant="outline"><Link href={step.href}>{step.action}</Link></Button></>}</div>
