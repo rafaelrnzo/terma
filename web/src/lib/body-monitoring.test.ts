@@ -27,6 +27,10 @@ describe("worker-specific body monitoring",()=>{
    const clinical=bodyMonitoring(s,clinic,"W01",date,now)!
    expect(clinical.bandTrend.length).toBe(60)
    expect(clinical.signals.find(row=>row.key==="band")!.metrics!.find(metric=>metric.label==="Estimasi suhu inti")!.value).not.toBe("—")
+   const admin=USERS.find(row=>row.role==="ADMIN")!
+   const administrative=bodyMonitoring(s,admin,"W01",date,now)!
+   expect(administrative.signals.find(row=>row.key==="band")).toEqual(clinical.signals.find(row=>row.key==="band"))
+   expect(administrative.bandTrend).toEqual(clinical.bandTrend)
    const operational=bodyMonitoring(s,hse,"W01",date,now)!
    expect(operational.bandTrend).toEqual([])
    expect(JSON.stringify(operational)).not.toMatch(/bpm|Estimasi suhu inti|34[.,]4/)
@@ -35,6 +39,7 @@ describe("worker-specific body monitoring",()=>{
    const revoked=bodyMonitoring(s,clinic,"W01",date,now)!
    expect(revoked.bandTrend).toEqual([])
    expect(JSON.stringify(revoked)).not.toContain("bpm")
+   expect(signal(s,"band",admin).tone).toBe("unknown")
  })
  it("validates optional device numbers and rejects conflicting telemetry metadata",()=>{
    for(const event of [{...band,batteryPercent:101},{...band,batteryPercent:NaN},{...band,activityG:-1}]) expect(ingestPersonalTelemetry(bandState(),[event],now).notice?.tipe).toBe("error")

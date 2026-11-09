@@ -1,0 +1,43 @@
+name: web-vps
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: web-vps-build
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci --no-audit --no-fund
+      - run: npx tsc --noEmit -p . && npx eslint . && npx vitest run
+      - run: npm run build
+      - name: Package native standalone server for systemd
+        run: |
+          cp -R .next/static .next/standalone/.next/static
+          cp -R public .next/standalone/public
+          mkdir -p .next/standalone/scripts
+          cp scripts/set-password.mjs .next/standalone/scripts/
+          printf '%s\n' "$GITHUB_SHA" > .next/standalone/REVISION
+          tar -czf "$RUNNER_TEMP/terma-web-$GITHUB_SHA.tar.gz" -C .next/standalone .
+          cd "$RUNNER_TEMP"
+          sha256sum "terma-web-$GITHUB_SHA.tar.gz" > "terma-web-$GITHUB_SHA.sha256"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: terma-web-${{ github.sha }}
+          path: |
+            ${{ runner.temp }}/terma-web-${{ github.sha }}.tar.gz
+            ${{ runner.temp }}/terma-web-${{ github.sha }}.sha256
+          retention-days: 3
+          if-no-files-found: error

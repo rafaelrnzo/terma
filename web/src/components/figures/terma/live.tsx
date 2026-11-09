@@ -45,7 +45,7 @@ export function IotLive({ art, focused = false }: { art: ReactNode; focused?: bo
   const taps = events.filter(event => event.type === "water" && new Date(event.receivedAt).toLocaleDateString("en-CA", { timeZone: "Asia/Jakarta" }) === today)
   const lastTap = taps.at(-1)
   const visitor = lastTap?.type === "water" ? managementOf(state).workers.find(worker => worker.kartuUid === lastTap.uid) : undefined
-  const band = events.findLast(event => event.type === "band" && event.heartRate !== null)
+  const band = events.findLast(event => event.type === "band")
   const clinic = user?.role === "KLINIK" || user?.role === "ADMIN"
   const heartRate = clinic && band?.type === "band" ? band.heartRate : null
   const skin = clinic && band?.type === "band" ? band.skinC : null
