@@ -16,6 +16,7 @@ import { useApp } from "@/lib/store"
 import { ZONA } from "@/lib/config"
 import { type DeviceSelection } from "@/lib/device-telemetry"
 import { stationWbgt } from "@/lib/iot"
+import { placementOf } from "@/lib/station-placement"
 import { managementOf } from "@/lib/management-state"
 import { useIotEvents } from "@/lib/use-iot-events"
 import { DEVICE_ANCHORS } from "./generated-view"
@@ -35,13 +36,13 @@ export function IotLive({ art, focused = false }: { art: ReactNode; focused?: bo
   const { state, user } = useApp()
   const [selection, select] = useState<DeviceSelection>(focused ? "station" : "all")
   const [inspectWetBulb, inspect] = useState(false)
-  const [zone, setZone] = useState(focused ? state.penugasan[0]?.zonaKode ?? "COR_B" : "COR_B")
+  const [zone, setZone] = useState(state.penugasan[0]?.zonaKode ?? "COR_B")
   // The drawing animates; every number below comes from real device events (null = no reading yet).
   const { root, svg, paused, reducedMotion, toggle } = useInstrumentLoop(zone, selection, inspectWetBulb)
   const { events, connected } = useIotEvents()
   const today = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Jakarta" })
-  const station = events.findLast(event => event.type === "station" && event.zone === zone)
-  const wbgt = station?.type === "station" ? stationWbgt(station).isbb : null
+  const station = events.findLast(event => event.type === "station" && (placementOf(state,event.deviceId)?.zonaKode ?? event.zone) === zone)
+  const wbgt = station?.type === "station" ? stationWbgt(station, placementOf(state,station.deviceId)?.selisihGlobe ?? 0).isbb : null
   const taps = events.filter(event => event.type === "water" && new Date(event.receivedAt).toLocaleDateString("en-CA", { timeZone: "Asia/Jakarta" }) === today)
   const lastTap = taps.at(-1)
   const visitor = lastTap?.type === "water" ? managementOf(state).workers.find(worker => worker.kartuUid === lastTap.uid) : undefined

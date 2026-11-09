@@ -103,10 +103,18 @@ function personalEvents(s: AppState, events: IotEvent[]) {
 
 /** Polled device events -> existing TERMA records. Silent per poll: no audit entry or toast for routine samples. */
 export function ingestIot(s: AppState, events: IotEvent[]): AppState {
-  const shift = currentShift(s)
-  if (!shift || shift.status === "CLOSED" || !events.length) return s
   let next = s
-  const bacaan = stationRows(s, events)
+  const management = managementOf(s)
+  const stations = new Map(management.latestStationEvents?.map(event => [event.deviceId, event]))
+  let changed = false
+  for (const event of events) if (event.type === "station") {
+    const previous = stations.get(event.deviceId)
+    if (!previous || Date.parse(event.receivedAt) > Date.parse(previous.receivedAt)) { stations.set(event.deviceId, event); changed = true }
+  }
+  if (changed) next = { ...next, management: { ...management, latestStationEvents: [...stations.values()] } }
+  const shift = currentShift(next)
+  if (!shift || shift.status === "CLOSED" || !events.length) return next
+  const bacaan = stationRows(next, events)
   if (bacaan) next = recompute({ ...next, bacaan })
   const { out, unknownCards } = personalEvents(next, events)
   const sameDay = out.filter(event => jakarta(event.observedAt).tanggal === shift.tanggal)

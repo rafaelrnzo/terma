@@ -7,6 +7,7 @@ import type { CompanySync } from "./company-data"
 import type { AppState } from "./store-state"
 import type { Pekerja, Penugasan } from "./types"
 import type { HealthBaseline, ShiftReadiness } from "./worker-readiness"
+import type { IotEvent } from "./iot"
 
 export type ShiftWorkspace = Pick<AppState, "pekerja" | "penugasan" | "kehadiran" | "konfirmasi" | "bacaan" | "prakiraan" | "rencana" | "rencanaDihitung" | "tindakan" | "pengiriman">
 export interface ShiftRecord {
@@ -36,6 +37,7 @@ export interface ManagementState {
   clinic?: ClinicState
   companySync?: CompanySync
   stationPlacements?: StationPlacement[]
+  latestStationEvents?: Extract<IotEvent, { type: "station" }>[]
 }
 export interface WorkerInput {
   kode: string

@@ -7,7 +7,7 @@ export function rayaDemoWorkspace(date: string): AppState {
   let state = emptyWorkspaceState(date)
   state = reducer(state, { type: "SIMPAN_PEKERJA", input: {
     kode: "RAYA001", nama: "Raya", reguKode: "COR", tanggalMulai: "2026-01-01",
-    tugasKode: "PEMERIKSAAN", zonaKode: "GUDANG", apd: "Standar",
+    tugasKode: "PEMERIKSAAN", zonaKode: "COR_B", apd: "Standar",
   } })
   state = reducer(state, { type: "BUAT_SHIFT", tanggal: date, nama: "Shift Raya", workerCodes: ["RAYA001"] })
   if (state.notice?.tipe !== "ok" || state.management?.activeId !== date) throw new Error("Gagal menyiapkan shift demo Raya")

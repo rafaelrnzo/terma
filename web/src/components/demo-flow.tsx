@@ -13,6 +13,7 @@ import { BandDemoGuide } from "@/components/band-demo-guide"
 import { useApp } from "@/lib/store"
 import { currentShift } from "@/lib/management-state"
 import { hariIni } from "@/lib/config"
+import { prepareRayaIot } from "@/lib/iot-demo-client"
 
 type Step =
   | { label: string; action: "navigate"; href: string; target: string }
@@ -21,12 +22,16 @@ type Step =
   | { label: string; action: "select"; target: string; value: string }
   | { label: string; action: "reset"; target: string; value: string }
   | { label: string; action: "map"; target: string }
+  | { label: string; action: "iot"; target: string }
   | { label: string; action: "wait"; target: string; text?: string }
 
 type Status = "idle" | "running" | "paused" | "done" | "error"
 
 const FLOW: Step[] = [
   { label: "Membuka beranda admin", action: "navigate", href: "/pengelola", target: ".page-heading" },
+  { label: "Membuka data Raya", action: "navigate", href: "/impor", target: ".page-heading" },
+  { label: "Menautkan perangkat IoT ke Raya", action: "iot", target: ".page-heading" },
+  { label: "Melihat hasil olahan perangkat Raya", action: "navigate", href: "/pemantauan/RAYA001", target: ".body-monitor" },
   { label: "Membuka absensi pekerja", action: "navigate", href: "/monitoring?tab=absensi", target: "table[aria-label='Absensi peserta shift']" },
   { label: "Menyiapkan ulang absensi Raya", action: "reset", target: "table[aria-label='Absensi peserta shift']", value: "RAYA001" },
   { label: "Membuka layar absen", action: "navigate", href: "/kiosk", target: "#kiosk-worker" },
@@ -74,14 +79,14 @@ export function DemoFlow() {
   const [status, setStatus] = useState<Status>("idle")
   const [index, setIndex] = useState(0)
   const [error, setError] = useState("")
-  const [bandGuideOpen, setBandGuideOpen] = useState(false)
+  const [hint, setHint] = useState("")
   const [pointer, setPointer] = useState<{ x: number; y: number } | null>(null)
-  const control = useRef({ run: 0, paused: false })
+  const control = useRef<{ run: number; paused: boolean; iot?: AbortController }>({ run: 0, paused: false })
   const highlighted = useRef<HTMLElement | null>(null)
   const shift = currentShift(state)
 
-  useEffect(() => () => { control.current.run += 1; highlighted.current?.classList.remove("flow-target") }, [])
-  useEffect(() => { control.current.run += 1; control.current.paused = false; highlighted.current?.classList.remove("flow-target") }, [user?.id])
+  useEffect(() => () => { control.current.run += 1; control.current.iot?.abort(); highlighted.current?.classList.remove("flow-target") }, [])
+  useEffect(() => { control.current.run += 1; control.current.iot?.abort(); control.current.paused = false; highlighted.current?.classList.remove("flow-target") }, [user?.id])
 
   function clearHighlight() {
     highlighted.current?.classList.remove("flow-target")
@@ -91,6 +96,8 @@ export function DemoFlow() {
 
   function stop() {
     control.current.run += 1
+    control.current.iot?.abort()
+    setHint("")
     control.current.paused = false
     clearHighlight()
     setStatus("idle")
@@ -176,6 +183,14 @@ export function DemoFlow() {
         while (row.isConnected && !row.textContent?.includes("Belum check-in") && elapsed < 5000) { await sleep(100, run); elapsed += 100 }
         if (row.isConnected && !row.textContent?.includes("Belum check-in")) throw new Error("Absensi Raya belum berhasil diatur ulang.")
       }
+    } else if (step.action === "iot") {
+      if (!user) throw new Error("Masuk sebagai Admin untuk menyiapkan IoT Raya.")
+      const controller = new AbortController()
+      control.current.iot = controller
+      await prepareRayaIot(user, controller.signal, text => { check(run); setHint(text) }, () => sleep(0, run))
+      check(run)
+      setHint("")
+      control.current.iot = undefined
     } else if (step.action === "map") {
       const rect = target.getBoundingClientRect()
       target.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true, clientX: rect.left + rect.width * .61, clientY: rect.top + rect.height * .57 }))
@@ -205,7 +220,7 @@ export function DemoFlow() {
         check(run)
         setIndex(i)
         const step = FLOW[i]
-        if (i === 7 && !findTarget(step) && findTarget(FLOW[i + 1])) continue
+        if (step.action === "click" && step.text === "Saya setuju & lanjut" && !findTarget(step) && findTarget({ label: "Kondisi", action: "click", target: ".kiosk-card", text: "Ya, merasa baik" })) continue
         await execute(step, run)
         await sleep(850, run)
       }
@@ -214,7 +229,7 @@ export function DemoFlow() {
       setIndex(FLOW.length)
       setStatus("done")
     } catch (reason) {
-      if (reason instanceof Error && reason.message === "stopped") return
+      if (reason instanceof Error && (reason.message === "stopped" || reason.name === "AbortError")) return
       clearHighlight()
       setError(reason instanceof Error ? reason.message : "Alur terhenti. Coba jalankan lagi.")
       setStatus("error")
@@ -222,17 +237,13 @@ export function DemoFlow() {
   }
 
   if (!ready || user?.role !== "ADMIN") return null
-  if (bandGuideOpen) return <div className="flow-layer no-print"><section className="flow-panel" aria-label="Panduan Band untuk Raya">
-    <header className="flow-header"><div><h2>Panduan Band</h2><p>Hubungkan BAND-01 ke RAYA001.</p></div><button type="button" aria-label="Tutup panduan Band" onClick={() => setBandGuideOpen(false)}><XIcon size={18} /></button></header>
-    <BandDemoGuide />
-  </section></div>
   return <div className="flow-layer no-print">
     {pointer && status === "running" && <span className="flow-pointer" style={{ left: pointer.x, top: pointer.y }} aria-hidden><CursorClickIcon size={24} weight="fill" /></span>}
     {open ? <section className="flow-panel" aria-label="Pengendali alur interaktif">
       <header className="flow-header"><div><h2>Presentasi TERMA</h2><p>Satu alur dari absensi sampai laporan.</p></div><button type="button" aria-label="Tutup pengendali presentasi" onClick={() => { stop(); setOpen(false) }}><XIcon size={18} /></button></header>
-      <div className="flow-running"><div className="flow-current"><span>{status === "done" ? <CheckCircleIcon size={18} weight="fill" /> : <CursorClickIcon size={18} />}</span><div><strong>{status === "done" ? "Presentasi selesai" : status === "paused" ? "Presentasi dijeda" : status === "error" ? "Presentasi terhenti" : "Presentasi berjalan"}</strong><small>{status === "idle" ? "Siap diulang" : `${Math.min(index + 1, FLOW.length)} dari ${FLOW.length} langkah`}</small></div></div><div className="flow-progress" role="progressbar" aria-label="Kemajuan presentasi" aria-valuemin={0} aria-valuemax={FLOW.length} aria-valuenow={index}><span style={{ width: `${index / FLOW.length * 100}%` }} /></div><p className="flow-step" aria-live="polite">{status === "done" ? "Seluruh alur berhasil dijalankan." : status === "error" ? error : status === "idle" ? "Mulai lagi kapan saja." : FLOW[index]?.label}</p><div className="flow-actions">{status === "running" ? <Button size="sm" variant="outline" onClick={() => { control.current.paused = true; setStatus("paused") }}><PauseIcon />Jeda</Button> : status === "paused" ? <Button size="sm" onClick={() => { control.current.paused = false; setStatus("running") }}><PlayIcon />Lanjutkan</Button> : <Button size="sm" onClick={() => void start()}><PlayIcon />{status === "done" ? "Ulangi presentasi" : "Mulai lagi"}</Button>}{(status === "running" || status === "paused") && <Button size="sm" variant="ghost" onClick={() => { stop(); setOpen(false) }}><StopIcon />Hentikan</Button>}</div></div>
-      {status === "done" && <details className="flow-band-after"><summary>Panduan Band fisik untuk Raya</summary><BandDemoGuide /></details>}
-      <p className="flow-foot">Alur mengatur ulang absensi Raya dan menyimpan lokasi Station. Anda bisa menjeda kapan saja.</p>
-    </section> : <div className="flow-launch-actions"><Button variant="outline" onClick={() => setBandGuideOpen(true)}>Panduan Band</Button><Button className="flow-launch" onClick={() => void start()}><PlayIcon weight="fill" />Jalankan presentasi</Button></div>}
+      <div className="flow-running"><div className="flow-current"><span>{status === "done" ? <CheckCircleIcon size={18} weight="fill" /> : <CursorClickIcon size={18} />}</span><div><strong>{status === "done" ? "Presentasi selesai" : status === "paused" ? "Presentasi dijeda" : status === "error" ? "Presentasi terhenti" : "Presentasi berjalan"}</strong><small>{status === "idle" ? "Siap diulang" : `${Math.min(index + 1, FLOW.length)} dari ${FLOW.length} langkah`}</small></div></div><div className="flow-progress" role="progressbar" aria-label="Kemajuan presentasi" aria-valuemin={0} aria-valuemax={FLOW.length} aria-valuenow={index}><span style={{ width: `${index / FLOW.length * 100}%` }} /></div><p className="flow-step" aria-live="polite">{status === "done" ? "Seluruh alur berhasil dijalankan." : status === "error" ? error : status === "idle" ? "Mulai lagi kapan saja." : hint || FLOW[index]?.label}</p><div className="flow-actions">{status === "running" ? <Button size="sm" variant="outline" onClick={() => { control.current.paused = true; setStatus("paused") }}><PauseIcon />Jeda</Button> : status === "paused" ? <Button size="sm" onClick={() => { control.current.paused = false; setStatus("running") }}><PlayIcon />Lanjutkan</Button> : <Button size="sm" onClick={() => void start()}><PlayIcon />{status === "done" ? "Ulangi presentasi" : "Mulai lagi"}</Button>}{(status === "running" || status === "paused") && <Button size="sm" variant="ghost" onClick={() => { stop(); setOpen(false) }}><StopIcon />Hentikan</Button>}</div></div>
+      <details className="flow-band-after"><summary>Panduan Band fisik untuk Raya</summary><BandDemoGuide /></details>
+      <p className="flow-foot">Alur menautkan perangkat, meminta tap kartu Raya, mengatur ulang absensi, dan menyimpan lokasi Station. Anda bisa menjeda kapan saja.</p>
+    </section> : <Button className="flow-launch" onClick={() => void start()}><PlayIcon weight="fill" />Jalankan presentasi</Button>}
   </div>
 }

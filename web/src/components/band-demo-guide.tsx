@@ -19,7 +19,7 @@ export function BandDemoGuide({ onBack }: { onBack?: () => void }) {
       <div><strong>{step.title}</strong>{step.id === next?.id && <><p>{step.description}</p><Button asChild size="sm" variant="outline"><Link href={step.href}>{step.action}</Link></Button></>}</div>
     </li>)}</ol>
     {!next && <p role="status">Bacaan Band aktual sudah tercatat untuk Raya. Tetap tempelkan sensor agar pembaruan berlanjut.</p>}
-    <p className="flow-guide-note">Water Station: isi UID kartu Raya di Data pekerja, lalu tap kartu agar kunjungan minumnya masuk ke profil. Paparan panas mengikuti sumber pada rencana; bacaan Station dipakai pada interval 08.00–16.00.</p>
+    <p className="flow-guide-note">Jalankan presentasi akan meminta tap kartu Raya untuk menautkan Water Station. Profil menghitung kunjungan kartu Raya; panel perangkat menghitung seluruh kartu. WBGT profil memakai Station pada zona Raya; rencana kerja tetap memakai interval 08.00–16.00.</p>
     {onBack && <Button size="sm" variant="ghost" onClick={onBack}>Tutup panduan Band</Button>}
   </div>
 }

@@ -2,6 +2,8 @@ import { describe, expect, it } from "vitest"
 import { emptyWorkspaceState, reducer, readDemoState, rencanaAktif } from "./store"
 import { currentBandAllocations } from "./band-management"
 import { hariIni } from "./config"
+import { USERS } from "./config"
+import { bodyMonitoring } from "./body-monitoring"
 import { currentShift } from "./management-state"
 import { kualitasBacaan } from "./rules"
 import { stationWbgt, stullWetBulb, type IotEvent, type IotReading } from "./iot"
@@ -17,6 +19,27 @@ const event = (reading: IotReading, receivedAt: string): IotEvent => ({ ...readi
 const iot = (s: AppState, ...events: IotEvent[]) => reducer(s, { type: "TERIMA_IOT", events })
 
 describe("low-budget TERMA devices", () => {
+  it("keeps live Station readings outside work hours for the assigned worker zone", () => {
+    const date = "2026-11-06"
+    let s = run(shift(date), { type: "SIMPAN_PENEMPATAN_STATION", deviceId: "TST-01", zonaKode: "GUDANG", lat: -6.17, lng: 106.82 })
+    const reading = event({ type: "station", deviceId: "TST-01", zone: "COR_B", airC: 32, humidityPct: 60, wetBulbC: 26 }, `${date}T03:00:00+07:00`)
+    s = iot(s, reading)
+    expect(s.bacaan).toHaveLength(0)
+    expect(readDemoState(JSON.stringify(s)).management?.latestStationEvents).toEqual([reading])
+    const admin = USERS.find(user => user.role === "ADMIN")!
+    const heat = bodyMonitoring(s, admin, "W01", date, Date.parse(`${date}T03:01:00+07:00`))!.signals.find(signal => signal.key === "heat")!
+    expect(heat.source).toContain("AKTUAL · TST-01 · GUDANG")
+    expect(heat.metrics?.[0]).toMatchObject({ label: "WBGT Station", value: "27,8" })
+    const placements = s.management!.stationPlacements
+    s.management!.stationPlacements = []
+    expect(bodyMonitoring(s, admin, "W01", date, Date.parse(`${date}T03:01:00+07:00`))!.signals.find(signal => signal.key === "heat")!.source).not.toContain("AKTUAL")
+    s.management!.stationPlacements = placements
+    expect(bodyMonitoring(s, admin, "W01", date, Date.parse(`${date}T03:05:00+07:00`))!.signals.find(signal => signal.key === "heat")!.tone).toBe("unknown")
+    const historical = JSON.stringify(currentShift(s)!.workspace)
+    currentShift(s)!.status = "CLOSED"
+    s = iot(s, event({ type: "station", deviceId: "TST-01", zone: "COR_B", airC: 34, humidityPct: 60, wetBulbC: 28 }, `${date}T03:06:00+07:00`))
+    expect(JSON.stringify(currentShift(s)!.workspace)).toBe(historical)
+  })
   it("estimates ISBB without a black globe and rejects a soaked (non-evaporating) wick", () => {
     expect(stullWetBulb(20, 50)).toBeCloseTo(13.7, 1) // Stull (2011) worked example
     expect(stationWbgt({ type: "station", deviceId: "TST-01", zone: "COR_B", airC: 32, humidityPct: 60, wetBulbC: 26 })).toEqual({ isbb: 27.8, wick: true })
