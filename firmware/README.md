@@ -26,10 +26,13 @@ the private repo Raya46/terma-iot). The TERMA web receives them in real time ove
    mDNS name and `TERMA_IOT_KEY`. It is gitignored; template in `secrets.example.h`.
    The key must equal `TERMA_IOT_KEY` in `web/.env.local`.
 2. Laptop mode (devices and laptop on the same WiFi): run terma-iot on the port in `secrets.h`
-   (`TERMA_IOT_KEY=... PORT=3028 ALLOWED_ORIGINS=http://localhost:3030 ./terma-iot`), then the web with
-   `NEXT_PUBLIC_TERMA_IOT_URL=http://localhost:3028 npm run dev -- -p 3030`.
+   (`TERMA_IOT_KEY=... PORT=3028 ./terma-iot`), then set `TERMA_IOT_URL=http://localhost:3028`
+   and the same `TERMA_IOT_KEY` in `web/.env.local`, and run the web with `npm run dev -- -p 3030`.
    Devices find the laptop by name (`<LocalHostName>.local`), so its IP may change between networks.
-   VPS mode: set `TERMA_SERVER_IP` to the VPS IP and `TERMA_SERVER_PORT` to its port; any WiFi works.
+   VPS mode: set `TERMA_SERVER_IP` to the VPS IP and `TERMA_SERVER_PORT` to its exposed IoT port
+   (`8080` in `deploy/compose.yml`). Set `TERMA_IOT_KEY` to the key used by the VPS IoT service
+   and web server. Recompile and upload each sketch after changing `secrets.h`; editing the file
+   does not change a running device. Any saved WiFi with internet access can reach the VPS.
 3. Arduino IDE: Preferences → Additional Boards Manager URLs `https://dl.espressif.com/dl/package_esp32_index.json`, then Boards Manager → **esp32 by Espressif Systems 3.x**. Libraries: Adafruit SSD1306,
    Adafruit GFX, SparkFun MAX3010x, OneWire, DallasTemperature, DHT sensor library, Adafruit Unified
    Sensor, MFRC522 (GithubCommunity/miguelbalboa).

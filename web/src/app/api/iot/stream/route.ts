@@ -17,10 +17,11 @@ export async function GET(request: Request) {
   const stream = new ReadableStream<Uint8Array>({
     async start(controller) {
       try {
+        controller.enqueue(encoder.encode(": connected\n\n"))
         await readEvents(body, event => {
           const visible = event.type === "band" && !clinic ? { ...event, heartRate: null, skinC: null, spo2: null } : event
           controller.enqueue(encoder.encode(`id: ${event.seq}\ndata: ${JSON.stringify(visible)}\n\n`))
-        })
+        }, comment => controller.enqueue(encoder.encode(`${comment}\n\n`)))
       } catch { /* upstream or browser closed */ }
       try { controller.close() } catch { /* already closed */ }
     },
