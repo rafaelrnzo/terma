@@ -20,12 +20,14 @@ import { ChartBarIcon } from "@phosphor-icons/react/dist/csr/ChartBar"
 import { LightbulbIcon } from "@phosphor-icons/react/dist/csr/Lightbulb"
 import { ShieldPlusIcon } from "@phosphor-icons/react/dist/csr/ShieldPlus"
 import { StethoscopeIcon } from "@phosphor-icons/react/dist/csr/Stethoscope"
+import { SparkleIcon } from "@phosphor-icons/react/dist/csr/Sparkle"
 import { navigationFor, navigationGroup, roleHomePath, ROLE_WORKSPACE, pageAllowedFor } from "@/lib/navigation"
 import { useApp } from "@/lib/store"
 import { cn } from "@/lib/utils"
 
 const icons: Record<string, typeof SquaresFourIcon> = {
   "/ringkasan": SquaresFourIcon, "/hse": SquaresFourIcon, "/admin": SquaresFourIcon, "/mandor": SquaresFourIcon, "/klinik": StethoscopeIcon,
+  "/asisten": SparkleIcon,
   "/impor": IdentificationCardIcon, "/kesehatan-awal": FirstAidKitIcon, "/paparan": PersonSimpleWalkIcon,
   "/rencana": ClipboardTextIcon, "/instruksi": PaperPlaneTiltIcon, "/tindakan": ListChecksIcon,
   "/forecasting": CloudSunIcon, "/monitoring": PulseIcon, "/pengukuran": ThermometerIcon,

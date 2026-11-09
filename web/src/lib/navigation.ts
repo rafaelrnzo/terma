@@ -2,6 +2,7 @@ import type { Role, User } from "./types"
 
 export const NAV_GROUPS = [
   { label: "Beranda & shift", href: "/ringkasan", routes: [{ href: "/ringkasan", label: "Beranda & shift" }] },
+  { label: "Asisten shift", href: "/asisten", routes: [{ href: "/asisten", label: "Asisten shift" }] },
   { label: "Data pekerja", href: "/impor", routes: [{ href: "/impor", label: "Data pekerja" }] },
   { label: "Operasional shift", href: "/rencana", routes: [{ href: "/rencana", label: "Perencanaan shift" }, { href: "/instruksi", label: "Instruksi regu" }, { href: "/tindakan", label: "Pelaksanaan & verifikasi" }] },
   { label: "Forecasting", href: "/forecasting", routes: [{ href: "/forecasting", label: "Peta prakiraan" }] },
@@ -47,6 +48,7 @@ export function navigationGroup(path: string) {
 export function pageAllowedFor(user: User, path: string) {
   if (user.role === "ADMIN") return true
   if (user.role === "PEGAWAI") return ["/", "/ringkasan", "/pegawai", "/kiosk"].includes(path)
+  if (path === "/asisten") return user.role === "HSE"
   if (path === "/pengelola" || path === "/pegawai") return false
   if (path === "/laporan/bulanan") return ["HSE","MANDOR","KLINIK"].includes(user.role)
   if (path.startsWith("/pemantauan/")) return user.role === "HSE" || user.role === "KLINIK"

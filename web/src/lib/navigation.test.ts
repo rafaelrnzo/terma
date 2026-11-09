@@ -40,6 +40,13 @@ describe("role workspaces", () => {
     for(const user of USERS) expect(pageAllowedFor(user,path)).toBe(["HSE", "KLINIK", "ADMIN"].includes(user.role))
   })
 
+  it("shows the demo assistant only to HSE and admin", () => {
+    for (const user of USERS.filter(row => row.id !== SYSTEM_USER_ID)) {
+      expect(pageAllowedFor(user, "/asisten")).toBe(["HSE", "ADMIN"].includes(user.role))
+      expect(navigationFor(user).some(group => group.href === "/asisten")).toBe(["HSE", "ADMIN"].includes(user.role))
+    }
+  })
+
   it("keeps report consolidation available to Clinic without granting shift-report access",()=>{
     const clinic=USERS.find(user=>user.role==="KLINIK")!
     expect(pageAllowedFor(clinic,"/laporan/bulanan")).toBe(true)

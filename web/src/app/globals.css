@@ -15,6 +15,7 @@
 @import "./styles/iot-bench.css";
 @import "./styles/role-workspace.css";
 @import "./styles/kiosk-entry.css";
+@import "./styles/ai-briefing.css";
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
