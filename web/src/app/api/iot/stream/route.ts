@@ -15,14 +15,14 @@ export async function GET(request: Request) {
   const encoder = new TextEncoder()
   const clinic = user.role === "KLINIK"
   const stream = new ReadableStream<Uint8Array>({
-    async start(controller) {
-      try {
-        await readEvents(body, event => {
+    start(controller) {
+      controller.enqueue(encoder.encode(": connected\n\n"))
+      void readEvents(body, event => {
           const visible = event.type === "band" && !clinic ? { ...event, heartRate: null, skinC: null, spo2: null } : event
           controller.enqueue(encoder.encode(`id: ${event.seq}\ndata: ${JSON.stringify(visible)}\n\n`))
+        }).catch(() => { /* upstream or browser closed */ }).finally(() => {
+          try { controller.close() } catch { /* already closed */ }
         })
-      } catch { /* upstream or browser closed */ }
-      try { controller.close() } catch { /* already closed */ }
     },
   })
   return new Response(stream, { headers: { "Content-Type": "text/event-stream", "Cache-Control": "no-store", "X-Accel-Buffering": "no" } })

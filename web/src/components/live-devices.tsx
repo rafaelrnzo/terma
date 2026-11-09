@@ -27,11 +27,12 @@ export function LiveDevices() {
   return <Card>
     <CardHeader>
       <CardTitle>Perangkat terhubung</CardTitle>
-      <CardDescription>Langsung dari alat · server {connected === false ? "tidak terhubung" : "terhubung"}.</CardDescription>
+      <CardDescription>Langsung dari alat · server {connected === null ? "menghubungkan" : connected ? "terhubung" : "tidak terhubung"}.</CardDescription>
     </CardHeader>
     <CardContent>
-      {connected === false ? <p className="text-sm text-muted-foreground">Server IoT belum dapat dihubungi. Halaman tersambung sendiri setelah server IoT aktif.</p>
-        : !devices.length ? <p className="text-sm text-muted-foreground">Belum ada perangkat yang mengirim data. Pastikan alat dan laptop berada di WiFi yang sama.</p>
+      {connected === null ? <p className="text-sm text-muted-foreground">Menghubungkan ke server IoT…</p>
+        : connected === false ? <p className="text-sm text-muted-foreground">Server IoT belum dapat dihubungi. Halaman tersambung sendiri setelah server IoT aktif.</p>
+        : !devices.length ? <p className="text-sm text-muted-foreground">Server IoT aktif, tetapi belum menerima data perangkat. Periksa daya, koneksi internet alat, alamat server, dan kunci perangkat.</p>
         : <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{devices.map(id => {
           const own = events.filter(event => event.deviceId === id)
           const last = own.at(-1)!
