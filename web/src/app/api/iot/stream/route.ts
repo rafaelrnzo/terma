@@ -18,9 +18,10 @@ export async function GET(request: Request) {
     start(controller) {
       controller.enqueue(encoder.encode(": connected\n\n"))
       void readEvents(body, event => {
-          const visible = event.type === "band" && !clinic ? { ...event, heartRate: null, skinC: null, spo2: null } : event
-          controller.enqueue(encoder.encode(`id: ${event.seq}\ndata: ${JSON.stringify(visible)}\n\n`))
-        }).catch(() => { /* upstream or browser closed */ }).finally(() => {
+        const visible = event.type === "band" && !clinic ? { ...event, heartRate: null, skinC: null, spo2: null } : event
+        controller.enqueue(encoder.encode(`id: ${event.seq}\ndata: ${JSON.stringify(visible)}\n\n`))
+      }, comment => controller.enqueue(encoder.encode(`${comment}\n\n`)))
+        .catch(() => { /* upstream or browser closed */ }).finally(() => {
           try { controller.close() } catch { /* already closed */ }
         })
     },

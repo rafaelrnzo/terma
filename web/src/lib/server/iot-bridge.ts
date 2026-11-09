@@ -6,7 +6,7 @@ export const iotUrl = () => process.env.TERMA_IOT_URL ?? "http://localhost:3028"
 export const iotKey = () => process.env.TERMA_IOT_KEY ?? ""
 
 /** Reads `data:` lines of an SSE body and hands each parsed event to `onEvent`. */
-export async function readEvents(body: ReadableStream<Uint8Array>, onEvent: (event: IotEvent) => void) {
+export async function readEvents(body: ReadableStream<Uint8Array>, onEvent: (event: IotEvent) => void, onComment?: (comment: string) => void) {
   const reader = body.getReader()
   const decoder = new TextDecoder()
   let buffer = ""
@@ -16,7 +16,9 @@ export async function readEvents(body: ReadableStream<Uint8Array>, onEvent: (eve
     buffer += decoder.decode(value, { stream: true })
     const lines = buffer.split("\n")
     buffer = lines.pop() ?? ""
-    for (const line of lines) if (line.startsWith("data: ")) {
+    for (const line of lines) if (line.startsWith(":")) {
+      onComment?.(line.trimEnd())
+    } else if (line.startsWith("data: ")) {
       // SAFETY: terma-iot validates and stamps every event before it reaches its stream.
       try { onEvent(JSON.parse(line.slice(6)) as IotEvent) } catch { /* a malformed line is skipped, the stream continues */ }
     }

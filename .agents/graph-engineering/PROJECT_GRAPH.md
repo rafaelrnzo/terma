@@ -1,5 +1,18 @@
 # TERMA project graph
 
+## Current IoT ownership (source ec0bdb7, inspected 2026-11-10)
+
+For device transport and persistence, this section supersedes the historical browser-local entries below.
+
+- Firmware `firmware/*/terma_net.h` posts to the IP/mDNS host, port and key compiled from each sketch's ignored `secrets.h`.
+- Companion `/Users/muhammadrayaarrizki/projects/proj-go/terma-iot` at `64e9f9c` owns authenticated POST ingestion, JSONL history and SSE heartbeat/replay. Local port 3028; Compose publishes VPS port 8080.
+- `web/src/instrumentation.ts` starts `lib/server/iot-bridge.ts`, which ingests authenticated backend events into the file-backed shared workspace. `TERMA_IOT_URL` and `TERMA_IOT_KEY` are server configuration.
+- `app/api/iot/stream/route.ts` owns signed-in browser SSE and Band redaction. It emits an initial comment and forwards upstream heartbeat comments, including when no device readings exist. `lib/iot-client.ts` owns EventSource.
+- `web/next.config.ts` proxies API requests for `www.terma-app.id` to the configured VPS origin; `deploy/compose.yml` owns the web-to-IoT Docker address. A healthy web login alone does not prove device delivery.
+- Observed VPS runtime on 2026-11-10: `terma-web.service` at 127.0.0.1:3000, `terma-iot.service` at port 8080, Caddy on HTTPS; Docker is not installed. The running web uses `TERMA_IOT_URL=http://127.0.0.1:8080`, and its key matches the running IoT service. Runtime source revision is not established by this configuration check.
+- Focused verification: Go `go test ./...`; web `vitest run src/lib/server/iot-bridge.test.ts src/lib/iot.test.ts`, TypeScript and scoped ESLint; authenticated idle stream and replay; Safari EventSource.
+- Task DAG: source/config inspection -> local services -> compare production auth and firmware destination -> reproduce idle stream -> focused fix -> stream and permission checks. All work is sequential; no delegation needed. Secrets, flashing, commits, pushes and deployment require their applicable authorization.
+
 Inspected upstream: `rafaelrnzo/terma`, merged focused workflow contribution `db4e064` (2026-10-31).
 
 | Owner | Source | Depends on |
