@@ -31,7 +31,20 @@ A new workspace receives eight reference workers through Company Data Hub.
 
 ## Deploy
 
-Not on Vercel: the workspace needs a persistent disk. Run the `web-image` workflow (tests, then
+The current VPS runs `terma-web.service` from `/opt/terma-web/current`, a symlink into
+`/opt/terma-web/releases`. Persistent data stays in `/var/lib/terma-web`; the web service connects
+to `terma-iot.service` at `http://127.0.0.1:8080`. The public Vercel hostname proxies API requests
+to the VPS through `next.config.ts`.
+
+For this systemd deployment, manually run `web-vps` on the intended main revision. It validates,
+builds on Linux/Node 22 and uploads a standalone archive with its source `REVISION` and SHA-256
+checksum. Verify the checksum, extract into a new release directory, preserve the existing service
+environment and data directory, atomically switch `current`, and restart `terma-web.service`.
+Keep the previous release for rollback. Never build the app on the serving VPS.
+
+### Alternative container deployment
+
+For the container option, run the `web-image` workflow (tests, then
 `ghcr.io/rafaelrnzo/terma-web`), then `deploy/compose.yml` at the repo root with terma-iot on the VPS,
 HTTPS in front of port 3000, `TERMA_SESSION_SECRET` (≥ 32 characters) and `TERMA_IOT_KEY` set.
 Set passwords inside the container: `docker compose exec web node scripts/set-password.mjs ratna`.
@@ -45,4 +58,4 @@ npm run lint
 npm run build   # CI only (web-image workflow)
 ```
 
-Vercel still builds `web/` from main, but without a persistent disk and `users.json` nobody can sign in there; production is the VPS deployment above. No map token is required.
+Vercel builds the frontend from main; login and workspace persistence use the VPS API proxy. No map token is required.

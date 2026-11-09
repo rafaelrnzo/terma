@@ -22,13 +22,13 @@ export default function WorkerBodyMonitor({ code, date }: { code: string; date: 
   const [selected, setSelected] = useState<BodyRegion>("heat")
   const [view, setView] = useState<"front" | "back">("front")
   const [clock, setClock] = useState(() => Date.now())
-  const [source, setSource] = useState<"saved" | "example" | null>(null)
+  const [source, setSource] = useState<"saved" | "example">("saved")
   const root = useRef<HTMLElement>(null)
   const list = useRef<HTMLDivElement>(null)
   const indicator = useRef<HTMLSpanElement>(null)
   const [visible, setVisible] = useState(true)
   const savedModel = user ? bodyMonitoring(state, user, code, date, clock) : null
-  const showExample = source === "example" || (source === null && !!savedModel?.signals.every(signal => signal.tone === "unknown"))
+  const showExample = source === "example"
   const model = savedModel && user ? showExample ? exampleBodyMonitoring(code, date, user.role === "KLINIK" || user.role === "ADMIN") : savedModel : null
   const hasModel = !!model
   useEffect(() => {

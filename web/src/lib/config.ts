@@ -68,14 +68,12 @@ export const ATURAN_FIXTURE: Aturan = {
   ],
 }
 
-/** Today's date in local time, ISO yyyy-mm-dd. */
+/** Today's operational date in Jakarta, independent of the server's timezone. */
 export function hariIni(): string {
-  const d = new Date()
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`
+  return new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Jakarta" })
 }
 
-/** Start of an interval on a date, as local-time epoch ms. */
+/** Start of a Jakarta operational interval as epoch milliseconds. */
 export function awalInterval(tanggal: string, jam: number): number {
-  const [y, m, d] = tanggal.split("-").map(Number)
-  return new Date(y, m - 1, d, jam, 0, 0).getTime()
+  return Date.parse(`${tanggal}T00:00:00+07:00`) + jam * 3600000
 }

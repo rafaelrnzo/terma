@@ -4,7 +4,7 @@ import { iotKey, iotUrl, readEvents } from "@/lib/server/iot-bridge"
 export const runtime = "nodejs"
 export const dynamic = "force-dynamic"
 
-/** Live device events for signed-in screens; raw Band values only reach Klinik. */
+/** Live device events for signed-in screens; raw Band values only reach Klinik and Admin. */
 export async function GET(request: Request) {
   const user = userFromRequest(request)
   if (!user) return new Response("Masuk terlebih dahulu.", { status: 401 })
@@ -13,7 +13,7 @@ export async function GET(request: Request) {
   if (!upstream?.ok || !upstream.body) return new Response("Server IoT tidak terhubung.", { status: 502 })
   const body = upstream.body
   const encoder = new TextEncoder()
-  const clinic = user.role === "KLINIK"
+  const clinic = user.role === "KLINIK" || user.role === "ADMIN"
   const stream = new ReadableStream<Uint8Array>({
     start(controller) {
       controller.enqueue(encoder.encode(": connected\n\n"))
