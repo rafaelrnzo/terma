@@ -1,6 +1,7 @@
 .flow-layer { position: fixed; z-index: 1000000001; right: 24px; bottom: 24px; pointer-events: none; font-family: var(--font-geist), sans-serif; }
 .flow-layer > *:not(.flow-pointer) { pointer-events: auto; }
 .flow-launch { box-shadow: 0 10px 32px rgb(20 35 60 / 18%); }
+.flow-launch-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
 .flow-panel { width: min(370px, calc(100vw - 32px)); max-height: calc(100dvh - 48px); overflow-y: auto; border: 1px solid var(--border); border-radius: 14px; background: var(--card); box-shadow: 0 20px 56px rgb(20 35 60 / 18%); color: var(--foreground); }
 .flow-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding: 18px 18px 16px; border-bottom: 1px solid var(--border); }
 .flow-header h2 { font-size: 16px; font-weight: 700; letter-spacing: -.02em; }
