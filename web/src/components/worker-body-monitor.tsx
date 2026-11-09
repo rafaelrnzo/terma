@@ -44,10 +44,11 @@ export default function WorkerBodyMonitor({ code, date }: { code: string; date: 
   useEffect(() => {
     if (!visible) return
     const tick = () => { if (!document.hidden) setClock(Date.now()) }
+    tick()
     const timer = setInterval(tick, 30000)
     document.addEventListener("visibilitychange", tick)
     return () => { clearInterval(timer); document.removeEventListener("visibilitychange", tick) }
-  }, [visible])
+  }, [visible, state])
   useLayoutEffect(() => {
     const element = list.current, thumb = indicator.current
     if (!element || !thumb) return
