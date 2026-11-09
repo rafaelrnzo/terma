@@ -22,10 +22,8 @@ export function bandDemoGuide(state: AppState, user: User, now = Date.now()) {
       description: "Di baris Raya, pilih Catat persetujuan Band setelah pekerja menyetujui pemantauan.", href: `/impor?tanggal=${date}`, action: "Buka Data pekerja" },
     { id: "assignment", title: "Tetapkan BAND-01 ke Raya", complete: !!allocation,
       description: "Pada kolom TERMA Band di baris Raya, pilih BAND-01 lalu Tetapkan.", href: `/impor?tanggal=${date}`, action: "Tetapkan unit Band" },
-    { id: "publication", title: "Terbitkan shift", complete: shift?.status === "ACTIVE",
-      description: "Lengkapi data dan adaptasi yang diminta, tinjau serta setujui rencana, lalu terbitkan shift.", href: "/rencana", action: "Buka Perencanaan shift" },
     { id: "wearing", title: "Catat Band sudah dipakai", complete: !!allocation?.dipakaiPada,
-      description: "Di Dashboard admin, bagian Serah-terima TERMA Band, klik Sudah dipakai untuk Raya.", href: "/pengelola#band-handoff-title", action: "Buka serah-terima" },
+      description: "Pada kolom TERMA Band di baris Raya, klik Sudah dipakai. Admin dapat memulai pemantauan saat persiapan shift hari ini.", href: `/impor?tanggal=${date}`, action: "Catat pemakaian Band" },
     { id: "reading", title: "Lihat bacaan Raya", complete: !!actual && !!signal && signal.tone !== "unknown",
       description: "Nyalakan hotspot, tempelkan sensor denyut dengan stabil sekitar 30 detik. Bacaan baru setelah serah-terima akan masuk ke profil ini.", href: `/pemantauan/${code}?tanggal=${date}`, action: "Buka pemantauan Raya" },
   ]

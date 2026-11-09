@@ -33,6 +33,7 @@ const FLOW: Chapter[] = [
   { title: "Dashboard admin", detail: "Gambaran lokasi dan pintu masuk ke seluruh modul.", href: "/pengelola", target: ".page-heading" },
   { title: "Ringkasan shift", detail: "Shift aktif menjadi konteks semua data berikutnya.", href: "/shift/:shift", target: ".page-heading" },
   { title: "Direktori pekerja", detail: "Identitas dan penugasan pekerja menjadi dasar absensi serta rencana.", href: "/impor", target: ".page-heading" },
+  { title: "Band untuk Raya", detail: "Pengaitan Band dan UID kartu minum dimulai dari data pekerja.", href: "/impor", target: "section[data-guide='worker-list']" },
   { title: "Pemeriksaan awal", detail: "Kondisi awal pekerja melengkapi profil untuk penilaian shift.", href: "/impor?tab=pemeriksaan", target: ".page-heading" },
   { title: "Profil Raya", detail: "Rencana dan riwayat kehadiran terhubung ke satu pekerja.", href: "/pekerja/RAYA001", target: ".page-heading" },
   { title: "Regu Raya", detail: "Penugasan Raya terhubung ke daftar rencana anggota regunya.", href: "/regu/:regu", target: ".page-heading" },
@@ -102,6 +103,7 @@ export function DemoFlow() {
   const [error, setError] = useState("")
   const [stepLabel, setStepLabel] = useState("")
   const [remaining, setRemaining] = useState(5)
+  const [bandGuideOpen, setBandGuideOpen] = useState(false)
   const [pointer, setPointer] = useState<{ x: number; y: number } | null>(null)
   const control = useRef({ run: 0, paused: false })
   const currentIndex = useRef(0)
@@ -289,6 +291,10 @@ export function DemoFlow() {
   }
 
   if (!ready || user?.role !== "ADMIN") return null
+  if (bandGuideOpen) return <div className="flow-layer no-print"><section className="flow-panel" aria-label="Panduan Band untuk Raya">
+    <header className="flow-header"><div><h2>Panduan Band</h2><p>Hubungkan BAND-01 ke RAYA001.</p></div><button type="button" aria-label="Tutup panduan Band" onClick={() => setBandGuideOpen(false)}><XIcon size={18} /></button></header>
+    <BandDemoGuide />
+  </section></div>
   return <div className="flow-layer no-print">
     {pointer && status === "running" && <span className="flow-pointer" style={{ left: pointer.x, top: pointer.y }} aria-hidden><CursorClickIcon size={24} weight="fill" /></span>}
     {open ? <section className="flow-panel" aria-label="Pengendali alur interaktif">
@@ -305,8 +311,9 @@ export function DemoFlow() {
           {(status === "running" || status === "paused") && <Button size="sm" variant="ghost" onClick={() => { stop(); setOpen(false) }}><StopIcon />Hentikan</Button>}
         </div>
       </div>
+      {FLOW[index].title === "Band untuk Raya" && status !== "idle" && <div className="flow-band-current"><BandDemoGuide /></div>}
       {status === "done" && <details className="flow-band-after"><summary>Panduan Band fisik untuk Raya</summary><BandDemoGuide /></details>}
       <p className="flow-foot">Saat berjalan otomatis, tiap halaman bertahan 5 detik setelah interaksi selesai. Absensi dan penempatan Station hanya dijalankan sekali dalam satu presentasi.</p>
-    </section> : <Button className="flow-launch" onClick={() => void start()}><PlayIcon weight="fill" />Jalankan presentasi</Button>}
+    </section> : <div className="flow-launch-actions"><Button variant="outline" onClick={() => setBandGuideOpen(true)}>Panduan Band</Button><Button className="flow-launch" onClick={() => void start()}><PlayIcon weight="fill" />Jalankan presentasi</Button></div>}
   </div>
 }
