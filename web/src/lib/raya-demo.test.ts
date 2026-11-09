@@ -12,6 +12,7 @@ describe("Raya demo seed", () => {
     expect(state.pekerja.map(worker => worker.kode)).toEqual(["RAYA001"])
     expect(state.management?.workers.map(worker => worker.nama)).toEqual(["Raya"])
     expect(state.management?.shifts.map(shift => shift.id)).toEqual([date])
+    expect(state.management?.shifts[0].nama).toBe("Shift Raya")
     expect(state.management?.shifts[0].readiness?.checkins).toEqual([])
     const raya = USERS.find(user => user.username === "raya")!
     expect(raya.pekerjaKode).toBe("RAYA001")

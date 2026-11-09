@@ -4,6 +4,24 @@
 .account-identity strong, .account-identity small { display: block; }
 .account-identity strong { font-size: .875rem; font-weight: 600; }
 .account-identity small { margin-top: .15rem; font-size: .75rem; color: var(--muted-foreground); }
+.app-header { padding-bottom: 16px; }
+.sidebar-shift-link { display: flex; align-items: center; justify-content: space-between; gap: .5rem; min-height: 2.25rem; margin: -.7rem 4px 1.15rem; padding: .5rem .65rem; border: 1px solid var(--sidebar-border); border-radius: 6px; color: var(--sidebar-foreground); background: var(--sidebar-hover); font-size: .72rem; font-weight: 600; line-height: 1.35; }
+.sidebar-shift-link:hover { color: var(--primary); border-color: var(--primary); }
+.sidebar-shift-link > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sidebar-shift-link svg { flex-shrink: 0; color: var(--primary); }
+.sidebar-account { margin-top: .65rem; padding: .85rem .25rem 0; border-top: 1px solid var(--sidebar-border); }
+.sidebar-account-identity { display: flex; align-items: center; gap: .65rem; min-width: 0; padding: .25rem .45rem .85rem; }
+.sidebar-account-identity > span:last-child { min-width: 0; }
+.sidebar-account-identity strong, .sidebar-account-identity small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sidebar-account-identity strong { font-size: .8rem; font-weight: 650; }
+.sidebar-account-identity small { margin-top: .18rem; color: var(--sidebar-muted); font-size: .72rem; }
+.sidebar-theme-button, .sidebar-logout-button { display: flex; justify-content: flex-start; gap: .65rem; width: 100%; min-height: 2.15rem; color: var(--sidebar-foreground); font-size: .78rem; }
+.sidebar-theme-button:hover, .sidebar-logout-button:hover { background: var(--sidebar-hover); }
+.mobile-sidebar-scroll { min-height: 0; flex: 1; overflow-y: auto; }
+.mobile-sidebar-footer { flex-shrink: 0; padding: .6rem 1rem 1rem; border-top: 1px solid var(--sidebar-border); }
+.sidebar-shift-link-mobile { flex-shrink: 0; margin: 1rem 1rem .4rem; }
+@media (max-width: 1023px) { .app-header { min-height: 64px; padding-bottom: 14px; } }
+@media (max-width: 600px) { .app-header { min-height: 60px; padding-bottom: 12px; } }
 .role-heading { display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
 .role-heading > div { min-width: 0; }
 .role-heading .page-heading { margin-top: .65rem; }

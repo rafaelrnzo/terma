@@ -41,6 +41,8 @@ export type ReadinessAction =
   | { type: "CATAT_CHECKIN"; pekerjaKode: string; kondisi: BodyCondition; keluhan: BodyComplaint[]; metode?: CheckinMethod; persetujuan?: boolean }
   | { type: "TINJAU_KONDISI"; pekerjaKode: string; hasil: ReadinessReview["hasil"]; catatan: string }
   | { type: "CATAT_PULANG"; pekerjaKode: string }
+  | { type: "RESET_ABSEN_MASUK"; pekerjaKode: string }
+  | { type: "RESET_ABSEN_PULANG"; pekerjaKode: string }
   | { type: "SIMPAN_BASELINE"; input: BaselineInput }
 
 export function readinessProgress(state: AppState) {
@@ -74,6 +76,27 @@ export function recordReadiness(state: AppState, action: Exclude<ReadinessAction
   const worker = shift.workspace.pekerja.find(row => row.kode === action.pekerjaKode)
   if (!worker) return notice(state, "error", "ID pekerja tidak terdaftar pada shift ini.")
   const readiness = shift.readiness
+  if (action.type === "RESET_ABSEN_PULANG") {
+    const checkin = readiness.checkins.find(row => row.pekerjaKode === worker.kode)
+    if (!checkin?.pulang) return notice(state, "info", "Belum ada absen pulang yang perlu diatur ulang.")
+    const management = managementOf(state)
+    const checkins = readiness.checkins.map(row => {
+      if (row.pekerjaKode !== worker.kode) return row
+      const entry = { ...row }
+      delete entry.pulang
+      return entry
+    })
+    const next = { ...state, management: { ...management, shifts: management.shifts.map(row => row.id === shift.id ? { ...row, readiness: { ...readiness, checkins } } : row) } }
+    return notice(audit(next, "RESET_ABSEN_PULANG", `${worker.kode}: jam pulang diatur ulang.`, worker.kode), "ok", `Absen pulang ${worker.nama} diatur ulang. Jam masuk tetap tersimpan.`)
+  }
+  if (action.type === "RESET_ABSEN_MASUK") {
+    if (!readiness.checkins.some(row => row.pekerjaKode === worker.kode)) return notice(state, "info", "Belum ada absen datang yang perlu diatur ulang.")
+    const management = managementOf(state)
+    const updated = { ...readiness, checkins: readiness.checkins.filter(row => row.pekerjaKode !== worker.kode), reviews: readiness.reviews.filter(row => row.pekerjaKode !== worker.kode) }
+    const kehadiran = state.kehadiran.filter(row => row.pekerjaKode !== worker.kode || row.tanggal !== shift.tanggal || row.source !== "Check-in kondisi awal pekerja")
+    const next = { ...state, kehadiran, management: { ...management, shifts: management.shifts.map(row => row.id === shift.id ? { ...row, readiness: updated } : row) } }
+    return notice(audit(recompute(next), "RESET_ABSEN_MASUK", `${worker.kode}: absen datang dan kondisi awal diatur ulang.`, worker.kode), "ok", `Absen datang ${worker.nama} diatur ulang. Anda bisa absen kembali.`)
+  }
   if (action.type === "CATAT_PULANG") {
     const checkin = readiness.checkins.find(row => row.pekerjaKode === worker.kode)
     if (!checkin) return notice(state, "error", "Pekerja belum absen masuk pada shift ini.")

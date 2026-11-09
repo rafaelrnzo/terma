@@ -12,7 +12,7 @@ const CLIENT_ONLY = new Set<Action["type"]>(["LOGIN", "HYDRATE", "CUACA_MULAI", 
 
 /** Worker accounts may change only their own attendance, regardless of the client payload. */
 export function employeeActionAllowed(actor: User, action: Action) {
-  return actor.role !== "PEGAWAI" || ((action.type === "CATAT_CHECKIN" || action.type === "CATAT_PULANG") && action.pekerjaKode === actor.pekerjaKode)
+  return actor.role !== "PEGAWAI" || ((action.type === "CATAT_CHECKIN" || action.type === "CATAT_PULANG" || action.type === "RESET_ABSEN_MASUK" || action.type === "RESET_ABSEN_PULANG") && action.pekerjaKode === actor.pekerjaKode)
 }
 
 /**

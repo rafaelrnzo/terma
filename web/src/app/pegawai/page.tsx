@@ -9,6 +9,7 @@ import { hariIni } from "@/lib/config"
 import { currentShift } from "@/lib/management-state"
 import { useApp } from "@/lib/store"
 import { tanggalLabel } from "@/lib/workspace"
+import { ResetAttendanceButtons } from "@/components/kiosk/reset-attendance-buttons"
 
 export default function EmployeeAttendancePage() {
   const { state, user, ready } = useApp()
@@ -20,13 +21,14 @@ export default function EmployeeAttendancePage() {
   const open = !!worker && !!shift?.readiness && shift.tanggal === hariIni() && shift.status !== "CLOSED"
 
   return <div className="mx-auto max-w-2xl space-y-6">
-    <PageHeader title="Absensi saya" summary={worker ? `${worker.nama} · ${worker.kode}` : "Akun pegawai demo"} />
+    <PageHeader title="Absensi saya" summary={worker ? `${worker.nama} · ${worker.kode}` : "Akun pegawai"} />
     {!worker ? <section className="summon-panel p-6"><h2 className="font-semibold">Data pekerja belum tersedia</h2><p className="mt-2 text-sm text-muted-foreground">Minta admin menambahkan pekerja yang terhubung dengan akun ini.</p></section>
       : !open ? <section className="summon-panel p-6"><h2 className="font-semibold">Absen belum dibuka</h2><p className="mt-2 text-sm text-muted-foreground">{shift ? `Shift aktif ${shift.nama} bertanggal ${tanggalLabel(shift.tanggal)}.` : "Belum ada shift aktif."} Minta HSE atau admin menyiapkan shift hari ini.</p></section>
       : <section className="summon-panel space-y-5 p-6">
         <div><h2 className="font-heading text-xl font-semibold">{checkin ? "Kehadiran Raya" : "Siap absen, Raya?"}</h2><p className="mt-2 text-sm text-muted-foreground">{shift.nama} · {tanggalLabel(shift.tanggal)}</p></div>
         {checkin && <p role="status" className="text-sm">Masuk tercatat pukul <strong>{new Date(checkin.waktu).toLocaleTimeString("id-ID")}</strong>{checkin.pulang ? `, pulang pukul ${new Date(checkin.pulang).toLocaleTimeString("id-ID")}.` : "."}</p>}
         {!checkin?.pulang && <Button asChild><Link href="/kiosk"><CameraIcon />{checkin ? "Catat absen pulang" : "Absen via kamera atau kartu"}<ArrowRightIcon /></Link></Button>}
+        {checkin && <div className="attendance-reset-panel"><p>Ingin mengulang alur absensi? Reset pulang mempertahankan jam datang. Reset datang juga menghapus isian kondisi awal pada shift ini.</p><ResetAttendanceButtons workerCode={worker.kode} hasDeparture={!!checkin.pulang} /></div>}
         <p className="text-xs text-muted-foreground">Kamera menampilkan pratinjau. Tap kartu adalah simulasi; identitas mengikuti akun Raya yang masuk.</p>
       </section>}
   </div>

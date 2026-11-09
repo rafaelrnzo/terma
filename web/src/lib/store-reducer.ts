@@ -33,6 +33,8 @@ const IZIN_AKSI: Partial<Record<Action["type"], Aksi>> = {
   TINDAK_LANJUT_KLINIK: "KELOLA_KLINIK",
   SIMPAN_BASELINE: "KELOLA_BASELINE",
   TINJAU_KONDISI: "TINJAU_KONDISI",
+  RESET_ABSEN_MASUK: "RESET_ABSEN",
+  RESET_ABSEN_PULANG: "RESET_ABSEN",
   MUAT_DEMO: "MUAT_DEMO",
   SIMPAN_PEKERJA: "KELOLA_PEKERJA",
   HAPUS_PEKERJA: "KELOLA_PEKERJA",
@@ -78,6 +80,8 @@ function inner(s: AppState, a: Exclude<Action, ManagementAction | WeatherAction 
     case "SIMPAN_BASELINE": return saveBaseline(s, a.input)
     case "CATAT_CHECKIN":
     case "CATAT_PULANG":
+    case "RESET_ABSEN_MASUK":
+    case "RESET_ABSEN_PULANG":
     case "TINJAU_KONDISI": return recordReadiness(s, a)
     case "MUAT_DEMO":
       if (!bisaMuatDemo(s)) return notice(s, "info", "Seed tidak dijalankan: ruang kerja sudah berisi data. Tidak ada data yang ditimpa.")

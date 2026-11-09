@@ -23,6 +23,7 @@ export type Aksi =
   | "AKUI_PESAN"
   | "LAPOR_TINDAKAN"
   | "VERIFIKASI"
+  | "RESET_ABSEN"
 
 const IZIN: Record<Aksi, Role[]> = {
   KELOLA_BAND: ["HSE"],
@@ -44,6 +45,7 @@ const IZIN: Record<Aksi, Role[]> = {
   AKUI_PESAN: ["MANDOR"],
   LAPOR_TINDAKAN: ["MANDOR"],
   VERIFIKASI: ["HSE"],
+  RESET_ABSEN: ["HSE", "PEGAWAI"],
 }
 
 export class AksesDitolak extends Error {

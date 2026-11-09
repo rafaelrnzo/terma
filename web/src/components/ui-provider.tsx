@@ -11,9 +11,9 @@ export function UiProvider({ children }: { children: ReactNode }) {
   return <ThemeProvider attribute="class" defaultTheme="light" enableSystem><MotionConfig reducedMotion="user">{children}</MotionConfig></ThemeProvider>
 }
 
-export function ThemeToggle() {
+export function ThemeToggle({ sidebar = false }: { sidebar?: boolean }) {
   const { resolvedTheme, setTheme } = useTheme()
-  return <Button variant="outline" size="icon" aria-label="Ganti tema terang atau gelap" onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}>
-    <Sun className="hidden dark:block" aria-hidden /><Moon className="dark:hidden" aria-hidden />
+  return <Button variant={sidebar ? "ghost" : "outline"} size={sidebar ? "default" : "icon"} className={sidebar ? "sidebar-theme-button" : undefined} aria-label="Ganti tema terang atau gelap" onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}>
+    <Sun className="hidden dark:block" aria-hidden /><Moon className="dark:hidden" aria-hidden />{sidebar && <span>Tampilan {resolvedTheme === "dark" ? "terang" : "gelap"}</span>}
   </Button>
 }

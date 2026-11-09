@@ -76,7 +76,7 @@ describe("shared workspace", () => {
 
   it("gives admin every existing permission and the full workspace", () => {
     const admin = user("ADMIN")
-    const permissions: Aksi[] = ["KELOLA_BAND", "SERAH_BAND", "KELOLA_KLINIK", "KELOLA_BASELINE", "TINJAU_KONDISI", "KELOLA_PEKERJA", "KELOLA_SHIFT", "MUAT_DEMO", "IMPOR", "KONFIRMASI_PAPARAN", "INPUT_PENGUKURAN", "HITUNG_RENCANA", "ATUR_TANGGAL", "SETUJUI_RENCANA", "UBAH_PENUGASAN", "KIRIM_INSTRUKSI", "AKUI_PESAN", "LAPOR_TINDAKAN", "VERIFIKASI"]
+    const permissions: Aksi[] = ["KELOLA_BAND", "SERAH_BAND", "KELOLA_KLINIK", "KELOLA_BASELINE", "TINJAU_KONDISI", "KELOLA_PEKERJA", "KELOLA_SHIFT", "MUAT_DEMO", "IMPOR", "KONFIRMASI_PAPARAN", "INPUT_PENGUKURAN", "HITUNG_RENCANA", "ATUR_TANGGAL", "SETUJUI_RENCANA", "UBAH_PENUGASAN", "KIRIM_INSTRUKSI", "AKUI_PESAN", "LAPOR_TINDAKAN", "VERIFIKASI", "RESET_ABSEN"]
     for (const permission of permissions) expect(boleh(admin, permission, "BEK")).toBe(true)
     const state = workspace().state
     expect(projectFor(state, admin).management).toEqual(state.management)
@@ -91,6 +91,10 @@ describe("shared workspace", () => {
     applyAction(hse, { type: "BUAT_SHIFT", tanggal: "2026-11-06", nama: "Shift demo", workerCodes: [own, "OTHER"] })
     expect(employeeActionAllowed(employee, { type: "CATAT_CHECKIN", pekerjaKode: own, kondisi: "BAIK", keluhan: [], persetujuan: true })).toBe(true)
     expect(employeeActionAllowed(employee, { type: "CATAT_PULANG", pekerjaKode: "OTHER" })).toBe(false)
+    expect(employeeActionAllowed(employee, { type: "RESET_ABSEN_MASUK", pekerjaKode: own })).toBe(true)
+    expect(employeeActionAllowed(employee, { type: "RESET_ABSEN_PULANG", pekerjaKode: own })).toBe(true)
+    expect(employeeActionAllowed(employee, { type: "RESET_ABSEN_MASUK", pekerjaKode: "OTHER" })).toBe(false)
+    expect(employeeActionAllowed(employee, { type: "RESET_ABSEN_PULANG", pekerjaKode: "OTHER" })).toBe(false)
     expect(employeeActionAllowed(employee, input("LEAK"))).toBe(false)
     expect(applyAction(employee, input("LEAK")).notice?.tipe).toBe("error")
     expect(managementOf(workspace().state).workers.some(row => row.kode === "LEAK")).toBe(false)

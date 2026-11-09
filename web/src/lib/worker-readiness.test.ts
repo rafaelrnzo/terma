@@ -26,6 +26,32 @@ describe("attendance, company baseline and HSE review", () => {
     expect(readDemoState(JSON.stringify(repeated))).toEqual({ ...repeated, notice: undefined })
     expect(readinessProgress(repeated)).toMatchObject({ checked: 1, reviewed: 0, ready: false })
   })
+  it("resets departure separately from arrival and keeps an audit trail", () => {
+    const checked = run(draft(), checkin, review, { type: "CATAT_PULANG", pekerjaKode: "W01" })
+    const departure = reducer(checked, { type: "RESET_ABSEN_PULANG", pekerjaKode: "W01" })
+    expect(currentShift(departure)?.readiness?.checkins[0]?.pulang).toBeUndefined()
+    expect(departure.kehadiran).toHaveLength(1)
+    expect(currentShift(departure)?.readiness?.reviews).toHaveLength(1)
+    expect(departure.audit[0]?.aksi).toBe("RESET_ABSEN_PULANG")
+
+    const arrival = reducer(departure, { type: "RESET_ABSEN_MASUK", pekerjaKode: "W01" })
+    expect(currentShift(arrival)?.readiness?.checkins).toEqual([])
+    expect(currentShift(arrival)?.readiness?.reviews).toEqual([])
+    expect(currentShift(arrival)?.workspace.kehadiran).toEqual([])
+    expect(arrival.kehadiran).toEqual([])
+    expect(arrival.audit[0]?.aksi).toBe("RESET_ABSEN_MASUK")
+    expect(readDemoState(JSON.stringify(arrival)).management?.shifts[0].readiness?.checkins).toEqual([])
+    expect(reducer(arrival, checkin).management?.shifts[0].readiness?.checkins).toHaveLength(1)
+  })
+  it("limits attendance reset to HSE, admin, and the worker's own server session", () => {
+    const checked = run(draft(), checkin, { type: "CATAT_PULANG", pekerjaKode: "W01" })
+    const dataOfficer = run(checked, { type: "LOGIN", userId: "data-tono" })
+    expect(reducer(dataOfficer, { type: "RESET_ABSEN_PULANG", pekerjaKode: "W01" }).notice?.tipe).toBe("error")
+    const shift = currentShift(checked)!
+    const closed = { ...checked, management: { ...checked.management!, shifts: [{ ...shift, status: "CLOSED" as const }] } }
+    expect(reducer(closed, { type: "RESET_ABSEN_MASUK", pekerjaKode: "W01" }).notice?.tipe).toBe("error")
+    expect(currentShift(closed)?.readiness?.checkins[0]?.pulang).toBeTruthy()
+  })
   it("rejects unknown workers, missing symptoms, and inconsistent good-condition answers", () => {
     for (const action of [{ ...checkin, pekerjaKode: "missing" }, { ...checkin, keluhan: [] }, { ...checkin, kondisi: "BAIK" as const }]) {
       const state = reducer(draft(), action)

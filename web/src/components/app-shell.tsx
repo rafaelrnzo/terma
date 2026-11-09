@@ -7,6 +7,8 @@ import { toast } from "sonner"
 import { ArrowRightIcon as ArrowRight } from "@phosphor-icons/react/dist/csr/ArrowRight"
 import { ListIcon as Menu } from "@phosphor-icons/react/dist/csr/List"
 import { ArrowUpRightIcon as ArrowUpRight } from "@phosphor-icons/react/dist/csr/ArrowUpRight"
+import { ArrowRightIcon } from "@phosphor-icons/react/dist/csr/ArrowRight"
+import { SignOutIcon } from "@phosphor-icons/react/dist/csr/SignOut"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
@@ -26,13 +28,14 @@ import { LoginScreen } from "@/components/login-screen"
 import { navigationGroup, isShiftRoute, roleHomePath, pageAllowedFor } from "@/lib/navigation"
 import { currentShift } from "@/lib/management-state"
 
-function UserSelect({ mobile = false }: { mobile?: boolean }) {
+function SidebarAccount() {
   const { user, logout } = useApp()
   const crew = REGU.find(row => row.kode === user?.reguKode)
   if (!user) return null
-  return <div data-tour={mobile ? "role-mobile" : "role"} className={mobile ? "flex min-w-0 items-center gap-2 sm:hidden" : "hidden items-center gap-2 sm:flex"}>
-    <span className="account-trigger account-identity"><span className="account-avatar" aria-hidden>{user.nama.slice(0, 1)}</span><span><strong>{user.nama}</strong><small>{LABEL_PERAN[user.role]}{crew ? ` · ${crew.nama}` : ""}</small></span></span>
-    <Button variant="ghost" size="sm" onClick={() => { void logout(); toast.success("Anda sudah keluar.") }}>Keluar</Button>
+  return <div className="sidebar-account" data-tour="role">
+    <div className="sidebar-account-identity"><span className="account-avatar" aria-hidden>{user.nama.slice(0, 1)}</span><span><strong>{user.nama}</strong><small>{LABEL_PERAN[user.role]}{crew ? ` · ${crew.nama}` : ""}</small></span></div>
+    <ThemeToggle sidebar />
+    <Button variant="ghost" className="sidebar-logout-button" onClick={() => { void logout(); toast.success("Anda sudah keluar.") }}><SignOutIcon />Keluar</Button>
   </div>
 }
 
@@ -44,6 +47,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const needsShift = isShiftRoute(path) || ["/laporan", "/analitik", "/insight", "/monitoring", "/absensi"].includes(path)
   const blockedExecution = shift?.status === "DRAFT" && ["/instruksi", "/tindakan"].includes(path)
   const [menuOpen, setMenuOpen] = useState(false)
+  const shiftHref = user?.role === "PEGAWAI" ? "/pegawai" : user?.role === "KLINIK" ? "/klinik" : shift ? `/shift/${shift.id}` : "/ringkasan"
   useEffect(() => {
     const n = state.notice
     if (!n) return
@@ -60,33 +64,26 @@ export function AppShell({ children }: { children: ReactNode }) {
     <div className="app-frame">
       <a href="#konten-utama" className="skip-link no-print">Lewati navigasi ke konten utama</a>
       <aside className="app-sidebar no-print" aria-label="Navigasi ruang kerja" data-tour="navigation">
-        <div className="sidebar-brand"><Wordmark /></div><div className="sidebar-site"><span className="site-avatar">K</span><span><strong>Lokasi konstruksi</strong><small>Lokasi 1 · Indonesia</small></span></div><p className="nav-section-label">{user ? `${LABEL_PERAN[user.role]}${user.reguKode ? ` · ${REGU.find(crew => crew.kode === user.reguKode)?.nama}` : " · SELURUH LOKASI"}` : "RUANG KERJA"}</p>
+        <div className="sidebar-brand"><Wordmark /></div><div className="sidebar-site"><span className="site-avatar">K</span><span><strong>Lokasi konstruksi</strong><small>Lokasi 1 · Indonesia</small></span></div><Link href={shiftHref} className="sidebar-shift-link"><span>{shift ? `${shift.nama} · ${shift.tanggal}` : "Pilih shift"}</span><ArrowRightIcon size={15} aria-hidden /></Link><p className="nav-section-label">{user ? `${LABEL_PERAN[user.role]}${user.reguKode ? ` · ${REGU.find(crew => crew.kode === user.reguKode)?.nama}` : " · SELURUH LOKASI"}` : "RUANG KERJA"}</p>
         <Navigation />
-        <div className="sidebar-support"><Link href="/" className="nav-item gap-3"><ArrowUpRight className="size-4" aria-hidden />Tentang TERMA</Link></div>
+        <div className="sidebar-support"><Link href="/" className="nav-item gap-3"><ArrowUpRight className="size-4" aria-hidden />Tentang TERMA</Link><SidebarAccount /></div>
       </aside>
       <div className="app-workspace">
       <header className="app-header no-print" data-page-chrome>
-        <div className="flex min-w-0 items-center justify-between gap-4">
+        <div className="flex w-full min-w-0 items-center justify-between gap-4">
           <div className="lg:hidden"><Wordmark /></div>
           <p className="workspace-breadcrumb hidden text-sm lg:flex"><span>{LOKASI}</span><span aria-hidden>/</span><span className="font-semibold text-foreground">{group?.label ?? "Ruang kerja"}</span></p>
           <div className="flex min-w-0 items-center gap-2">
-            <WorkspaceTools /><ThemeToggle />
-            <UserSelect />
+            <WorkspaceTools />
             <Dialog open={menuOpen} onOpenChange={setMenuOpen}>
               <DialogTrigger asChild><Button variant="secondary" size="icon" aria-label="Buka navigasi" className="lg:hidden" data-tour="navigation-mobile"><Menu /></Button></DialogTrigger>
               <DialogContent className="left-0 top-0 flex h-dvh max-h-dvh w-[calc(100%-2rem)] max-w-80 translate-x-0 translate-y-0 flex-col gap-0 rounded-none border-0 p-0 sm:max-w-80 data-open:zoom-in-100 data-closed:zoom-out-100">
                 <DialogHeader className="shrink-0 border-b p-6 pr-16"><DialogTitle>TERMA</DialogTitle><DialogDescription>Ruang kerja paparan panas</DialogDescription></DialogHeader>
-                <Navigation mobile onNavigate={() => setMenuOpen(false)} />
-
+                <Link href={shiftHref} onClick={() => setMenuOpen(false)} className="sidebar-shift-link sidebar-shift-link-mobile"><span>{shift ? `${shift.nama} · ${shift.tanggal}` : "Pilih shift"}</span><ArrowRightIcon size={15} aria-hidden /></Link>
+                <div className="mobile-sidebar-scroll"><Navigation mobile onNavigate={() => setMenuOpen(false)} /></div>
+                <div className="mobile-sidebar-footer"><SidebarAccount /></div>
               </DialogContent>
             </Dialog>
-          </div>
-        </div>
-        <div className="context-bar">
-
-          <UserSelect mobile />
-          <div className="flex min-w-0 items-center gap-3">
-            <Link href={user?.role === "KLINIK" ? "/klinik" : shift ? `/shift/${shift.id}` : "/ringkasan"} className="text-sm font-medium underline-offset-4 hover:underline">{shift ? `${shift.nama} · ${shift.tanggal}` : "Pilih shift"}</Link>
           </div>
         </div>
       </header>
