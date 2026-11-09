@@ -17,6 +17,7 @@ describe("IoT event stream", () => {
     const response = await GET(new Request("http://web.test/api/iot/stream?after=0"))
     expect(response.status).toBe(200)
     expect(response.headers.get("content-type")).toBe("text/event-stream")
+    expect(response.headers.get("cache-control")).toContain("no-transform")
     const reader = response.body!.getReader()
     const first = await Promise.race([
       reader.read(),
