@@ -23,6 +23,9 @@
 .kiosk-entry-modes [aria-pressed=true] .icon-fill { opacity: 1; scale: 1; }
 .kiosk-entry-modes [aria-pressed=true] .icon-outline { opacity: 0; }
 .kiosk-worker-select { display: grid; gap: .65rem; margin: 1.5rem 0; }
+.kiosk-fixed-identity { display: flex; flex-direction: column; gap: .25rem; margin: 1.5rem 0; padding: 1rem; border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--secondary); }
+.kiosk-fixed-identity span, .kiosk-fixed-identity small { color: var(--muted-foreground); font-size: .75rem; }
+.kiosk-fixed-identity strong { font-size: 1.125rem; font-weight: 600; }
 .kiosk-identify-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 13rem; gap: 1rem; background: var(--background); border: 1px dashed var(--border); border-radius: var(--radius-lg); color: var(--muted-foreground); text-align: center; padding: 1.25rem; }
 .kiosk-identify-empty > svg { color: var(--primary); }
 .kiosk-identify-empty p { font-size: .875rem; }

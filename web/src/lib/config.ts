@@ -22,7 +22,7 @@ export const USERS: User[] = [
   { id: "data-tono", username: "tono", nama: "Tono", role: "PETUGAS_DATA" },
   { id: "klinik-dewi", username: "dewi", nama: "Dewi", role: "KLINIK" },
   { id: "admin-demo", username: "admin", nama: "Admin Demo", role: "ADMIN" },
-  { id: "pegawai-demo-andi", username: "andi", nama: "Andi (demo)", role: "PEGAWAI", pekerjaKode: "DEMO001" },
+  { id: "pegawai-demo-raya", username: "raya", nama: "Raya", role: "PEGAWAI", pekerjaKode: "RAYA001" },
   // Server jobs (05.30 draft) act as this account; it can never sign in (see lib/server/auth.ts).
   { id: SYSTEM_USER_ID, username: "sistem", nama: "Sistem TERMA (otomatis)", role: "HSE" },
 ]

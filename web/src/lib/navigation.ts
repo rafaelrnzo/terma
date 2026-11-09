@@ -46,7 +46,7 @@ export function navigationGroup(path: string) {
 /** Browser prototype route projection; server authentication remains a separate integration. */
 export function pageAllowedFor(user: User, path: string) {
   if (user.role === "ADMIN") return true
-  if (user.role === "PEGAWAI") return ["/", "/ringkasan", "/pegawai"].includes(path)
+  if (user.role === "PEGAWAI") return ["/", "/ringkasan", "/pegawai", "/kiosk"].includes(path)
   if (path === "/pengelola" || path === "/pegawai") return false
   if (path === "/laporan/bulanan") return ["HSE","MANDOR","KLINIK"].includes(user.role)
   if (path.startsWith("/pemantauan/")) return user.role === "HSE" || user.role === "KLINIK"

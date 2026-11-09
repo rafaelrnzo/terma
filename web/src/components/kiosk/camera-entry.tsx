@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button"
 import { useKioskCamera } from "./use-kiosk-camera"
 import type { CheckinMethod } from "@/lib/kiosk-entry"
 
-export function CameraEntry({ name, onConfirm }: { name?: string; onConfirm: (method: CheckinMethod) => void }) {
+export function CameraEntry({ name, demoIdentity = false, onConfirm }: { name?: string; demoIdentity?: boolean; onConfirm: (method: CheckinMethod) => void }) {
   const camera = useKioskCamera()
   const [preview, setPreview] = useState(false)
   const [thermal, setThermal] = useState(true)
@@ -26,8 +26,8 @@ export function CameraEntry({ name, onConfirm }: { name?: string; onConfirm: (me
       {camera.status === "idle" && !preview && <span className="camera-standby"><CameraIcon size={34} />Kamera belum dibuka</span>}
     </div>
     <div className="camera-mode-switch" role="group" aria-label="Tampilan kamera"><Button size="sm" variant="ghost" aria-pressed={thermal} onClick={() => setThermal(true)}>Efek termal</Button><Button size="sm" variant="ghost" aria-pressed={!thermal} onClick={() => setThermal(false)}>Normal</Button></div>
-    <p className="kiosk-device-note">Efek termal hanya visual, bukan ukur suhu.</p>
+    <p className="kiosk-device-note">{demoIdentity ? `Kamera menampilkan pratinjau; identitas ${name} berasal dari akun yang masuk, bukan pengenalan wajah. Efek termal hanya visual.` : "Efek termal hanya visual, bukan ukur suhu."}</p>
     {camera.error && <p role="alert" className="kiosk-entry-error"><VideoCameraSlashIcon size={18} />{camera.error}</p>}
-    {opened ? <div className="kiosk-entry-actions"><Button disabled={!name} onClick={() => { camera.stop(); onConfirm(preview ? "PRATINJAU_KAMERA" : "KAMERA") }}>{name ? `Ya, saya ${name}` : "Pilih nama pekerja untuk melanjutkan"}<ArrowRightIcon /></Button><Button variant="ghost" onClick={() => { camera.stop(); setPreview(false) }}>Tutup kamera</Button></div> : <div className="kiosk-entry-actions"><Button onClick={() => { setPreview(false); void camera.start() }} disabled={camera.status === "starting"}><CameraIcon />{camera.status === "starting" ? "Membuka kamera…" : camera.status === "error" ? "Coba buka kamera lagi" : "Buka kamera"}</Button><Button variant="outline" onClick={showPreview}>Pratinjau tanpa kamera</Button>{camera.status === "starting" && <Button variant="ghost" onClick={camera.stop}>Batalkan</Button>}</div>}
+    {opened ? <div className="kiosk-entry-actions"><Button disabled={!name} onClick={() => { camera.stop(); onConfirm(preview ? "PRATINJAU_KAMERA" : "KAMERA") }}>{name ? demoIdentity ? `Lanjut sebagai ${name}` : `Ya, saya ${name}` : "Pilih nama pekerja untuk melanjutkan"}<ArrowRightIcon /></Button><Button variant="ghost" onClick={() => { camera.stop(); setPreview(false) }}>Tutup kamera</Button></div> : <div className="kiosk-entry-actions"><Button onClick={() => { setPreview(false); void camera.start() }} disabled={camera.status === "starting"}><CameraIcon />{camera.status === "starting" ? "Membuka kamera…" : camera.status === "error" ? "Coba buka kamera lagi" : "Buka kamera"}</Button><Button variant="outline" onClick={showPreview}>Pratinjau tanpa kamera</Button>{camera.status === "starting" && <Button variant="ghost" onClick={camera.stop}>Batalkan</Button>}</div>}
   </div>
 }

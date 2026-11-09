@@ -54,7 +54,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   // The introduction is readable without entering the operational workspace or waiting for storage.
   if (path === "/") return <>{children}</>
   if (ready && signedOut) return <LoginScreen />
-  if (path === "/kiosk" && user?.role !== "PEGAWAI") return <>{children}</>
+  if (path === "/kiosk") return <>{children}</>
   const group = navigationGroup(path)
   return (
     <div className="app-frame">
