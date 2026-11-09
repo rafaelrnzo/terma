@@ -94,7 +94,7 @@ function setNativeValue(input: HTMLInputElement | HTMLTextAreaElement, value: st
 
 export function DemoFlow() {
   const router = useRouter()
-  const { user, state } = useApp()
+  const { user, state, ready } = useApp()
   const [open, setOpen] = useState(false)
   const [activeId, setActiveId] = useState<string | null>(null)
   const [status, setStatus] = useState<Status>("idle")
@@ -227,7 +227,7 @@ export function DemoFlow() {
     }
   }
 
-  if (!user || !choices.length) return null
+  if (!ready || !user || !choices.length) return null
   return <div className="flow-layer no-print">
     {pointer && status === "running" && <span className="flow-pointer" style={{ left: pointer.x, top: pointer.y }} aria-hidden><CursorClickIcon size={24} weight="fill" /></span>}
     {open ? <section className="flow-panel" aria-label="Pengendali alur interaktif">
