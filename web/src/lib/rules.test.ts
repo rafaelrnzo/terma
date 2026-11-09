@@ -70,7 +70,7 @@ describe("NIOSH acclimatization schedule", () => {
 describe("reading age is measured against the interval it covers", () => {
   it("a 06:30 reading reused for the 12.00 interval is stale; a 12:05 reading is fresh", () => {
     const base = tBacaan().filter((b) => b.zonaKode === "GUDANG")
-    const early = base.map((b) => (b.jamMulai === 12 ? { ...b, waktuCatat: `${T_TANGGAL}T06:30:00` } : b))
+    const early = base.map((b) => (b.jamMulai === 12 ? { ...b, waktuCatat: `${T_TANGGAL}T06:30:00+07:00` } : b))
     const r1 = run(pekerja("W007"), penugasan("W007", "ANGKUT", "GUDANG"), hadirPenuh("W007"), undefined, early)
     expect(r1.intervals.find((i) => i.jamMulai === 12)!.kualitas).toBe("KEDALUWARSA")
     const r2 = run(pekerja("W007"), penugasan("W007", "ANGKUT", "GUDANG"), hadirPenuh("W007"), undefined, base)
