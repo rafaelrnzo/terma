@@ -4,6 +4,7 @@ import "./globals.css"
 import { AppShell } from "@/components/app-shell"
 import { AppProvider } from "@/lib/store"
 import { UiProvider } from "@/components/ui-provider"
+import { DemoFlow } from "@/components/demo-flow"
 
 const geist = Geist({ variable: "--font-geist", subsets: ["latin"], display: "swap" })
 
@@ -17,7 +18,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="id" className={geist.variable} suppressHydrationWarning>
       <body className="antialiased">
         <UiProvider><AppProvider>
-          <AppShell>{children}</AppShell>
+          <AppShell>{children}</AppShell><DemoFlow />
         </AppProvider></UiProvider>
       </body>
     </html>
