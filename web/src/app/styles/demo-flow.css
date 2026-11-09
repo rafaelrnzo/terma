@@ -1,7 +1,7 @@
-.flow-layer { position: fixed; z-index: 90; right: 24px; bottom: 24px; pointer-events: none; font-family: var(--font-geist), sans-serif; }
+.flow-layer { position: fixed; z-index: 1000000001; right: 24px; bottom: 24px; pointer-events: none; font-family: var(--font-geist), sans-serif; }
 .flow-layer > *:not(.flow-pointer) { pointer-events: auto; }
 .flow-launch { box-shadow: 0 10px 32px rgb(20 35 60 / 18%); }
-.flow-panel { width: min(370px, calc(100vw - 32px)); overflow: hidden; border: 1px solid var(--border); border-radius: 14px; background: var(--card); box-shadow: 0 20px 56px rgb(20 35 60 / 18%); color: var(--foreground); }
+.flow-panel { width: min(370px, calc(100vw - 32px)); max-height: calc(100dvh - 48px); overflow-y: auto; border: 1px solid var(--border); border-radius: 14px; background: var(--card); box-shadow: 0 20px 56px rgb(20 35 60 / 18%); color: var(--foreground); }
 .flow-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding: 18px 18px 16px; border-bottom: 1px solid var(--border); }
 .flow-header h2 { font-size: 16px; font-weight: 700; letter-spacing: -.02em; }
 .flow-header p { margin-top: 4px; color: var(--muted-foreground); font-size: 12px; line-height: 1.45; }
@@ -19,9 +19,25 @@
 .flow-actions { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 9px; }
 .flow-actions button { min-height: 36px; }
 .flow-foot { padding: 12px 18px; border-top: 1px solid var(--border); color: var(--muted-foreground); font-size: 11px; line-height: 1.5; }
-.flow-pointer { position: fixed; z-index: 91; display: grid; place-items: center; width: 34px; height: 34px; transform: translate(-3px, -3px); color: var(--primary); filter: drop-shadow(0 2px 2px var(--card)); transition: left 380ms ease-out, top 380ms ease-out; pointer-events: none; }
+.flow-pointer { position: fixed; z-index: 1000000002; display: grid; place-items: center; width: 34px; height: 34px; transform: translate(-3px, -3px); color: var(--primary); filter: drop-shadow(0 2px 2px var(--card)); transition: left 380ms ease-out, top 380ms ease-out; pointer-events: none; }
 .flow-target { outline: 3px solid var(--primary) !important; outline-offset: 4px; border-radius: 6px; }
 .flow-header button:focus-visible { outline: 2px solid var(--ring); outline-offset: -3px; }
 @media (max-width: 600px) { .flow-layer { right: 16px; bottom: 16px; } .flow-panel { max-height: min(75dvh, 530px); overflow-y: auto; } }
 @media (prefers-reduced-motion: reduce) { .flow-pointer, .flow-progress span { transition: none; } }
 @media print { .flow-layer { display: none; } }
+
+.flow-band-guide { padding: 16px 18px; max-height: min(65dvh, 620px); overflow-y: auto; }
+.flow-guide-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.flow-guide-heading h3 { font-size: 14px; font-weight: 650; }
+.flow-guide-heading > span { color: var(--muted-foreground); font-size: 12px; }
+.flow-band-guide p { margin: 8px 0; color: var(--muted-foreground); font-size: 12px; line-height: 1.5; }
+.flow-guide-steps { display: grid; gap: 12px; margin: 16px 0; list-style: none; padding: 0; }
+.flow-guide-steps li { display: flex; align-items: flex-start; gap: 10px; }
+.flow-guide-steps li > span { display: grid; flex: none; place-items: center; width: 24px; height: 24px; border: 1px solid var(--border); border-radius: 50%; font-size: 11px; color: var(--muted-foreground); }
+.flow-guide-steps li[data-complete="true"] > span { color: var(--primary); border-color: transparent; }
+.flow-guide-steps li[data-current="true"] > span { color: var(--primary); border-color: var(--primary); }
+.flow-guide-steps strong { display: block; padding-top: 3px; font-size: 12px; font-weight: 600; }
+.flow-guide-note { padding-top: 12px; border-top: 1px solid var(--border); }
+.flow-band-after { border-top: 1px solid var(--border); }
+.flow-band-after > summary { padding: 12px 18px; color: var(--primary); font-size: 12px; font-weight: 600; cursor: pointer; }
+.flow-band-after > summary:focus-visible { outline: 2px solid var(--ring); outline-offset: -3px; }
