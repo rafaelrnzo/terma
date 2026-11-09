@@ -3,7 +3,9 @@
 import { useEffect, useState } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { managementOf } from "@/lib/management-state"
+import { currentShift, managementOf } from "@/lib/management-state"
+import { isRayaWaterDemo } from "@/lib/drink-monitor"
+import { placementOf } from "@/lib/station-placement"
 import { stationWbgt, type IotEvent } from "@/lib/iot"
 import { useIotEvents } from "@/lib/use-iot-events"
 import { useApp } from "@/lib/store"
@@ -22,6 +24,7 @@ export function LiveDevices() {
     return () => clearInterval(timer)
   }, [])
   const workers = managementOf(state).workers
+  const demo = isRayaWaterDemo(currentShift(state))
   const devices = [...new Map(events.map(event => [event.deviceId, event])).keys()].sort()
 
   return <Card>
@@ -42,7 +45,7 @@ export function LiveDevices() {
               <div><p className="font-medium">{id}</p><p className="text-xs text-muted-foreground">{KIND[last.type]}</p></div>
               <Badge variant={online ? "riskGreen" : "kualitas"}>{online ? "Online" : "Tidak mengirim"}</Badge>
             </div>
-            <p className="mt-3 text-sm">{detail(own, user?.role === "KLINIK" || user?.role === "ADMIN", workers)}</p>
+            <p className="mt-3 text-sm">{detail(own, user?.role === "KLINIK" || user?.role === "ADMIN", workers, demo, placementOf(state, id)?.selisihGlobe ?? 0)}</p>
             <p className="mt-1 text-xs text-muted-foreground">Terakhir {time(last.receivedAt)} · {own.length} kiriman</p>
           </li>
         })}</ul>}
@@ -50,16 +53,16 @@ export function LiveDevices() {
   </Card>
 }
 
-function detail(own: IotEvent[], clinic: boolean, workers: { kode: string; nama: string; kartuUid?: string }[]) {
+function detail(own: IotEvent[], clinic: boolean, workers: { kode: string; nama: string; kartuUid?: string }[], demo: boolean, globeDelta: number) {
   const last = own.at(-1)!
   switch (last.type) {
-    case "station": return `ISBB ${stationWbgt(last).isbb} °C · udara ${last.airC} °C · RH ${last.humidityPct}% · bola basah ${last.wetBulbC ?? "—"} °C`
+    case "station": return `ISBB ${stationWbgt(last, globeDelta).isbb} °C · udara ${last.airC} °C · RH ${last.humidityPct}% · bola basah ${last.wetBulbC ?? "—"} °C`
     case "band": return clinic ? `Denyut ${last.heartRate ?? "—"} bpm · kulit ${last.skinC ?? "—"} °C` : "Bacaan diterima · nilai hanya untuk Klinik"
     case "water":
     case "water_heartbeat": {
       const tap = own.findLast(event => event.type === "water")
       if (tap?.type !== "water") return "Siap, belum ada tap kartu"
-      const worker = workers.find(row => row.kartuUid === tap.uid)
+      const worker = workers.find(row => demo ? row.kode === "RAYA001" : row.kartuUid === tap.uid)
       return `Tap terakhir ${time(tap.receivedAt)}: ${worker ? worker.nama : `kartu ${tap.uid} belum terdaftar`}`
     }
   }
