@@ -59,7 +59,7 @@ export function handleAlert(s: AppState, a: ShiftAlertAction): AppState {
   const shift = currentShift(s)
   if (!user || !shift || shift.status === "CLOSED") return notice(s, "error", "Peringatan hanya ditangani pada shift yang belum ditutup.")
   const worker = shift.workspace.pekerja.find(row => row.kode === a.pekerjaKode)
-  if (!worker || !["HSE", "MANDOR"].includes(user.role) || (user.role === "MANDOR" && worker.reguKode !== user.reguKode)) return notice(s, "error", "Peringatan ini bukan untuk regu Anda.")
+  if (!worker || !["ADMIN", "HSE", "MANDOR"].includes(user.role) || (user.role === "MANDOR" && worker.reguKode !== user.reguKode)) return notice(s, "error", "Peringatan ini bukan untuk regu Anda.")
   if (!KINDS.includes(a.kind) || !(a.tindakan in ALERT_RESPONSES) || !a.key.startsWith(`${a.kind}:${a.pekerjaKode}:`)) return notice(s, "error", "Tindakan peringatan tidak valid.")
   if (shift.alertActions?.some(row => row.key === a.key)) return notice(s, "info", "Peringatan ini sudah ditangani.")
   const row: AlertAction = { key: a.key, pekerjaKode: a.pekerjaKode, kind: a.kind, tindakan: a.tindakan, oleh: user.nama, waktu: new Date().toISOString() }

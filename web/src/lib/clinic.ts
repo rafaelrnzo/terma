@@ -31,7 +31,7 @@ export type ClinicAction =
 export function clinicOf(s: AppState): ClinicState { return managementOf(s).clinic ?? { consents: [], profiles: [], followups: [] } }
 export function hasConsent(s: AppState, code: string, kind: ConsentKind) { return clinicOf(s).consents.some(row => row.pekerjaKode === code && row.jenis === kind && row.aktif) }
 export function medicalProfileFor(s: AppState, user: User, code: string) {
-  if (user.role !== "KLINIK" || !hasConsent(s, code, "MCU")) return undefined
+  if ((user.role !== "KLINIK" && user.role !== "ADMIN") || !hasConsent(s, code, "MCU")) return undefined
   const profile = clinicOf(s).profiles.find(row => row.pekerjaKode === code)
   return profile ? { ...profile, obatBerisiko: hasConsent(s, code, "OBAT") && profile.obatBerisiko } : undefined
 }
@@ -47,7 +47,7 @@ export function medicalRiskPoints(s: AppState, code: string) {
   return { points, available: true }
 }
 export function clinicInbox(s: AppState, user: User, date: string) {
-  if (user.role !== "KLINIK") return []
+  if (user.role !== "KLINIK" && user.role !== "ADMIN") return []
   const m = managementOf(s)
   return m.shifts.filter(shift => shift.tanggal === date).flatMap(shift => (shift.readiness?.checkins ?? [])
     .filter(checkin => checkin.kondisi !== "BAIK")

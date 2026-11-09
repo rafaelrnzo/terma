@@ -21,12 +21,12 @@ export function WorkerBandCell({ code, date }: { code: string; date: string }) {
   const shift = currentShift(state)
   const active = currentBandAllocations(state)
   const allocation = active.find(row => row.pekerjaKode === code)
-  if (user?.role === "KLINIK" && !hasConsent(state, code, "BAND")) return <div>
+  if ((user?.role === "KLINIK" || user?.role === "ADMIN") && !hasConsent(state, code, "BAND")) return <div>
     <Button size="sm" variant="outline" onClick={() => dispatch({ type: "PERSETUJUAN_MEDIS", pekerjaKode: code, jenis: "BAND", aktif: true })}>Catat persetujuan Band</Button>
     <p className="mt-1 text-xs text-muted-foreground">Setelah persetujuan tertulis pekerja</p>
   </div>
-  const assignable = user?.role === "HSE" && shift && shift.tanggal === date && shift.status !== "CLOSED" && shift.workspace.pekerja.some(worker => worker.kode === code) && !allocation?.dipakaiPada
-  if (!assignable) return <div><WorkerBandStatus code={code} date={date} />{user?.role === "HSE" && allocation?.dipakaiPada && releaseSuggested(state, code) && <p className="mt-1 text-xs text-success">Boleh dilepas: aklimatisasi selesai, hijau 3 shift</p>}</div>
+  const assignable = (user?.role === "HSE" || user?.role === "ADMIN") && shift && shift.tanggal === date && shift.status !== "CLOSED" && shift.workspace.pekerja.some(worker => worker.kode === code) && !allocation?.dipakaiPada
+  if (!assignable) return <div><WorkerBandStatus code={code} date={date} />{(user?.role === "HSE" || user?.role === "ADMIN") && allocation?.dipakaiPada && releaseSuggested(state, code) && <p className="mt-1 text-xs text-success">Boleh dilepas: aklimatisasi selesai, hijau 3 shift</p>}</div>
   if (!hasConsent(state, code, "BAND")) return <p className="text-sm text-muted-foreground">Perlu persetujuan Band dari Klinik</p>
   const rank = bandPriority(state).find(row => row.kode === code)?.rank
   if (allocation) return <div><p className="text-sm">{allocation.bandId} ditetapkan</p><p className="mt-1 text-xs text-muted-foreground">Menunggu serah-terima mandor</p></div>
@@ -44,7 +44,7 @@ export function BandSuggestionButton() {
   const { state, user, dispatch } = useApp()
   const shift = currentShift(state)
   const suggestions = suggestedAllocations(state)
-  if (user?.role !== "HSE" || !shift || shift.status === "CLOSED" || !suggestions.length) return null
+  if ((user?.role !== "HSE" && user?.role !== "ADMIN") || !shift || shift.status === "CLOSED" || !suggestions.length) return null
   return <Button size="sm" variant="outline" onClick={() => { for (const row of suggestions) dispatch({ type: "ATUR_BAND", bandId: row.bandId, pekerjaKode: row.pekerjaKode }) }}>Terapkan usulan Band ({suggestions.length})</Button>
 }
 
@@ -52,7 +52,7 @@ export function BandSuggestionButton() {
 export function BandHandoff() {
   const { state, user, dispatch } = useApp()
   const shift = currentShift(state)
-  if (!user || user.role !== "MANDOR" || !shift) return null
+  if (!user || (user.role !== "MANDOR" && user.role !== "ADMIN") || !shift) return null
   const workers = lingkupPekerja(user, shift.workspace.pekerja)
   const mine = currentBandAllocations(state).filter(row => workers.some(worker => worker.kode === row.pekerjaKode))
   // Scanning a Band's QR records the next step for it: handed over, or returned if it is being worn.

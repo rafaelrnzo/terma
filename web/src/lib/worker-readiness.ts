@@ -71,7 +71,7 @@ export function recordReadiness(state: AppState, action: Exclude<ReadinessAction
   const shift = currentShift(state)
   if (!shift?.readiness || shift.status === "CLOSED") return notice(state, "error", "Check-in hanya dapat dicatat pada shift yang belum ditutup.")
   if (action.type === "CATAT_CHECKIN" && shift.tanggal > hariIni()) return notice(state, "error", "Absen belum dibuka untuk tanggal shift yang akan datang.")
-  const worker = state.pekerja.find(row => row.kode === action.pekerjaKode)
+  const worker = shift.workspace.pekerja.find(row => row.kode === action.pekerjaKode)
   if (!worker) return notice(state, "error", "ID pekerja tidak terdaftar pada shift ini.")
   const readiness = shift.readiness
   if (action.type === "CATAT_PULANG") {

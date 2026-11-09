@@ -15,7 +15,7 @@ export function manageBand(s: AppState, action: BandAction): AppState {
   const active=currentBandAllocations(s)
   let bands=shift.bands ?? []
   if (action.type === "ATUR_BAND") {
-    if (user.role !== "HSE") return notice(s,"error","Hanya HSE yang menetapkan pemakai Band.")
+    if (user.role !== "HSE" && user.role !== "ADMIN") return notice(s,"error","Hanya HSE atau Admin yang menetapkan pemakai Band.")
     if (!BAND_UNITS.includes(action.bandId) || !s.pekerja.some(row=>row.kode===action.pekerjaKode)) return notice(s,"error","Band atau peserta tidak tersedia.")
     if (!hasConsent(s,action.pekerjaKode,"BAND")) return notice(s,"error","Persetujuan Band aktif diperlukan.")
     const occupied=active.find(row=>row.bandId===action.bandId)
@@ -27,7 +27,7 @@ export function manageBand(s: AppState, action: BandAction): AppState {
   } else {
     const allocation=active.find(row=>row.id===action.allocationId)
     const worker=s.pekerja.find(row=>row.kode===allocation?.pekerjaKode)
-    if (!allocation || !worker || user.role !== "MANDOR" || worker.reguKode !== user.reguKode) return notice(s,"error","Serah-terima hanya untuk Band regu Anda.")
+    if (!allocation || !worker || (user.role !== "ADMIN" && (user.role !== "MANDOR" || worker.reguKode !== user.reguKode))) return notice(s,"error","Serah-terima hanya untuk Band regu Anda.")
     if (shift.status !== "ACTIVE") return notice(s,"error","Serah-terima dilakukan pada shift berjalan.")
     if (action.type === "SERAH_BAND" && !hasConsent(s,worker.kode,"BAND")) return notice(s,"error","Persetujuan Band sudah tidak aktif.")
     if (action.type === "SERAH_BAND" && allocation.dipakaiPada) return notice(s,"info","Pemakaian Band sudah tercatat.")

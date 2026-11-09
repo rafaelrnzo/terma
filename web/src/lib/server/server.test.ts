@@ -4,12 +4,13 @@ import { tmpdir } from "node:os"
 import { join } from "node:path"
 import { beforeEach, describe, expect, it } from "vitest"
 import { USERS } from "../config"
+import { boleh, type Aksi } from "../access"
 import { managementOf } from "../management-state"
 import { emptyWorkspaceState, reducer } from "../store"
 import type { Action, AppState } from "../store-state"
 import { authenticate, hashPassword, sessionToken, userFromToken, verifyPassword } from "./auth"
 import { projectFor } from "./projection"
-import { applyAction, workspace } from "./workspace-store"
+import { applyAction, employeeActionAllowed, workspace } from "./workspace-store"
 import { prepareMorningDraft } from "./morning-draft"
 
 const user = (role: string) => USERS.find(row => row.role === role)!
@@ -72,6 +73,33 @@ describe("shared workspace", () => {
     expect(forHse.sesi?.userId).toBe(hse.id)
     expect(managementOf(projectFor(s, clinic)).clinic?.profiles).toHaveLength(1)
   })
+
+  it("gives admin every existing permission and the full workspace", () => {
+    const admin = user("ADMIN")
+    const permissions: Aksi[] = ["KELOLA_BAND", "SERAH_BAND", "KELOLA_KLINIK", "KELOLA_BASELINE", "TINJAU_KONDISI", "KELOLA_PEKERJA", "KELOLA_SHIFT", "MUAT_DEMO", "IMPOR", "KONFIRMASI_PAPARAN", "INPUT_PENGUKURAN", "HITUNG_RENCANA", "ATUR_TANGGAL", "SETUJUI_RENCANA", "UBAH_PENUGASAN", "KIRIM_INSTRUKSI", "AKUI_PESAN", "LAPOR_TINDAKAN", "VERIFIKASI"]
+    for (const permission of permissions) expect(boleh(admin, permission, "BEK")).toBe(true)
+    const state = workspace().state
+    expect(projectFor(state, admin).management).toEqual(state.management)
+  })
+
+  it("limits the employee to own attendance and own projected records", () => {
+    const employee = user("PEGAWAI")
+    const own = employee.pekerjaKode!
+    const input = (kode: string): Action => ({ type: "SIMPAN_PEKERJA", input: { kode, nama: kode, reguKode: "COR", tanggalMulai: "2026-01-01", tugasKode: "PEMERIKSAAN", zonaKode: "GUDANG", apd: "Standar" } })
+    applyAction(hse, input(own))
+    applyAction(hse, input("OTHER"))
+    applyAction(hse, { type: "BUAT_SHIFT", tanggal: "2026-11-06", nama: "Shift demo", workerCodes: [own, "OTHER"] })
+    expect(employeeActionAllowed(employee, { type: "CATAT_CHECKIN", pekerjaKode: own, kondisi: "BAIK", keluhan: [], persetujuan: true })).toBe(true)
+    expect(employeeActionAllowed(employee, { type: "CATAT_PULANG", pekerjaKode: "OTHER" })).toBe(false)
+    expect(employeeActionAllowed(employee, input("LEAK"))).toBe(false)
+    expect(applyAction(employee, input("LEAK")).notice?.tipe).toBe("error")
+    expect(managementOf(workspace().state).workers.some(row => row.kode === "LEAK")).toBe(false)
+    const projected = projectFor(workspace().state, employee)
+    expect(projected.pekerja.map(row => row.kode)).toEqual([own])
+    expect(managementOf(projected).workers.map(row => row.kode)).toEqual([own])
+    expect(managementOf(projected).shifts[0].workspace.pekerja.map(row => row.kode)).toEqual([own])
+    expect(JSON.stringify(projected)).not.toContain("OTHER")
+  })
 })
 
 describe("05.30 draft", () => {
@@ -88,4 +116,3 @@ describe("05.30 draft", () => {
     expect(authenticate("sistem", "apa-saja")).toBeNull()
   })
 })
-

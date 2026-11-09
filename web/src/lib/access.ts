@@ -54,6 +54,7 @@ export class AksesDitolak extends Error {
 }
 
 export function boleh(user: User, aksi: Aksi, reguKode?: string): boolean {
+  if (user.role === "ADMIN") return true
   if (!IZIN[aksi].includes(user.role)) return false
   if (user.role === "MANDOR" && reguKode !== undefined && reguKode !== user.reguKode) return false
   return true
@@ -70,6 +71,7 @@ export function wajib(user: User, aksi: Aksi, reguKode?: string) {
 
 /** Read scope: a foreman only sees workers of the crew they are assigned to. */
 export function lingkupPekerja(user: User, pekerja: Pekerja[]): Pekerja[] {
+  if (user.role === "PEGAWAI") return pekerja.filter((p) => p.kode === user.pekerjaKode)
   if (user.role === "MANDOR") return pekerja.filter((p) => p.reguKode === user.reguKode)
   return pekerja
 }
@@ -80,8 +82,10 @@ export function lihatRegu(user: User, reguKode: string) {
 }
 
 export const LABEL_PERAN: Record<Role, string> = {
+  ADMIN: "Admin",
   KLINIK: "Klinik",
   HSE: "HSE",
   MANDOR: "Mandor",
   PETUGAS_DATA: "Petugas data",
+  PEGAWAI: "Pegawai",
 }

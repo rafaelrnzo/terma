@@ -74,11 +74,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, [ready, signedOut, load])
 
   useEffect(() => { void load() }, [load, reload])
-  const refreshWeather = useBmkgSync(ready && !signedOut, dispatch)
+  const workerAccount = userById(state.sesi?.userId)?.role === "PEGAWAI"
+  const refreshWeather = useBmkgSync(ready && !signedOut && !workerAccount, dispatch)
 
   useEffect(() => {
-    if (ready && !signedOut && !state.management?.companySync) dispatch({ type: "SINKRON_PERUSAHAAN" })
-  }, [ready, signedOut, state.management?.companySync, dispatch])
+    if (ready && !signedOut && !workerAccount && !state.management?.companySync) dispatch({ type: "SINKRON_PERUSAHAAN" })
+  }, [ready, signedOut, workerAccount, state.management?.companySync, dispatch])
 
   const logout = useCallback(async () => {
     await fetch("/api/auth/logout", { method: "POST" }).catch(() => null)

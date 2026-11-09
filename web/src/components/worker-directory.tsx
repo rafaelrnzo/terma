@@ -44,7 +44,7 @@ export function WorkerDirectory({ initialDate }: { initialDate?: string }) {
   const totalPages = Math.max(1, Math.ceil(filtered.length / 10))
   const currentPage = Math.min(page, totalPages)
   const paginated = filtered.slice((currentPage - 1) * 10, currentPage * 10)
-  const isHse = user.role === "HSE"
+  const isHse = user.role === "HSE" || user.role === "ADMIN"
   const showBand = isHse || user.role === "KLINIK"
   const hasFilters = !!(query || crew || status)
   return <section className="summon-panel mb-6" data-guide="worker-list" aria-labelledby="directory-title">

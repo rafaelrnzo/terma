@@ -11,7 +11,7 @@ const dose = (value: number) => value.toLocaleString("id-ID", { maximumFractionD
 /** Klinik only: cumulative heat dose (D30/D90/D180) and the kidney screening list. TERMA screens and refers; the doctor diagnoses. */
 export function KidneyReferrals() {
   const { state, user } = useApp()
-  if (user?.role !== "KLINIK") return null
+  if (user?.role !== "KLINIK" && user?.role !== "ADMIN") return null
   const { p75, rows } = kidneyReferrals(state)
   return <section className="summon-panel mt-6" aria-labelledby="kidney-title">
     <div className="panel-heading"><div><h2 id="kidney-title">Rujukan cek ginjal</h2><p>{p75 === null ? `Ambang P75 lokasi tersedia setelah ada pekerja dengan ≥ ${DOSE_RULES.minHistoryDays} hari data dosis.` : `Rujuk bila D90 ≥ P75 lokasi (${dose(p75)} °C·jam) dan ada ≥ 1 faktor risiko ginjal.`}</p></div></div>

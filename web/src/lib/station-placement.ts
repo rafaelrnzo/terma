@@ -25,7 +25,7 @@ export function placementOf(s: AppState, deviceId: string) { return stationPlace
 
 export function manageStationPlacement(s: AppState, a: StationPlacementAction): AppState {
   const user = userById(s.sesi?.userId)
-  if (!user || !["HSE", "PETUGAS_DATA"].includes(user.role)) return notice(s, "error", "Penempatan Station diatur oleh HSE atau petugas data.")
+  if (!user || !["ADMIN", "HSE", "PETUGAS_DATA"].includes(user.role)) return notice(s, "error", "Penempatan Station diatur oleh Admin, HSE, atau petugas data.")
   const m = managementOf(s)
   const rows = m.stationPlacements ?? []
   if (a.type === "HAPUS_PENEMPATAN_STATION") {

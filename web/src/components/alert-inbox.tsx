@@ -33,7 +33,7 @@ export function AlertInbox() {
     }
   }, [keys]) // eslint-disable-line react-hooks/exhaustive-deps -- keyed on the alert set, not on object identity
 
-  if (!user || !["MANDOR", "HSE"].includes(user.role)) return null
+  if (!user || !["MANDOR", "HSE", "ADMIN"].includes(user.role)) return null
   return <section className="summon-panel mb-6" aria-labelledby="alert-inbox-title">
     <div className="panel-heading"><div><h2 id="alert-inbox-title" className="flex items-center gap-2"><BellRingingIcon aria-hidden />Peringatan {user.role === "MANDOR" ? "regu" : "lapangan"}</h2><p>{alerts.length ? `${alerts.length} perlu ditangani` : "Tidak ada peringatan aktif."}</p></div>
       {permission === "default" && <Button variant="outline" size="sm" onClick={() => void Notification.requestPermission().then(setPermission)}>Aktifkan notifikasi</Button>}</div>

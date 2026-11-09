@@ -7,18 +7,22 @@ export const NAV_GROUPS = [
   { label: "Forecasting", href: "/forecasting", routes: [{ href: "/forecasting", label: "Peta prakiraan" }] },
   { label: "Monitoring", href: "/monitoring", routes: [{ href: "/monitoring", label: "Pantau shift" }, { href: "/pengukuran", label: "Bacaan WBGT", hiddenInNav: true }, { href: "/perangkat", label: "Perangkat IoT" }] },
   { label: "Laporan", href: "/laporan", routes: [{ href: "/laporan", label: "Pusat laporan" }, { href: "/laporan/bulanan", label: "Rekap bulanan", hiddenInNav: true }] },
+  { label: "Klinik", href: "/klinik", routes: [{ href: "/klinik", label: "Kotak masuk Klinik" }] },
 ]
 
 export const ROLE_WORKSPACE: Record<Role, { title: string; purpose: string; nav: string; href: string }> = {
+  ADMIN: { title: "Dashboard admin", purpose: "Pantau seluruh lokasi, kelola operasional, dan akses data klinik.", nav: "Dashboard admin", href: "/pengelola" },
   KLINIK: { title: "Ruang Klinik", purpose: "Tindak lanjuti check-in, kelola persetujuan dan ringkasan pemeriksaan pekerja.", nav: "Kotak masuk Klinik", href: "/klinik" },
   HSE: { title: "Ruang kerja HSE", purpose: "Siapkan shift, setujui rencana, lalu verifikasi laporan mandor sampai shift selesai.", nav: "Beranda & shift", href: "/hse" },
   MANDOR: { title: "Tugas regu Anda", purpose: "Terima instruksi HSE, pantau regu, dan laporkan pekerjaan yang sudah dilaksanakan.", nav: "Tugas regu", href: "/mandor" },
   PETUGAS_DATA: { title: "Persiapan data", purpose: "Lengkapi data pekerja, bacaan WBGT, dan prakiraan agar HSE dapat menyiapkan rencana.", nav: "Persiapan data", href: "/admin" },
+  PEGAWAI: { title: "Absensi saya", purpose: "Catat kehadiran dan kondisi tubuh Anda pada shift yang ditugaskan.", nav: "Absensi saya", href: "/pegawai" },
 }
 
 export function roleHomePath(user: User) { return ROLE_WORKSPACE[user.role].href }
 
 export function navigationFor(user: User | null) {
+  if (user?.role === "PEGAWAI") return [NAV_GROUPS[0]]
   if (user?.role === "KLINIK") return NAV_GROUPS.filter(group => ["/ringkasan", "/impor", "/laporan"].includes(group.href))
   return NAV_GROUPS.filter(group => (!user || group.routes.some(route=>pageAllowedFor(user,route.href))) && (user?.role !== "MANDOR" || group.href !== "/impor"))
 }
@@ -41,6 +45,9 @@ export function navigationGroup(path: string) {
 
 /** Browser prototype route projection; server authentication remains a separate integration. */
 export function pageAllowedFor(user: User, path: string) {
+  if (user.role === "ADMIN") return true
+  if (user.role === "PEGAWAI") return ["/", "/ringkasan", "/pegawai"].includes(path)
+  if (path === "/pengelola" || path === "/pegawai") return false
   if (path === "/laporan/bulanan") return ["HSE","MANDOR","KLINIK"].includes(user.role)
   if (path.startsWith("/pemantauan/")) return user.role === "HSE" || user.role === "KLINIK"
   if (path.startsWith("/klinik")) return user.role === "KLINIK"

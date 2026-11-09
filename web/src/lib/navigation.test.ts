@@ -5,7 +5,7 @@ import { SYSTEM_USER_ID, USERS } from "./config"
 describe("role workspaces", () => {
   it("lands each role on its own surface", () => {
     const people = USERS.filter(user => user.id !== SYSTEM_USER_ID) // the system account never signs in
-    expect(people.map(user => roleHomePath(user))).toEqual(["/hse", "/mandor", "/mandor", "/admin", "/klinik"])
+    expect(people.map(user => roleHomePath(user))).toEqual(["/hse", "/mandor", "/mandor", "/admin", "/klinik", "/pengelola", "/pegawai"])
     for (const user of people) expect(navigationGroup(roleHomePath(user))).toBe(NAV_GROUPS[0])
     expect(navigationGroup("/")).toBeUndefined()
   })
@@ -37,7 +37,7 @@ describe("role workspaces", () => {
     const path="/pemantauan/CMP001"
     expect(isShiftRoute(path)).toBe(false)
     expect(navigationGroup(path)?.href).toBe("/impor")
-    for(const user of USERS) expect(pageAllowedFor(user,path)).toBe(user.role==="HSE" || user.role==="KLINIK")
+    for(const user of USERS) expect(pageAllowedFor(user,path)).toBe(["HSE", "KLINIK", "ADMIN"].includes(user.role))
   })
 
   it("keeps report consolidation available to Clinic without granting shift-report access",()=>{

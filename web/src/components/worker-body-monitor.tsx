@@ -29,7 +29,7 @@ export default function WorkerBodyMonitor({ code, date }: { code: string; date: 
   const [visible, setVisible] = useState(true)
   const savedModel = user ? bodyMonitoring(state, user, code, date, clock) : null
   const showExample = source === "example" || (source === null && !!savedModel?.signals.every(signal => signal.tone === "unknown"))
-  const model = savedModel && user ? showExample ? exampleBodyMonitoring(code, date, user.role === "KLINIK") : savedModel : null
+  const model = savedModel && user ? showExample ? exampleBodyMonitoring(code, date, user.role === "KLINIK" || user.role === "ADMIN") : savedModel : null
   const hasModel = !!model
   useEffect(() => {
     const target = root.current
@@ -65,7 +65,7 @@ export default function WorkerBodyMonitor({ code, date }: { code: string; date: 
   if (!model) return null
   const active = model.signals.find(signal => signal.key === selected)!
   const geometry = BODY_VIEWS[view]
-  const headline = model.signals.filter(signal => (user?.role === "KLINIK" ? ["heat", "hydration", "band", "exposure"] : ["heat", "hydration", "exposure"]).includes(signal.key))
+  const headline = model.signals.filter(signal => (user?.role === "KLINIK" || user?.role === "ADMIN" ? ["heat", "hydration", "band", "exposure"] : ["heat", "hydration", "exposure"]).includes(signal.key))
   return <section ref={root} className="body-monitor" aria-label="Peta sinyal tubuh pekerja" data-visible={visible}>
     <header className="body-monitor-heading"><div><h2>Pemantauan pekerja</h2><span className="monitor-source">{showExample ? "Ilustrasi · 13.40 WIB" : "Data tersimpan"}</span></div><Button size="sm" variant="outline" onClick={() => setSource(showExample ? "saved" : "example")}>{showExample ? "Lihat data tersimpan" : "Lihat ilustrasi"}</Button></header>
     <div className="health-metric-strip" data-count={headline.length}>{headline.map(signal => {

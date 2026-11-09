@@ -6,7 +6,7 @@ import { join } from "node:path"
 import { homedir } from "node:os"
 import { createInterface } from "node:readline"
 
-const USERNAMES = ["ratna", "budi", "sari", "tono", "dewi"]
+const USERNAMES = ["admin", "ratna", "budi", "sari", "tono", "dewi", "andi"]
 const username = process.argv[2]
 if (!USERNAMES.includes(username)) {
   console.error(`Pakai: npm run set-password -- <${USERNAMES.join("|")}>`)

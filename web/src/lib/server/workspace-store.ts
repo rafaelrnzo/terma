@@ -10,6 +10,11 @@ import { dataDir } from "./data-dir"
 /** Browser-side actions that only touch the viewer's own screen; the server never applies them. */
 const CLIENT_ONLY = new Set<Action["type"]>(["LOGIN", "HYDRATE", "CUACA_MULAI", "CUACA_GAGAL"])
 
+/** Worker accounts may change only their own attendance, regardless of the client payload. */
+export function employeeActionAllowed(actor: User, action: Action) {
+  return actor.role !== "PEGAWAI" || ((action.type === "CATAT_CHECKIN" || action.type === "CATAT_PULANG") && action.pekerjaKode === actor.pekerjaKode)
+}
+
 /**
  * The file is the single source of truth. Route bundles may not share module memory, so every read
  * and write checks the file's modification time; its value doubles as the workspace version.
@@ -47,6 +52,7 @@ const shared = (s: AppState) => JSON.stringify({ ...s, sesi: undefined, notice: 
  */
 export function applyAction(actor: User | null, action: Action): { notice?: AppState["notice"]; version: number } {
   const now = current()
+  if (actor && !employeeActionAllowed(actor, action)) return { notice: { id: Date.now(), tipe: "error", pesan: "Pegawai hanya dapat mencatat absensinya sendiri." }, version: now.version }
   if (CLIENT_ONLY.has(action.type)) return { version: now.version }
   const before = actor ? { ...now.state, sesi: { userId: actor.id, masuk: new Date().toISOString() } } : now.state
   const after = reducer(before, action)

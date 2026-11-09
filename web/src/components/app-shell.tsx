@@ -54,7 +54,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   // The introduction is readable without entering the operational workspace or waiting for storage.
   if (path === "/") return <>{children}</>
   if (ready && signedOut) return <LoginScreen />
-  if (path === "/kiosk") return <>{children}</>
+  if (path === "/kiosk" && user?.role !== "PEGAWAI") return <>{children}</>
   const group = navigationGroup(path)
   return (
     <div className="app-frame">
@@ -94,7 +94,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         {group && group.routes.length > 1 && <nav aria-label={group.label} className="no-print mb-6 flex flex-wrap gap-2 border-b pb-3 lg:hidden">{group.routes.filter(route=>!user || pageAllowedFor(user,route.href)).map(route => <Link key={route.href} href={route.href} aria-current={path === route.href ? "page" : undefined} className={cn("nav-item", path === route.href && "nav-item-active")}>{route.label}</Link>)}</nav>}
         {syncError && <div role="alert" className="mb-6 rounded-md border border-destructive p-4 text-sm"><p>{syncError}</p><Button className="mt-3" variant="outline" onClick={retrySync}>Coba simpan lagi</Button></div>}
         {ready && <ShiftRouteContext />}
-        <div key={`${path}:${user?.id}`} className="page-enter">{ready ? user && !pageAllowedFor(user, path) ? <WorkflowEmpty title="Tidak punya akses" href={roleHomePath(user)} label="Kembali ke ruang kerja">Halaman ini tersedia untuk peran yang berwenang. Akun Anda tetap {user.nama} · {LABEL_PERAN[user.role]}.</WorkflowEmpty> : needsShift && !shift ? <WorkflowEmpty title="Buka shift terlebih dahulu" href="/ringkasan" label="Ke daftar shift">Pilih shift yang ingin dikerjakan.</WorkflowEmpty> : blockedExecution ? <WorkflowEmpty title="Terbitkan shift sebelum pelaksanaan" href={user?.role === "HSE" ? "/rencana" : roleHomePath(user!)} label="Lihat rencana shift">Selesaikan persetujuan rencana, lalu terbitkan shift.</WorkflowEmpty> : <>{shift?.status === "CLOSED" && needsShift && <p role="status" className="mb-5 rounded-md border bg-secondary p-4 text-sm">Shift sudah ditutup. Catatan berikut hanya dapat dibaca.</p>}{children}</> : <RouteLoading />}</div>
+        <div key={`${path}:${user?.id}`} className="page-enter">{ready ? user && !pageAllowedFor(user, path) ? <WorkflowEmpty title="Tidak punya akses" href={roleHomePath(user)} label="Kembali ke ruang kerja">Halaman ini tersedia untuk peran yang berwenang. Akun Anda tetap {user.nama} · {LABEL_PERAN[user.role]}.</WorkflowEmpty> : needsShift && !shift ? <WorkflowEmpty title="Buka shift terlebih dahulu" href="/ringkasan" label="Ke daftar shift">Pilih shift yang ingin dikerjakan.</WorkflowEmpty> : blockedExecution ? <WorkflowEmpty title="Terbitkan shift sebelum pelaksanaan" href={user?.role === "HSE" || user?.role === "ADMIN" ? "/rencana" : roleHomePath(user!)} label="Lihat rencana shift">Selesaikan persetujuan rencana, lalu terbitkan shift.</WorkflowEmpty> : <>{shift?.status === "CLOSED" && needsShift && <p role="status" className="mb-5 rounded-md border bg-secondary p-4 text-sm">Shift sudah ditutup. Catatan berikut hanya dapat dibaca.</p>}{children}</> : <RouteLoading />}</div>
       </main>
 
       </div>

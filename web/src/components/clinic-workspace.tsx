@@ -50,8 +50,8 @@ export function ClinicWorkspace() {
   const [selected,setSelected] = useState("")
   const [section,setSection] = useState("inbox")
   const profileCode = managementOf(state).workers.find(row=>row.kode===selected)?.kode ?? managementOf(state).workers[0]?.kode
-  useEffect(()=>{ if (user?.role === "KLINIK" && section === "profiles" && profileCode) dispatch({type:"AKSES_PROFIL_MEDIS",pekerjaKode:profileCode}) },[user?.role,section,profileCode,dispatch])
-  if (!user || user.role !== "KLINIK") return <PageHeader title="Tidak punya akses" summary="Kotak masuk dan data medis hanya tersedia untuk akun Klinik." />
+  useEffect(()=>{ if ((user?.role === "KLINIK" || user?.role === "ADMIN") && section === "profiles" && profileCode) dispatch({type:"AKSES_PROFIL_MEDIS",pekerjaKode:profileCode}) },[user?.role,section,profileCode,dispatch])
+  if (!user || (user.role !== "KLINIK" && user.role !== "ADMIN")) return <PageHeader title="Tidak punya akses" summary="Kotak masuk dan data medis hanya tersedia untuk akun Klinik atau Admin." />
   const workers = managementOf(state).workers
   const worker = workers.find(row=>row.kode===selected) ?? workers[0]
   const inbox = clinicInbox(state,user,date)

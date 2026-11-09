@@ -52,15 +52,15 @@ export function workerHealthRows(management: ManagementState, user: User, date: 
       validity: baselineValidity(evidence.baseline, date),
       checkedIn: !!evidence.checkin,
       reviewed: !!evidence.review || !!shift?.workspace.rencana.some(plan=>plan.pekerjaKode===worker.kode && !plan.digantikan && plan.disetujuiOleh),
-      health: user.role === "KLINIK" ? evidence : user.role === "HSE" ? { baseline: evidence.baseline } : undefined,
+      health: user.role === "KLINIK" || user.role === "ADMIN" ? evidence : user.role === "HSE" ? { baseline: evidence.baseline } : undefined,
     }
   })
 }
 export type WorkerHealthRow = ReturnType<typeof workerHealthRows>[number]
 
 export function workerHealthHistory(management: ManagementState, user: User, code: string) {
-  if (!["HSE", "KLINIK"].includes(user.role) || !lingkupPekerja(user, management.workers).some(worker => worker.kode === code)) return []
+  if (!["ADMIN", "HSE", "KLINIK"].includes(user.role) || !lingkupPekerja(user, management.workers).some(worker => worker.kode === code)) return []
   return management.shifts.filter(shift => shift.workspace.pekerja.some(worker => worker.kode === code))
     .sort((a, b) => b.tanggal.localeCompare(a.tanggal))
-    .map(shift => { const evidence = evidenceFor(management, code, shift); return { id: shift.id, nama: shift.nama, tanggal: shift.tanggal, checkedIn: !!evidence.checkin, approved: shift.workspace.rencana.some(plan=>plan.pekerjaKode===code && !plan.digantikan && plan.disetujuiOleh), baseline: evidence.baseline, checkin: user.role === "KLINIK" ? evidence.checkin : undefined, review: user.role === "KLINIK" ? evidence.review : undefined } })
+    .map(shift => { const evidence = evidenceFor(management, code, shift); return { id: shift.id, nama: shift.nama, tanggal: shift.tanggal, checkedIn: !!evidence.checkin, approved: shift.workspace.rencana.some(plan=>plan.pekerjaKode===code && !plan.digantikan && plan.disetujuiOleh), baseline: evidence.baseline, checkin: user.role === "KLINIK" || user.role === "ADMIN" ? evidence.checkin : undefined, review: user.role === "KLINIK" || user.role === "ADMIN" ? evidence.review : undefined } })
 }

@@ -13,7 +13,7 @@ export interface BodySignal { metrics?: BodyMetric[]; key: BodyRegion; title: st
 /** Authorized view model. A water visit is not an intake measurement, and no signal diagnoses kidney disease. */
 export function bodyMonitoring(s: AppState, user: User, code: string, date: string, now=Date.now()) {
   const m=managementOf(s)
-  if (!["HSE","KLINIK"].includes(user.role) || !m.workers.some(row=>row.kode===code)) return null
+  if (!["ADMIN","HSE","KLINIK"].includes(user.role) || !m.workers.some(row=>row.kode===code)) return null
   const shift=m.shifts.find(row=>row.tanggal===date && row.workspace.pekerja.some(worker=>worker.kode===code))
   const plan=shift?.workspace.rencana.find(row=>row.pekerjaKode===code && !row.digantikan)
   const events=(shift?.personalTelemetry ?? []).filter(event=>event.pekerjaKode===code && Date.parse(event.observedAt)<=now).toSorted((a,b)=>Date.parse(b.observedAt)-Date.parse(a.observedAt))
@@ -31,10 +31,10 @@ export function bodyMonitoring(s: AppState, user: User, code: string, date: stri
   const peak=validHeat.length ? Math.max(...validHeat.map(row=>row.isbb!)) : null
   const heatAttention=plan?.riskColour==="MERAH" || plan?.riskColour==="KUNING" || plan?.status==="BATASI_ATAU_PINDAHKAN"
   const baseline=shift?.readiness?.baselines.find(row=>row.pekerjaKode===code) ?? (!shift ? m.healthBaselines?.find(row=>row.pekerjaKode===code) : undefined)
-  const clinical=user.role==="KLINIK" ? medicalProfileFor(s,user,code) : undefined
+  const clinical=user.role==="KLINIK" || user.role==="ADMIN" ? medicalProfileFor(s,user,code) : undefined
   const renalFactors=clinical ? [clinical.hipertensi && "Hipertensi tercatat",clinical.diabetes && "Diabetes tercatat",clinical.riwayatPanas && "Riwayat sakit akibat panas"].filter(Boolean) as string[] : []
   const healthFactor=plan?.alasan.some(reason=>reason.startsWith("Ada faktor kesehatan")) ?? false
-  const checkin=user.role==="KLINIK" ? shift?.readiness?.checkins.find(row=>row.pekerjaKode===code) : undefined
+  const checkin=user.role==="KLINIK" || user.role==="ADMIN" ? shift?.readiness?.checkins.find(row=>row.pekerjaKode===code) : undefined
   const exposure=monthlyExposure({...s,tanggal:date},user).find(row=>row.worker.kode===code)
   const bandAllowed=hasConsent(s,code,"BAND")
   const bandAssignment=shift?.bands?.find(row=>row.bandId===band?.deviceId && row.pekerjaKode===code && row.dipakaiPada && Date.parse(row.dipakaiPada)<=Date.parse(band!.observedAt) && (!row.dikembalikanPada || Date.parse(band!.observedAt)<=Date.parse(row.dikembalikanPada)))

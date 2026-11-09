@@ -41,7 +41,7 @@ export function LiveDevices() {
               <div><p className="font-medium">{id}</p><p className="text-xs text-muted-foreground">{KIND[last.type]}</p></div>
               <Badge variant={online ? "riskGreen" : "kualitas"}>{online ? "Online" : "Tidak mengirim"}</Badge>
             </div>
-            <p className="mt-3 text-sm">{detail(own, user?.role === "KLINIK", workers)}</p>
+            <p className="mt-3 text-sm">{detail(own, user?.role === "KLINIK" || user?.role === "ADMIN", workers)}</p>
             <p className="mt-1 text-xs text-muted-foreground">Terakhir {time(last.receivedAt)} · {own.length} kiriman</p>
           </li>
         })}</ul>}

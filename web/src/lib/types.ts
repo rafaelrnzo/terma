@@ -25,7 +25,7 @@ export type ActionLifecycle =
 
 export type AcclProfile = "PEKERJA_BARU" | "BERPENGALAMAN_KEMBALI"
 export type Workload = "RINGAN" | "SEDANG" | "BERAT" | "SANGAT_BERAT"
-export type Role = "HSE" | "MANDOR" | "PETUGAS_DATA" | "KLINIK"
+export type Role = "ADMIN" | "HSE" | "MANDOR" | "PETUGAS_DATA" | "KLINIK" | "PEGAWAI"
 export type AttendanceStatus = "HADIR" | "CUTI" | "SAKIT" | "ALFA"
 /** No messaging integration yet: a shared message is DIBAGIKAN_MANUAL, never TERKIRIM without channel proof. */
 export type DeliveryStatus = "DIBAGIKAN_MANUAL" | "TERKIRIM" | "GAGAL"
@@ -36,6 +36,7 @@ export interface User {
   nama: string
   role: Role
   reguKode?: string // mandor only
+  pekerjaKode?: string // signed-in worker's own attendance record
 }
 
 export interface Regu {

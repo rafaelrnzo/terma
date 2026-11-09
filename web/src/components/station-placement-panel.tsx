@@ -22,7 +22,7 @@ export function StationPlacementPanel({ picked }: { picked: { lat: number; lng: 
   const [lastPick, setLastPick] = useState(picked)
   if (picked !== lastPick) { setLastPick(picked); setTyped(null) } // a new map click replaces typed coordinates only
   if (!user) return null
-  const canEdit = user.role === "HSE" || user.role === "PETUGAS_DATA"
+  const canEdit = user.role === "ADMIN" || user.role === "HSE" || user.role === "PETUGAS_DATA"
   const rows = stationPlacements(state)
   const coords = typed ?? (picked ? { lat: picked.lat.toFixed(6), lng: picked.lng.toFixed(6) } : { lat: "", lng: "" })
   function useDeviceLocation() {

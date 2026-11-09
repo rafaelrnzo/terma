@@ -1,4 +1,4 @@
-import { managementOf } from "../management-state"
+import { currentShift, managementOf } from "../management-state"
 import type { AppState } from "../store-state"
 import type { User } from "../types"
 
@@ -8,7 +8,32 @@ import type { User } from "../types"
  */
 export function projectFor(state: AppState, user: User): AppState {
   const sesi = { userId: user.id, masuk: state.sesi?.masuk ?? new Date().toISOString() }
-  if (user.role === "KLINIK") return { ...state, sesi }
+  if (user.role === "ADMIN" || user.role === "KLINIK") return { ...state, sesi }
+  if (user.role === "PEGAWAI") {
+    const code = user.pekerjaKode
+    const own = state.pekerja.find(worker => worker.kode === code)
+    const shift = currentShift(state)
+    const assigned = own && shift?.workspace.pekerja.some(worker => worker.kode === code) ? shift : undefined
+    const attendance = state.kehadiran.filter(row => row.pekerjaKode === code)
+    const ownShift = assigned && own ? {
+      id: assigned.id, tanggal: assigned.tanggal, nama: assigned.nama, status: assigned.status,
+      dibuatOleh: "", dibuatPada: "", calculationVersion: assigned.calculationVersion,
+      readiness: assigned.readiness ? {
+        checkins: assigned.readiness.checkins.filter(row => row.pekerjaKode === code),
+        baselines: [], reviews: [],
+      } : undefined,
+      workspace: {
+        pekerja: [own], kehadiran: attendance, penugasan: [], konfirmasi: [], bacaan: [],
+        prakiraan: [], rencana: [], rencanaDihitung: false, tindakan: [], pengiriman: [],
+      },
+    } : undefined
+    return {
+      sesi, tanggal: state.tanggal, pekerja: own ? [own] : [], kehadiran: attendance,
+      penugasan: [], konfirmasi: [], bacaan: [], prakiraan: [], rencana: [],
+      rencanaDihitung: false, tindakan: [], pengiriman: [], imporLog: [], audit: [],
+      management: { workers: own ? [own] : [], assignments: [], shifts: ownShift ? [ownShift] : [], activeId: ownShift?.id ?? null },
+    }
+  }
   const m = managementOf(state)
   return {
     ...state,

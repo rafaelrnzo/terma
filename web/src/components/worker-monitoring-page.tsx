@@ -17,7 +17,7 @@ import { workerHealthRows } from "@/lib/worker-health"
 export function WorkerMonitoringPage({ code, date: requestedDate }: { code: string; date?: string }) {
   const { state, user } = useApp()
   const router = useRouter()
-  if (!user || !["HSE", "KLINIK"].includes(user.role)) return null
+  if (!user || !["ADMIN", "HSE", "KLINIK"].includes(user.role)) return null
   const date = requestedDate && /^\d{4}-\d{2}-\d{2}$/.test(requestedDate) && Number.isFinite(Date.parse(requestedDate)) ? requestedDate : hariIni()
   const row = workerHealthRows(managementOf(state), user, date).find(item => item.worker.kode === code)
   if (!row) return <WorkflowEmpty title="Pekerja tidak ditemukan" href="/impor" label="Data pekerja">Periksa ID pekerja.</WorkflowEmpty>

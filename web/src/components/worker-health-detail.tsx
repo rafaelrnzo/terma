@@ -14,7 +14,7 @@ const WorkerBodyMonitor = dynamic(() => import("@/components/worker-body-monitor
 
 export function WorkerHealthDetail({ row, date }: { row: WorkerHealthRow; date: string }) {
   const { user } = useApp()
-  if (!user || !["HSE", "KLINIK"].includes(user.role) || !row.health) return null
+  if (!user || !["ADMIN", "HSE", "KLINIK"].includes(user.role) || !row.health) return null
   return <Button asChild size="sm" variant="outline" aria-label={`Pantau kesehatan ${row.worker.nama}`}><Link href={`/pemantauan/${encodeURIComponent(row.worker.kode)}?tanggal=${encodeURIComponent(date)}`}><HeartbeatIcon aria-hidden />Pantau</Link></Button>
 }
 
@@ -31,7 +31,7 @@ export function WorkerBandStatus({ code, date }: { code: string; date: string })
 
 export function WorkerHealthContent({ row, date }: { row: WorkerHealthRow; date: string }) {
   const { state, user } = useApp()
-  if (!user || !["HSE", "KLINIK"].includes(user.role) || !row.health) return null
+  if (!user || !["ADMIN", "HSE", "KLINIK"].includes(user.role) || !row.health) return null
   const { baseline, checkin, review } = row.health
   const history = workerHealthHistory(managementOf(state), user, row.worker.kode)
   return <div className="worker-health-content">
