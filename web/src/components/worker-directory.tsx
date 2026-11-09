@@ -6,6 +6,7 @@ import { MagnifyingGlassIcon } from "@phosphor-icons/react/dist/csr/MagnifyingGl
 import { UsersThreeIcon } from "@phosphor-icons/react/dist/csr/UsersThree"
 import { CompanyConnection } from "@/components/company-connection"
 import { WorkerHealthDetail } from "@/components/worker-health-detail"
+import { WaterVisitLog } from "@/components/water-visit-log"
 import { BandSuggestionButton, WorkerBandCell } from "@/components/band-assignment"
 import { ReviewStateBadge } from "@/components/status"
 import { Badge } from "@/components/ui/badge"
@@ -68,7 +69,7 @@ export function WorkerDirectory({ initialDate }: { initialDate?: string }) {
       <TableBody>{paginated.map(row => {
         const { worker, assignment, health } = row
         return <TableRow key={worker.kode} aria-label={`Pekerja ${worker.nama}`}>
-          <TableCell><div className="worker-identity"><span className="worker-avatar" aria-hidden>{worker.nama.split(" ").slice(0, 2).map(word => word[0]).join("")}</span><div><strong>{worker.nama}</strong><small>{worker.kode} · {REGU.find(item => item.kode === worker.reguKode)?.nama ?? worker.reguKode}</small></div></div></TableCell>
+          <TableCell><div className="worker-identity"><span className="worker-avatar" aria-hidden>{worker.nama.split(" ").slice(0, 2).map(word => word[0]).join("")}</span><div><strong>{worker.nama}</strong><small>{worker.kode} · {REGU.find(item => item.kode === worker.reguKode)?.nama ?? worker.reguKode}</small><WaterVisitLog code={worker.kode} date={date} compact /></div></div></TableCell>
           <TableCell><p>{TUGAS.find(item => item.kode === assignment?.tugasKode)?.nama ?? "Belum ditugaskan"}</p><p className="mt-1 text-xs text-muted-foreground">{ZONA.find(item => item.kode === assignment?.zonaKode)?.nama ?? "Zona belum diisi"}</p></TableCell>
           <TableCell><p>{health?.baseline ? BASELINE_LABEL[health.baseline.status] : BASELINE_VALIDITY_LABEL[row.validity]}</p>{health?.baseline && <p className="mt-1 text-xs text-muted-foreground">{row.validity === "BERLAKU" ? "Berlaku s.d." : BASELINE_VALIDITY_LABEL[row.validity]} {new Date(`${health.baseline.berlakuSampai}T00:00:00Z`).toLocaleDateString("id-ID",{day:"numeric",month:"short",year:"numeric",timeZone:"UTC"})}</p>}</TableCell>
           <TableCell><p>{health?.checkin ? CONDITION_LABEL[health.checkin.kondisi] : row.checkedIn ? "Sudah check-in" : "Belum check-in"}</p>{health?.checkin?.keluhan.length ? <p className="mt-1 text-xs text-status-tinjau">{health.checkin.keluhan.join(", ")}</p> : null}<p className="mt-1 text-xs text-muted-foreground">{row.shift?.nama ?? "Tanpa shift"}</p></TableCell>

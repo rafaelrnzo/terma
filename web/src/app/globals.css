@@ -16,7 +16,6 @@
 @import "./styles/role-workspace.css";
 @import "./styles/kiosk-entry.css";
 @import "./styles/ai-briefing.css";
-@import "./styles/demo-flow.css";
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {

@@ -4,6 +4,10 @@ import type { PersonalDeviceEvent } from "./personal-telemetry"
 
 type Coverage = Extract<PersonalDeviceEvent, { type: "WATER_COVERAGE" }>
 
+export function isRayaWaterDemo(shift: ShiftRecord | undefined) {
+  return shift?.workspace.pekerja.length === 1 && shift.workspace.pekerja[0].kode === "RAYA001"
+}
+
 /** Water Station rules: target interval per hour comes from the plan (30/20/15 minutes); gaps over 1.5× it alert the foreman. */
 export const DRINK_RULES = { defaultIntervalMinutes: 30, gapFactor: 1.5, coverageFreshMinutes: 15, tomorrowPointDeficit: 0.25, toleranceVisits: 1 } as const
 

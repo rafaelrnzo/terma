@@ -17,6 +17,9 @@ import { ZONA } from "@/lib/config"
 import { type DeviceSelection } from "@/lib/device-telemetry"
 import { stationWbgt } from "@/lib/iot"
 import { placementOf } from "@/lib/station-placement"
+import { isRayaWaterDemo } from "@/lib/drink-monitor"
+import { currentShift } from "@/lib/management-state"
+import { WaterVisitLog } from "@/components/water-visit-log"
 import { managementOf } from "@/lib/management-state"
 import { useIotEvents } from "@/lib/use-iot-events"
 import { DEVICE_ANCHORS } from "./generated-view"
@@ -45,7 +48,7 @@ export function IotLive({ art, focused = false }: { art: ReactNode; focused?: bo
   const wbgt = station?.type === "station" ? stationWbgt(station, placementOf(state,station.deviceId)?.selisihGlobe ?? 0).isbb : null
   const taps = events.filter(event => event.type === "water" && new Date(event.receivedAt).toLocaleDateString("en-CA", { timeZone: "Asia/Jakarta" }) === today)
   const lastTap = taps.at(-1)
-  const visitor = lastTap?.type === "water" ? managementOf(state).workers.find(worker => worker.kartuUid === lastTap.uid) : undefined
+  const visitor = lastTap?.type === "water" ? managementOf(state).workers.find(worker => isRayaWaterDemo(currentShift(state)) ? worker.kode === "RAYA001" : worker.kartuUid === lastTap.uid) : undefined
   const band = events.findLast(event => event.type === "band")
   const clinic = user?.role === "KLINIK" || user?.role === "ADMIN"
   const heartRate = clinic && band?.type === "band" ? band.heartRate : null
@@ -80,6 +83,7 @@ export function IotLive({ art, focused = false }: { art: ReactNode; focused?: bo
       {selection === "gateway" && <><Metric label="Kiriman diterima" value={events.length} unit="kiriman" hero /><div className="iot-metric-pair"><Metric label="Station" value={[...kinds].filter(id => events.some(event => event.deviceId === id && event.type === "station")).length} unit="unit" /><Metric label="Perangkat personal" value={[...kinds].filter(id => events.some(event => event.deviceId === id && event.type !== "station")).length} unit="unit" /></div><p className="iot-detail-copy">Server terma-iot menerima pembacaan Station, kunjungan RFID, dan data Band lewat WiFi.</p></>}
       <div className="iot-last-update"><span className="status-dot text-primary" /><span>{updated ? `Pembaruan ${updated}` : "Belum ada kiriman perangkat"}</span><span>{last ? `#${String(last.seq).padStart(4, "0")}` : ""}</span></div>
     </aside></div>
+    {selection === "water" && <WaterVisitLog date={today} />}
     {!focused && <div className="iot-summary-strip"><button onClick={() => choose("station")}><ThermometerIcon size={17} /><span>Station <strong>{fixed(wbgt)} °C</strong></span></button><button onClick={() => choose("water")}><DropIcon size={17} /><span>Water Station <strong>{taps.length} kunjungan</strong></span></button><button onClick={() => choose("band")}><HeartbeatIcon size={17} /><span>Band <strong>{clinic ? `${fixed(heartRate, 0)} bpm` : band ? "aktif" : "—"}</strong></span><BandSignal /></button><Link href={state.management?.activeId ? `/shift/${state.management.activeId}` : "/ringkasan"}>Ke alur shift<ArrowUpRightIcon size={15} /></Link></div>}
   </section>
 }

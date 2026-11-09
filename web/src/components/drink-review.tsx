@@ -7,9 +7,10 @@ import { Label } from "@/components/ui/label"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { lingkupPekerja } from "@/lib/access"
 import { REGU } from "@/lib/config"
-import { drinkLog } from "@/lib/drink-monitor"
+import { drinkLog, isRayaWaterDemo } from "@/lib/drink-monitor"
 import { currentShift, managementOf } from "@/lib/management-state"
 import { useApp } from "@/lib/store"
+import { WaterVisitLog } from "@/components/water-visit-log"
 
 const clock = (time: number) => new Date(time).toLocaleTimeString("id-ID", { timeZone: "Asia/Jakarta", hour: "2-digit", minute: "2-digit" })
 
@@ -22,6 +23,7 @@ export function DrinkReview() {
   const shift = currentShift(state)
   if (!shift || !user) return null
   const cards = new Map(managementOf(state).workers.map(worker => [worker.kode, worker.kartuUid]))
+  const demo = isRayaWaterDemo(shift)
   const rows = lingkupPekerja(user, shift.workspace.pekerja).map(worker => ({ worker, card: cards.get(worker.kode), log: drinkLog(shift, worker.kode, now) }))
   const overdue = rows.filter(row => row.log.overdue).length
   const online = rows.some(row => row.log.online)
@@ -35,9 +37,10 @@ export function DrinkReview() {
         <TableCell className="tabular-nums">{log.visits}</TableCell>
         <TableCell className="tabular-nums">{log.lastVisit ? clock(log.lastVisit) : "—"}</TableCell>
         <TableCell className="tabular-nums">{log.gapMinutes === undefined ? "—" : `${log.gapMinutes} menit`}</TableCell>
-        <TableCell>{!card ? <Badge variant="kualitas">Kartu belum terdaftar</Badge> : !log.online ? <Badge variant="kualitas">Water Station tidak terhubung</Badge> : log.overdue ? <Badge variant="riskYellow">Jeda melewati {log.limitMinutes} menit</Badge> : <Badge variant="riskGreen">Sesuai target</Badge>}</TableCell>
+        <TableCell>{!card && !demo ? <Badge variant="kualitas">Kartu belum terdaftar</Badge> : !log.online ? <Badge variant="kualitas">Water Station tidak terhubung</Badge> : log.overdue ? <Badge variant="riskYellow">Jeda melewati {log.limitMinutes} menit</Badge> : <Badge variant="riskGreen">Sesuai target</Badge>}</TableCell>
       </TableRow>)}</TableBody></Table>
     {!filtered.length && <p className="p-6 text-sm text-muted-foreground">Tidak ada peserta yang cocok.</p>}
     <p className="border-t p-5 text-xs text-muted-foreground">Kunjungan dicatat saat kartu pekerja di-tap di Water Station. Catatan ini menandai jeda kunjungan, bukan volume air yang diminum.</p>
+    <WaterVisitLog date={shift.tanggal} />
   </section>
 }

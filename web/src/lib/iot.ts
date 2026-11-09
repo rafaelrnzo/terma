@@ -5,6 +5,7 @@ import { recompute } from "./store-plans"
 import { notice } from "./store-utils"
 import type { AppState } from "./store-state"
 import { placementOf } from "./station-placement"
+import { isRayaWaterDemo } from "./drink-monitor"
 import type { PengukuranWBGT } from "./types"
 
 /** Device posts as validated and stamped by terma-iot (Raya46/terma-iot reading.go). */
@@ -80,13 +81,14 @@ function stationRows(s: AppState, events: IotEvent[]) {
 function personalEvents(s: AppState, events: IotEvent[]) {
   const workers = managementOf(s).workers
   const participants = new Set(s.pekerja.map(worker => worker.kode))
+  const demoWorker = isRayaWaterDemo(currentShift(s)) ? workers.find(worker => worker.kode === "RAYA001") : undefined
   const out: PersonalDeviceEvent[] = []
   const unknownCards: string[] = []
   for (const event of events) {
     const base = { deviceId: event.deviceId, observedAt: event.receivedAt, origin: "AKTUAL" as const }
     if (event.type === "water") {
-      const worker = workers.find(row => row.kartuUid === event.uid)
-      if (worker && participants.has(worker.kode)) out.push({ ...base, id: `${event.deviceId}:${event.receivedAt}`, type: "WATER_VISIT", pekerjaKode: worker.kode })
+      const worker = demoWorker ?? workers.find(row => row.kartuUid === event.uid)
+      if (worker && participants.has(worker.kode)) out.push({ ...base, id: `${event.deviceId}:${event.receivedAt}`, type: "WATER_VISIT", pekerjaKode: worker.kode, attribution: demoWorker ? "DEMO_RAYA" : undefined })
       else unknownCards.push(event.uid)
     } else if (event.type === "water_heartbeat") {
       const coverageFrom = new Date(Date.parse(event.receivedAt) - event.uptimeMs).toISOString()

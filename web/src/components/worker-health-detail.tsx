@@ -9,6 +9,7 @@ import { managementOf } from "@/lib/management-state"
 import { bodyMonitoring } from "@/lib/body-monitoring"
 import { useApp } from "@/lib/store"
 import { tanggalLabel } from "@/lib/workspace"
+import { WaterVisitLog } from "@/components/water-visit-log"
 
 const WorkerBodyMonitor = dynamic(() => import("@/components/worker-body-monitor"), { loading: () => <div className="rounded-xl border p-5" role="status"><h3 className="font-semibold">Peta sinyal tubuh</h3><div className="mt-4 grid grid-cols-2 gap-4"><div className="skeleton-value h-80" /><div className="space-y-3">{Array.from({length:5},(_,i)=><div key={i} className="skeleton-value h-12" />)}</div></div></div> })
 
@@ -36,6 +37,7 @@ export function WorkerHealthContent({ row, date }: { row: WorkerHealthRow; date:
   const history = workerHealthHistory(managementOf(state), user, row.worker.kode)
   return <div className="worker-health-content">
         <WorkerBodyMonitor code={row.worker.kode} date={date} />
+        <WaterVisitLog code={row.worker.kode} date={date} />
         <div className="health-evidence-grid"><section className="summon-panel space-y-3 p-6" aria-label="Baseline pemeriksaan">
           <h3 className="font-semibold">Baseline pemeriksaan</h3>
           <p>{BASELINE_VALIDITY_LABEL[row.validity]}</p>

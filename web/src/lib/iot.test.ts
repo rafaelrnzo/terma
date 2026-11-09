@@ -4,6 +4,7 @@ import { currentBandAllocations } from "./band-management"
 import { hariIni } from "./config"
 import { USERS } from "./config"
 import { bodyMonitoring } from "./body-monitoring"
+import { rayaDemoWorkspace } from "./raya-demo"
 import { currentShift } from "./management-state"
 import { kualitasBacaan } from "./rules"
 import { stationWbgt, stullWetBulb, type IotEvent, type IotReading } from "./iot"
@@ -19,6 +20,18 @@ const event = (reading: IotReading, receivedAt: string): IotEvent => ({ ...readi
 const iot = (s: AppState, ...events: IotEvent[]) => reducer(s, { type: "TERIMA_IOT", events })
 
 describe("low-budget TERMA devices", () => {
+  it("maps every card to Raya only in the single-worker Raya demo and keeps an idempotent visit log", () => {
+    const date = "2026-11-06"
+    const taps = [event({ type: "water", deviceId: "TWS-01", uid: "11:22:33:44" }, `${date}T09:00:00+07:00`), event({ type: "water", deviceId: "TWS-01", uid: "55:66:77:88" }, `${date}T09:01:00+07:00`)]
+    let s = iot(rayaDemoWorkspace(date), ...taps)
+    expect(currentShift(s)?.personalTelemetry?.filter(row => row.type === "WATER_VISIT")).toEqual(taps.map(() => expect.objectContaining({ pekerjaKode: "RAYA001", origin: "AKTUAL", attribution: "DEMO_RAYA" })))
+    s = iot(s, ...taps)
+    expect(currentShift(s)?.personalTelemetry).toHaveLength(2)
+    s = run(s, worker("W02"), { type: "UBAH_SHIFT", shiftId: date, nama: "Multi-worker", workerCodes: ["RAYA001", "W02"] })
+    s = iot(s, event({ type: "water", deviceId: "TWS-01", uid: "AA:BB:CC:DD" }, `${date}T09:02:00+07:00`))
+    expect(currentShift(s)?.personalTelemetry?.filter(row => row.type === "WATER_VISIT")).toHaveLength(2)
+    expect(s.notice?.pesan).toContain("belum terdaftar")
+  })
   it("keeps live Station readings outside work hours for the assigned worker zone", () => {
     const date = "2026-11-06"
     let s = run(shift(date), { type: "SIMPAN_PENEMPATAN_STATION", deviceId: "TST-01", zonaKode: "GUDANG", lat: -6.17, lng: 106.82 })
