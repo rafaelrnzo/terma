@@ -30,3 +30,16 @@
 @media (max-width: 600px) { .flow-layer { right: 16px; bottom: 16px; } .flow-panel { max-height: min(75dvh, 530px); overflow-y: auto; } }
 @media (prefers-reduced-motion: reduce) { .flow-pointer, .flow-progress span { transition: none; } }
 @media print { .flow-layer { display: none; } }
+
+.flow-band-guide { padding: 16px 18px; max-height: min(65dvh, 620px); overflow-y: auto; }
+.flow-guide-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.flow-guide-heading h3 { font-size: 14px; font-weight: 650; }
+.flow-guide-heading > span { color: var(--muted-foreground); font-size: 12px; }
+.flow-band-guide p { margin: 8px 0; color: var(--muted-foreground); font-size: 12px; line-height: 1.5; }
+.flow-guide-steps { display: grid; gap: 12px; margin: 16px 0; list-style: none; padding: 0; }
+.flow-guide-steps li { display: flex; align-items: flex-start; gap: 10px; }
+.flow-guide-steps li > span { display: grid; flex: none; place-items: center; width: 24px; height: 24px; border: 1px solid var(--border); border-radius: 50%; font-size: 11px; color: var(--muted-foreground); }
+.flow-guide-steps li[data-complete="true"] > span { color: var(--primary); border-color: transparent; }
+.flow-guide-steps li[data-current="true"] > span { color: var(--primary); border-color: var(--primary); }
+.flow-guide-steps strong { display: block; padding-top: 3px; font-size: 12px; font-weight: 600; }
+.flow-guide-note { padding-top: 12px; border-top: 1px solid var(--border); }

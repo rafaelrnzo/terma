@@ -10,6 +10,7 @@ import { PlayIcon } from "@phosphor-icons/react/dist/csr/Play"
 import { StopIcon } from "@phosphor-icons/react/dist/csr/Stop"
 import { XIcon } from "@phosphor-icons/react/dist/csr/X"
 import { Button } from "@/components/ui/button"
+import { BandDemoGuide } from "@/components/band-demo-guide"
 import { useApp } from "@/lib/store"
 import { currentShift } from "@/lib/management-state"
 import { hariIni } from "@/lib/config"
@@ -100,6 +101,7 @@ export function DemoFlow() {
   const [status, setStatus] = useState<Status>("idle")
   const [index, setIndex] = useState(0)
   const [error, setError] = useState("")
+  const [bandGuideOpen, setBandGuideOpen] = useState(false)
   const [pointer, setPointer] = useState<{ x: number; y: number } | null>(null)
   const control = useRef({ run: 0, paused: false })
   const highlighted = useRef<HTMLElement | null>(null)
@@ -125,6 +127,7 @@ export function DemoFlow() {
     setActiveId(null)
     setIndex(0)
     setError("")
+    setBandGuideOpen(false)
   }
 
   function check(run: number) {
@@ -232,7 +235,7 @@ export function DemoFlow() {
     {pointer && status === "running" && <span className="flow-pointer" style={{ left: pointer.x, top: pointer.y }} aria-hidden><CursorClickIcon size={24} weight="fill" /></span>}
     {open ? <section className="flow-panel" aria-label="Pengendali alur interaktif">
       <header className="flow-header"><div><h2>Jalankan alur</h2><p>Pilih skenario untuk menggerakkan situs otomatis.</p></div><button type="button" aria-label="Tutup panel alur" onClick={() => { stop(); setOpen(false) }}><XIcon size={18} /></button></header>
-      {active ? <div className="flow-running"><div className="flow-current"><span>{status === "done" ? <CheckCircleIcon size={18} weight="fill" /> : <CursorClickIcon size={18} />}</span><div><strong>{active.title}</strong><small>{status === "done" ? "Alur selesai" : status === "paused" ? "Dijeda" : status === "error" ? "Terhenti" : `${Math.min(index + 1, active.steps.length)} dari ${active.steps.length} langkah`}</small></div></div><div className="flow-progress" role="progressbar" aria-label="Kemajuan alur" aria-valuemin={0} aria-valuemax={active.steps.length} aria-valuenow={index}><span style={{ width: `${index / active.steps.length * 100}%` }} /></div><p className="flow-step" aria-live="polite">{status === "done" ? "Skenario berhasil dijalankan." : status === "error" ? error : active.steps[index]?.label}</p><div className="flow-actions">{status === "running" ? <Button size="sm" variant="outline" onClick={() => { control.current.paused = true; setStatus("paused") }}><PauseIcon />Jeda</Button> : status === "paused" ? <Button size="sm" onClick={() => { control.current.paused = false; setStatus("running") }}><PlayIcon />Lanjutkan</Button> : status === "error" ? <Button size="sm" onClick={() => void start(active)}><PlayIcon />Ulangi</Button> : null}<Button size="sm" variant="ghost" onClick={stop}><StopIcon />{status === "done" ? "Pilih alur lain" : "Hentikan"}</Button></div></div> : <div className="flow-choices">{choices.map(item => <button key={item.id} type="button" onClick={() => void start(item)}><span><strong>{item.title}</strong><small>{item.description}</small></span><ArrowRightIcon size={17} /></button>)}</div>}
+      {bandGuideOpen ? <BandDemoGuide onBack={() => setBandGuideOpen(false)} /> : active ? <div className="flow-running"><div className="flow-current"><span>{status === "done" ? <CheckCircleIcon size={18} weight="fill" /> : <CursorClickIcon size={18} />}</span><div><strong>{active.title}</strong><small>{status === "done" ? "Alur selesai" : status === "paused" ? "Dijeda" : status === "error" ? "Terhenti" : `${Math.min(index + 1, active.steps.length)} dari ${active.steps.length} langkah`}</small></div></div><div className="flow-progress" role="progressbar" aria-label="Kemajuan alur" aria-valuemin={0} aria-valuemax={active.steps.length} aria-valuenow={index}><span style={{ width: `${index / active.steps.length * 100}%` }} /></div><p className="flow-step" aria-live="polite">{status === "done" ? "Skenario berhasil dijalankan." : status === "error" ? error : active.steps[index]?.label}</p><div className="flow-actions">{status === "running" ? <Button size="sm" variant="outline" onClick={() => { control.current.paused = true; setStatus("paused") }}><PauseIcon />Jeda</Button> : status === "paused" ? <Button size="sm" onClick={() => { control.current.paused = false; setStatus("running") }}><PlayIcon />Lanjutkan</Button> : status === "error" ? <Button size="sm" onClick={() => void start(active)}><PlayIcon />Ulangi</Button> : null}<Button size="sm" variant="ghost" onClick={stop}><StopIcon />{status === "done" ? "Pilih alur lain" : "Hentikan"}</Button></div></div> : <div className="flow-choices">{user.role === "ADMIN" && <button type="button" onClick={() => { stop(); setBandGuideOpen(true) }}><span><strong>Hubungkan Band ke Raya</strong><small>Persiapan dan pemeriksaan bacaan RAYA001</small></span><ArrowRightIcon size={17} /></button>}{choices.map(item => <button key={item.id} type="button" onClick={() => void start(item)}><span><strong>{item.title}</strong><small>{item.description}</small></span><ArrowRightIcon size={17} /></button>)}</div>}
       <p className="flow-foot">Alur ini menggunakan fungsi halaman yang tersedia. Anda bisa menjeda kapan saja.</p>
     </section> : <Button className="flow-launch" onClick={() => setOpen(true)}><PlayIcon weight="fill" />Jalankan alur</Button>}
   </div>
