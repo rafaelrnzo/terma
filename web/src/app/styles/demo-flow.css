@@ -15,7 +15,11 @@
 .flow-current > div { display: grid; gap: 2px; }
 .flow-progress { height: 5px; margin-top: 18px; overflow: hidden; border-radius: 999px; background: var(--secondary); }
 .flow-progress span { display: block; height: 100%; border-radius: inherit; background: var(--primary); transition: width 240ms ease-out; }
-.flow-step { min-height: 39px; margin-top: 12px; color: var(--muted-foreground); font-size: 12px; line-height: 1.5; }
+.flow-chapter { margin-top: 16px; padding: 12px 13px; border: 1px solid var(--border); border-radius: 9px; background: var(--secondary); }
+.flow-chapter strong { display: block; font-size: 13px; line-height: 1.35; }
+.flow-chapter p { margin-top: 4px; color: var(--muted-foreground); font-size: 11px; line-height: 1.5; }
+.flow-step { min-height: 18px; margin-top: 12px; color: var(--foreground); font-size: 12px; line-height: 1.5; }
+.flow-next { margin-top: 5px; color: var(--muted-foreground); font-size: 11px; line-height: 1.4; }
 .flow-actions { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 9px; }
 .flow-actions button { min-height: 36px; }
 .flow-foot { padding: 12px 18px; border-top: 1px solid var(--border); color: var(--muted-foreground); font-size: 11px; line-height: 1.5; }
