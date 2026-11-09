@@ -26,7 +26,7 @@ export function StationPlacementPanel({ picked }: { picked: { lat: number; lng: 
   return <section className="summon-panel mt-6" aria-labelledby="station-placement-title">
     <div className="panel-heading"><div><h2 id="station-placement-title">Penempatan TERMA Station</h2><p>Klik peta untuk menaruh pin, lalu beri nama lokasi dan Station.</p></div></div>
     {canEdit && <form onSubmit={submit} className="grid gap-4 border-b p-5 sm:grid-cols-2 xl:grid-cols-[10rem_minmax(12rem,1fr)_9rem_9rem_auto] xl:items-end">
-      <div className="space-y-2"><Label htmlFor="placement-device">ID Station</Label><Input id="placement-device" value={deviceId} onChange={event => setDeviceId(event.target.value.toUpperCase())} placeholder="TST-02" required pattern="[A-Za-z0-9_-]{2,32}" /></div>
+      <div className="space-y-2"><Label htmlFor="placement-device">ID Station</Label><Input id="placement-device" value={deviceId} onChange={event => setDeviceId(event.target.value.toUpperCase())} placeholder="TST-02" required pattern={"[A-Za-z0-9_\\-]{2,32}"} /></div>
       <div className="space-y-2"><Label htmlFor="placement-location">Nama lokasi baru</Label><Input id="placement-location" value={location} onChange={event => setLocation(event.target.value)} placeholder="Contoh: Area produksi utara" minLength={2} maxLength={80} required /></div>
       <div className="space-y-2"><Label htmlFor="placement-lat">Lintang dari peta</Label><Input id="placement-lat" value={picked?.lat.toFixed(6) ?? ""} placeholder="Klik peta" readOnly required /></div>
       <div className="space-y-2"><Label htmlFor="placement-lng">Bujur dari peta</Label><Input id="placement-lng" value={picked?.lng.toFixed(6) ?? ""} placeholder="Klik peta" readOnly required /></div>
